@@ -1,0 +1,7 @@
+machine:
+  java:
+      version: oraclejdk8
+  timezone: Asia/Saigon
+test:
+  override:
+      - scripts/saddler.sh
