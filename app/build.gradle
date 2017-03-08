@@ -25,27 +25,26 @@ android {
   signingConfigs {
     debug {}
     release {
-      def signFile = file("../local.properties")
-      def signingProps = new Properties()
 
-      // To pass CI
-      try {
-        signingProps.load(new FileInputStream(signFile))
-
-        storeFile file("../keystores/keystore_release.keystore")
-        storePassword signingProps['storePassword']
-        keyAlias signingProps['keyAlias']
-        keyPassword signingProps['keyPassword']
-      } catch (ex) {
-      }
+      //      def signFile = file("../local.properties")
+      //      def signingProps = new Properties()
+      //
+      //      signingProps.load(new FileInputStream(signFile))
+      //
+      //      storeFile file("../keystores/keystore_release.keystore")
+      //      storePassword signingProps['storePassword']
+      //      keyAlias signingProps['keyAlias']
+      //      keyPassword signingProps['keyPassword']
     }
   }
 
   buildTypes {
+    debug {}
     release {
       shrinkResources true
       minifyEnabled true
-      signingConfig signingConfigs.release
+      //      Open when build release
+      //      signingConfig signingConfigs.release
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
@@ -71,9 +70,9 @@ dependencies {
 
   Map<String, String> dependencies = rootProject.ext.dependencies;
 
-  compile dependencies.constraintLayout
   compile dependencies.appCompatV7
   compile dependencies.recyclerview
+  compile dependencies.constraintLayout
 
   compile dependencies.rxJava
   compile dependencies.rxAndroid
