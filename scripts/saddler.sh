@@ -13,7 +13,7 @@ fi
 echo "********************"
 echo "* exec gradle      *"
 echo "********************"
-./gradlew app:check
+./gradlew :app:check -PdisablePreDex
 
 if [ $? -ne 0 ]; then
     echo 'Failed gradle check task.'
@@ -29,6 +29,8 @@ LINT_RESULT_DIR="$CIRCLE_ARTIFACTS/lint"
 mkdir "$LINT_RESULT_DIR"
 cp -v "app/build/reports/checkstyle/checkstyle.xml" "$LINT_RESULT_DIR/"
 cp -v "app/build/reports/findbugs/findbugs.xml" "$LINT_RESULT_DIR/"
+cp -v "app/build/reports/pmd/pmd.xml" "$LINT_RESULT_DIR/"
+cp -v "app/build/reports/pmd/cpd.xml" "$LINT_RESULT_DIR/"
 cp -v "app/build/outputs/lint-results.xml" "$LINT_RESULT_DIR/"
 
 if [ -z "${CI_PULL_REQUEST}" ]; then
@@ -72,7 +74,7 @@ cat app/build/reports/pmd/cpd.xml \
 echo "********************"
 echo "* android lint     *"
 echo "********************"
-cat app/build/outputs/lint-results.xml \
+cat app/build/outputs/lint-results-debug.xml \
     | android_lint_translate_checkstyle_format translate \
     | checkstyle_filter-git diff origin/master \
     | saddler report --require saddler/reporter/github --reporter $REPORTER

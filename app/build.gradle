@@ -2,6 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply from: '../autodimension.gradle'
 
+/**
+ * start config and check ci*/
+apply from: '../checkci.gradle'
+
 def APP_ID = "com.fstyle.androidstructure";
 
 android {
@@ -24,43 +28,66 @@ android {
 
   signingConfigs {
     debug {}
+
     release {
 
-      //      def signFile = file("../local.properties")
-      //      def signingProps = new Properties()
-      //
-      //      signingProps.load(new FileInputStream(signFile))
-      //
-      //      storeFile file("../keystores/keystore_release.keystore")
-      //      storePassword signingProps['storePassword']
-      //      keyAlias signingProps['keyAlias']
-      //      keyPassword signingProps['keyPassword']
+      if (!System.getenv('CI')) {
+        def signFile = file("../local.properties")
+        def signingProps = new Properties()
+
+        signingProps.load(new FileInputStream(signFile))
+
+        storeFile file("../keystores/keystore_release.keystore")
+        storePassword signingProps['storePassword']
+        keyAlias signingProps['keyAlias']
+        keyPassword signingProps['keyPassword']
+      }
     }
   }
 
   buildTypes {
-    debug {}
+    debug {
+      versionNameSuffix = "dev"
+      applicationIdSuffix = ".dev"
+
+      applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
+      }
+    }
+    staging {
+      versionNameSuffix = "stg"
+      applicationIdSuffix = ".stg"
+      signingConfig signingConfigs.debug
+
+      applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
+      }
+    }
     release {
       shrinkResources true
       minifyEnabled true
-      //      Open when build release
-      //      signingConfig signingConfigs.release
+      signingConfig signingConfigs.release
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+      applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
+      }
     }
   }
+}
 
-  productFlavors {
-    dev {
-      versionNameSuffix = "dev"
-      applicationIdSuffix = ".dev"
-    }
-    stg {
-      versionNameSuffix = "stg"
-      applicationIdSuffix = ".stg"
-    }
-    prod {
-      versionName = rootProject.ext.versionNameRelease
-      versionCode = rootProject.ext.versionCodeRelease
+@SuppressWarnings("GroovyAssignabilityCheck")
+def appendVersionNameVersionCode(variant) {
+  variant.outputs.each { output ->
+    def applicationId = variant.mergedFlavor.applicationId + (variant.buildType.applicationIdSuffix ==
+        null ? "" : variant.buildType.applicationIdSuffix)
+    if (variant.buildType.name == android.buildTypes.debug.name ||
+        variant.buildType.name ==
+        android.buildTypes.release.name ||
+        variant.buildType.name ==
+        android.buildTypes.staging.name) {
+      if (output.zipAlign) {
+        def file = output.outputFile
+        output.outputFile = new File(file.parentFile,
+            "${variant.buildType.name}_${applicationId}_v${variant.versionName}-${variant.versionCode}.apk")
+      }
     }
   }
 }

@@ -1,4 +1,6 @@
 machine:
+  ruby:
+      version: 2.0.0-p648
   java:
       version: oraclejdk8
   timezone: Asia/Saigon
@@ -23,9 +25,4 @@ dependencies:
     - ./gradlew app:dependencies
 test:
   override:
-      - ./gradlew clean assemble -Dpre-dex=false --console=plain --stacktrace
-      - ./gradlew test --console=plain
-      - ./gradlew lint --console=plain
-
-      - cp -r app/build/outputs $CIRCLE_ARTIFACTS
-      - cp -r app/build/test-results/* $CIRCLE_TEST_REPORTS
+      - sh scripts/saddler.sh
