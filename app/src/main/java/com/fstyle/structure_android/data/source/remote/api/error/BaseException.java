@@ -1,12 +1,11 @@
 package com.fstyle.structure_android.data.source.remote.api.error;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+
 import retrofit2.Response;
 
 /**
@@ -16,7 +15,7 @@ import retrofit2.Response;
 public final class BaseException extends RuntimeException {
 
     @Type
-    private String type;
+    private final String type;
     @Nullable
     private Response response;
 
@@ -47,7 +46,7 @@ public final class BaseException extends RuntimeException {
         return type;
     }
 
-    public String getMessage(@NonNull Context context) {
+    public String getMessage() {
         switch (type) {
             case Type.SERVER:
                 // TODO define with server about ErrorResponse
@@ -97,33 +96,5 @@ public final class BaseException extends RuntimeException {
 
         // Unofficial error
         return "An error occurred. Please try again later!";
-    }
-
-    /**
-     * Error type
-     */
-    @StringDef({ Type.NETWORK, Type.HTTP, Type.UNEXPECTED, Type.SERVER })
-    public @interface Type {
-
-        /**
-         * An {@link IOException} occurred while communicating to the server.
-         */
-        String NETWORK = "NETWORK";
-
-        /**
-         * A non-2xx HTTP status code was received from the server.
-         */
-        String HTTP = "HTTP";
-
-        /**
-         * A error server with code & message
-         */
-        String SERVER = "SERVER";
-
-        /**
-         * An internal error occurred while attempting to execute a request. It is best practice to
-         * re-throw this exception so your application crashes.
-         */
-        String UNEXPECTED = "UNEXPECTED";
     }
 }

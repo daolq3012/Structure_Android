@@ -9,5 +9,5 @@ public final class Constant {
         // No-op
     }
 
-    public static final String END_POINT_URL = "https://api.github.com/";
+    public static final String END_POINT_URL = "https://api.github.com";
 }

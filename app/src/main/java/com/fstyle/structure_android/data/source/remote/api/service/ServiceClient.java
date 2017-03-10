@@ -23,10 +23,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceClient {
     private static final int CONNECTION_TIMEOUT = 60;
 
-    ServiceClient() {
-        // No-op
-    }
-
     static <T> T createService(Application application, String endPoint, Class<T> serviceClass) {
         return createService(application, endPoint, serviceClass, getGsonConfig(), null);
     }

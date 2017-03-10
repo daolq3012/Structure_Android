@@ -8,9 +8,16 @@ import com.fstyle.structure_android.screen.BaseView;
  */
 
 public interface MainContract {
+
+    /**
+     * View
+     */
     interface View extends BaseView<Presenter> {
     }
 
+    /**
+     * Presenter
+     */
     interface Presenter extends BasePresenter {
     }
 }

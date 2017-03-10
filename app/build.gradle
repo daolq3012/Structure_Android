@@ -6,7 +6,7 @@ apply from: '../autodimension.gradle'
  * start config and check ci*/
 apply from: '../checkci.gradle'
 
-def APP_ID = "com.fstyle.androidstructure";
+def APP_ID = "com.fstyle.structure_android";
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
@@ -51,8 +51,7 @@ android {
 
   buildTypes {
     debug {
-      versionNameSuffix = "dev"
-      applicationIdSuffix = ".dev"
+      versionNameSuffix = "debug"
 
       applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
       }
