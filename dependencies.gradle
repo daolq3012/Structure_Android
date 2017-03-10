@@ -10,7 +10,7 @@ ext {
                   rxAndroid         : 'io.reactivex:rxandroid:1.2.0',
 
                   retrofit2         : 'com.squareup.retrofit2:retrofit:2.0.2',
-                  retrofit2Adapter  : 'com.squareup.retrofit2:adapter-rxjava:2.0.1',
+                  retrofit2Adapter  : 'com.squareup.retrofit2:adapter-rxjava:2.0.2',
                   retrofitGson      : 'com.squareup.retrofit2:converter-gson:2.0.2',
                   loggingInterceptor: 'com.squareup.okhttp3:logging-interceptor:3.4.1',
 

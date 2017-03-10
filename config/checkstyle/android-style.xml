@@ -214,8 +214,6 @@
         </module>
         <module name="Indentation">
             <property name="severity" value="error"/>
-            <property name="throwsIndent" value="8"/>
-            <property name="lineWrappingIndentation" value="8"/>
         </module>
         <module name="OuterTypeFilename">
             <property name="severity" value="error"/>

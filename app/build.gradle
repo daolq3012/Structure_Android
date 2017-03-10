@@ -26,6 +26,10 @@ android {
     enabled = true
   }
 
+  lintOptions {
+    abortOnError false
+  }
+
   signingConfigs {
     debug {}
 
@@ -103,6 +107,11 @@ dependencies {
 
   compile dependencies.rxJava
   compile dependencies.rxAndroid
+
+  compile dependencies.retrofit2
+  compile dependencies.retrofit2Adapter
+  compile dependencies.retrofitGson
+  compile dependencies.loggingInterceptor
 
   testCompile dependencies.junit
   testCompile dependencies.mockito
