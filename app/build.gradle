@@ -56,6 +56,14 @@ android {
       applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
       }
     }
+    mock {
+      versionNameSuffix = "mock"
+      applicationIdSuffix = ".mock"
+      signingConfig signingConfigs.debug
+
+      applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
+      }
+    }
     staging {
       versionNameSuffix = "stg"
       applicationIdSuffix = ".stg"

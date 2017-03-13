@@ -3,6 +3,7 @@ package com.fstyle.structure_android.screen.main;
 import android.os.Bundle;
 
 import com.fstyle.structure_android.R;
+import com.fstyle.structure_android.data.model.UsersList;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.data.source.remote.api.service.NameServiceClient;
@@ -41,5 +42,15 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     protected void onStop() {
         mPresenter.onStop();
         super.onStop();
+    }
+
+    @Override
+    public void showError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void showListUser(UsersList usersList) {
+
     }
 }

@@ -9,7 +9,7 @@ package com.fstyle.structure_android.screen;
  *
  * @param <T> is a Presenter extends from ({@link BasePresenter})
  */
-public interface BaseView<T> {
+public interface BaseView<T extends BasePresenter> {
 
     void setPresenter(T presenter);
 }

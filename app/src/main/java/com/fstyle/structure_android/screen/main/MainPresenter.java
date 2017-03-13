@@ -1,6 +1,5 @@
 package com.fstyle.structure_android.screen.main;
 
-import android.util.Log;
 import com.fstyle.structure_android.data.model.UsersList;
 import com.fstyle.structure_android.data.source.UserRepository;
 import rx.functions.Action1;
@@ -24,24 +23,29 @@ class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onStart() {
-        mUserRepository.getRemoteDataSource()
-                .searchUsers("daolq")
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<UsersList>() {
-                    @Override
-                    public void call(UsersList usersList) {
-                        Log.d(TAG, "call: " + usersList.toString());
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Log.e(TAG, "call: ", throwable);
-                    }
-                });
+
     }
 
     @Override
     public void onStop() {
 
+    }
+
+    @Override
+    public void searchUsers(String term) {
+        mUserRepository.getRemoteDataSource()
+                .searchUsers(term)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<UsersList>() {
+                    @Override
+                    public void call(UsersList usersList) {
+                        mMainView.showListUser(usersList);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mMainView.showError(throwable);
+                    }
+                });
     }
 }
