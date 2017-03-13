@@ -2,15 +2,18 @@ package com.fstyle.structure_android.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
  */
 
-public class User {
+public class User extends RealmObject {
 
     @SerializedName("login")
     @Expose
+    @PrimaryKey
     private String login;
     @SerializedName("id")
     @Expose
@@ -65,7 +68,7 @@ public class User {
     private String name;
     @SerializedName("company")
     @Expose
-    private Object company;
+    private String company;
     @SerializedName("blog")
     @Expose
     private String blog;
@@ -74,10 +77,10 @@ public class User {
     private String location;
     @SerializedName("email")
     @Expose
-    private Object email;
+    private String email;
     @SerializedName("hireable")
     @Expose
-    private Object hireable;
+    private String hireable;
     @SerializedName("bio")
     @Expose
     private String bio;
@@ -122,6 +125,10 @@ public class User {
         return login;
     }
 
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
     /**
      * @return The id
      */
@@ -131,6 +138,10 @@ public class User {
 
     public String getAvatarUrl() {
         return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public String getGravatarId() {
@@ -163,6 +174,10 @@ public class User {
 
     public String getSubscriptionsUrl() {
         return subscriptionsUrl;
+    }
+
+    public void setSubscriptionsUrl(String subscriptionsUrl) {
+        this.subscriptionsUrl = subscriptionsUrl;
     }
 
     public String getOrganizationsUrl() {
