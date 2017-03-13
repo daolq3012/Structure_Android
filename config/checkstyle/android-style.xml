@@ -219,18 +219,6 @@
             <property name="severity" value="error"/>
         </module>
 
-        <!--http://checkstyle.sourceforge.net/config_imports.html-->
-        <module name="ImportOrder">
-            <property name="severity" value="error"/>
-            <message key="import.ordering"
-                value="Wrong order for {0} import. Use Ctrl+Shift+O (Eclipse) or Ctrl+Alt+O (Intellij) to sort imports"/>
-            <property name="groups"
-                value="android, com.android, dalvik, com, gov, junit, libcore, net, org, java, javax"/>
-            <property name="ordered" value="true"/>
-            <property name="option" value="top"/>
-            <property name="separated" value="false"/>
-        </module>
-
         <!--http://checkstyle.sourceforge.net/config_annotation.html-->
         <module name="MissingDeprecated">
             <property name="severity" value="error"/>

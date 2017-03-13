@@ -11,6 +11,10 @@ import java.util.List;
 
 public class UsersList {
 
+    public UsersList(List<User> items) {
+        this.items = items;
+    }
+
     @SerializedName("total_count")
     @Expose
     private Integer totalCount;
