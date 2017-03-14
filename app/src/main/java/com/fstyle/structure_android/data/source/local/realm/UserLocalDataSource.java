@@ -21,7 +21,7 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
     @Override
     public void openTransaction() {
         if (mRealmApi == null) {
-            mRealmApi = new RealmApi();
+            mRealmApi = new RealmImpl();
         }
     }
 
