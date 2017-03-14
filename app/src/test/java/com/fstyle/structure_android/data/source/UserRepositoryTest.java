@@ -48,12 +48,13 @@ public class UserRepositoryTest {
     @Test
     public void searchUsers200ResponseCodeInvokesCorrectApiCalls() {
         // Given
-        Mockito.when(mNameApi.searchGithubUsers(ArgumentMatchers.anyString()))
+        Mockito.when(
+                mNameApi.searchGithubUsers(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString()))
                 .thenReturn(Observable.just(githubUserList()));
 
         // When
         TestSubscriber<UsersList> subscriber = new TestSubscriber<>();
-        mUserRepository.getRemoteDataSource().searchUsers(USER_LOGIN_1).subscribe(subscriber);
+        mUserRepository.getRemoteDataSource().searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
 
         // Then
         subscriber.awaitTerminalEvent();
@@ -63,7 +64,7 @@ public class UserRepositoryTest {
         UsersList usersList = onNextEvents.get(0);
         Assert.assertEquals(USER_LOGIN_1, usersList.getItems().get(0).getLogin());
         Assert.assertEquals(USER_LOGIN_2, usersList.getItems().get(1).getLogin());
-        Mockito.verify(mNameApi).searchGithubUsers(USER_LOGIN_1);
+        Mockito.verify(mNameApi).searchGithubUsers(2, USER_LOGIN_1);
     }
 
     private UsersList githubUserList() {
@@ -81,19 +82,20 @@ public class UserRepositoryTest {
     @Test
     public void searchUsersOtherHttpErrorSearchTerminatedWithError() {
         // Given
-        Mockito.when(mNameApi.searchGithubUsers(ArgumentMatchers.anyString()))
+        Mockito.when(
+                mNameApi.searchGithubUsers(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString()))
                 .thenReturn(get403ForbiddenError());
 
         // When
         TestSubscriber<UsersList> subscriber = new TestSubscriber<>();
-        mUserRepository.getRemoteDataSource().searchUsers(USER_LOGIN_1).subscribe(subscriber);
+        mUserRepository.getRemoteDataSource().searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
 
         // Then
         subscriber.awaitTerminalEvent();
         subscriber.assertError(HttpException.class);
 
-        Mockito.verify(mNameApi).searchGithubUsers(USER_LOGIN_1);
-        Mockito.verify(mNameApi, Mockito.never()).searchGithubUsers(USER_LOGIN_2);
+        Mockito.verify(mNameApi).searchGithubUsers(2, USER_LOGIN_1);
+        Mockito.verify(mNameApi, Mockito.never()).searchGithubUsers(2, USER_LOGIN_2);
         Mockito.verify(mNameApi, Mockito.never()).getUser(USER_LOGIN_1);
     }
 

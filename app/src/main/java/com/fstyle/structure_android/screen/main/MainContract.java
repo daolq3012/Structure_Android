@@ -23,6 +23,6 @@ public interface MainContract {
      * Presenter
      */
     interface Presenter extends BasePresenter {
-        void searchUsers(String term);
+        void searchUsers(int limit, String term);
     }
 }

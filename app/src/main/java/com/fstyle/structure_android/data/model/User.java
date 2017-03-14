@@ -1,5 +1,7 @@
 package com.fstyle.structure_android.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
@@ -9,7 +11,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by le.quang.dao on 10/03/2017.
  */
 
-public class User extends RealmObject {
+public class User extends RealmObject implements Parcelable {
 
     @SerializedName("login")
     @Expose
@@ -117,6 +119,45 @@ public class User extends RealmObject {
     public User(final String userLogin) {
         this.login = userLogin;
     }
+
+    protected User(Parcel in) {
+        login = in.readString();
+        avatarUrl = in.readString();
+        gravatarId = in.readString();
+        url = in.readString();
+        htmlUrl = in.readString();
+        followersUrl = in.readString();
+        followingUrl = in.readString();
+        gistsUrl = in.readString();
+        starredUrl = in.readString();
+        subscriptionsUrl = in.readString();
+        organizationsUrl = in.readString();
+        reposUrl = in.readString();
+        eventsUrl = in.readString();
+        receivedEventsUrl = in.readString();
+        type = in.readString();
+        name = in.readString();
+        company = in.readString();
+        blog = in.readString();
+        location = in.readString();
+        email = in.readString();
+        hireable = in.readString();
+        bio = in.readString();
+        createdAt = in.readString();
+        updatedAt = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     /**
      * @return The login
@@ -254,5 +295,38 @@ public class User extends RealmObject {
 
     public String getUpdatedAt() {
         return updatedAt;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(login);
+        dest.writeString(avatarUrl);
+        dest.writeString(gravatarId);
+        dest.writeString(url);
+        dest.writeString(htmlUrl);
+        dest.writeString(followersUrl);
+        dest.writeString(followingUrl);
+        dest.writeString(gistsUrl);
+        dest.writeString(starredUrl);
+        dest.writeString(subscriptionsUrl);
+        dest.writeString(organizationsUrl);
+        dest.writeString(reposUrl);
+        dest.writeString(eventsUrl);
+        dest.writeString(receivedEventsUrl);
+        dest.writeString(type);
+        dest.writeString(name);
+        dest.writeString(company);
+        dest.writeString(blog);
+        dest.writeString(location);
+        dest.writeString(email);
+        dest.writeString(hireable);
+        dest.writeString(bio);
+        dest.writeString(createdAt);
+        dest.writeString(updatedAt);
     }
 }
