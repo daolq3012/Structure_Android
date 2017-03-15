@@ -8,4 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="MainAlertDialog">
+        <item name="layout">@layout/dialog_main_alert</item>
+    </style>
+
+    <style name="ButtonDialog" parent="Base.Widget.AppCompat.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dp_62</item>
+        <item name="android:textSize">@dimen/dp_20</item>
+    </style>
+
 </resources>

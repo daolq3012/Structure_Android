@@ -1,0 +1,17 @@
+<resources>
+    <dimen name="sp_23">23sp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_170">170dp</dimen>
+    <dimen name="sp_17">17sp</dimen>
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="sp_6">6sp</dimen>
+    <dimen name="sp_18">18sp</dimen>
+    <dimen name="dp_36">36dp</dimen>
+    <dimen name="dp_26">26dp</dimen>
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="dp_0.5">1dp</dimen>
+    <dimen name="dp_62">62dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+</resources>

@@ -6,12 +6,17 @@ import com.fstyle.structure_android.data.source.UserDataSource;
 import com.fstyle.structure_android.data.source.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import rx.Observable;
+import rx.Scheduler;
+import rx.android.plugins.RxAndroidPlugins;
+import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Sun on 3/12/2017.
@@ -35,9 +40,20 @@ public class MainPresenterTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override
+            public Scheduler getMainThreadScheduler() {
+                return Schedulers.immediate();
+            }
+        });
         mUserRepository = new UserRepository(mLocalDataSource, mRemoteDataSource);
         mMainPresenter = new MainPresenter(mView, mUserRepository);
         mView.setPresenter(mMainPresenter);
+    }
+
+    @After
+    public void tearDown() {
+        RxAndroidPlugins.getInstance().reset();
     }
 
     @Test
@@ -49,27 +65,29 @@ public class MainPresenterTest {
         UsersList usersList = new UsersList(users);
 
         // When
-        Mockito.when(mUserRepository.getRemoteDataSource().searchUsers(Mockito.anyString()))
+        Mockito.when(mUserRepository.getRemoteDataSource()
+                .searchUsers(Mockito.anyInt(), Mockito.anyString()))
                 .thenReturn(Observable.just(usersList));
 
         // Then
-        mMainPresenter.searchUsers(Mockito.anyString());
+        mMainPresenter.searchUsers(2, USER_LOGIN_1);
 
-//        Mockito.verify(mView, Mockito.never()).showError(null);
-//        Mockito.verify(mView).showListUser(usersList);
+        //        Mockito.verify(mView, Mockito.never()).showError(null);
+        //        Mockito.verify(mView).showListUser(usersList);
 
         // Give
         String errorMsg = "No internet";
         Throwable throwable = new Throwable(errorMsg);
 
         // When
-        Mockito.when(mUserRepository.getRemoteDataSource().searchUsers(Mockito.anyString()))
+        Mockito.when(mUserRepository.getRemoteDataSource()
+                .searchUsers(Mockito.anyInt(), Mockito.anyString()))
                 .thenReturn(Observable.<UsersList>error(throwable));
 
         // Then
-        mMainPresenter.searchUsers(Mockito.anyString());
+        mMainPresenter.searchUsers(Mockito.anyInt(), Mockito.anyString());
 
-//        Mockito.verify(mView, Mockito.never()).showListUser(null);
-//        Mockito.verify(mView).showError(throwable);
+        //        Mockito.verify(mView, Mockito.never()).showListUser(null);
+        //        Mockito.verify(mView).showError(throwable);
     }
 }

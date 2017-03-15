@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Structure_Android</string>
+    <string name="search_user_github">Search User Github</string>
+    <string name="keyword">Keyword</string>
+    <string name="search">Search</string>
+    <string name="type_number">type number</string>
+    <string name="limit">Limit</string>
+    <string name="error">Error</string>
 </resources>

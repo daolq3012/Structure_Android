@@ -2,6 +2,7 @@ package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.UsersList;
 import com.fstyle.structure_android.data.source.UserRepository;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -32,10 +33,11 @@ class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void searchUsers(String term) {
+    public void searchUsers(int limit, String term) {
         mUserRepository.getRemoteDataSource()
-                .searchUsers(term)
+                .searchUsers(limit, term)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<UsersList>() {
                     @Override
                     public void call(UsersList usersList) {

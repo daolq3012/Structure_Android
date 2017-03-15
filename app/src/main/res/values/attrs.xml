@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="MainAlertDialog">
+        <attr name="layout"/>
+    </declare-styleable>
+</resources>
