@@ -16,7 +16,7 @@ public class UserRemoteDataSource extends BaseRemoteDataSource
     }
 
     @Override
-    public Observable<UsersList> searchUsers(int limit, String searchTerm) {
-        return mNameApi.searchGithubUsers(limit, searchTerm);
+    public Observable<UsersList> searchUsers(int limit, String keyWord) {
+        return mNameApi.searchGithubUsers(limit, keyWord);
     }
 }

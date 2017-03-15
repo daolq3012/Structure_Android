@@ -4,6 +4,10 @@
     <string name="keyword">Keyword</string>
     <string name="search">Search</string>
     <string name="type_number">type number</string>
-    <string name="limit">Limit</string>
+    <string name="limit_number">Limit number</string>
     <string name="error">Error</string>
+    <string name="empty"/>
+    <string name="error_lenght_from_0_to_100">- Limit value must be from 0 to 100</string>
+    <string name="must_not_empty">- Must not empty</string>
+    <string name="error_unusable_characters">- There are unusable characters</string>
 </resources>

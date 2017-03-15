@@ -1,10 +1,16 @@
 package com.fstyle.structure_android.screen.main;
 
+import android.app.Activity;
+import android.text.TextUtils;
 import com.fstyle.structure_android.data.model.UsersList;
 import com.fstyle.structure_android.data.source.UserRepository;
+import com.fstyle.structure_android.utils.Constant;
+import com.fstyle.structure_android.utils.validator.Validator;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
@@ -15,11 +21,28 @@ class MainPresenter implements MainContract.Presenter {
 
     private final MainContract.View mMainView;
     private UserRepository mUserRepository;
+    private final CompositeSubscription mCompositeSubscription;
+    private Validator mValidator;
 
     MainPresenter(MainContract.View view, UserRepository userRepository) {
         mMainView = view;
         mUserRepository = userRepository;
         mMainView.setPresenter(this);
+        mValidator = new Validator(((Activity) mMainView).getApplicationContext(), mMainView);
+        mValidator.initNGWordPattern();
+        mCompositeSubscription = new CompositeSubscription();
+    }
+
+    private boolean validateDataInput(int limit, String keyWord) {
+        String errorMsg = mValidator.validateValueRangeFrom0to100(limit);
+        mMainView.showInvalidLimit(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
+
+        errorMsg = mValidator.validateNGWord(keyWord);
+        errorMsg += (TextUtils.isEmpty(errorMsg) ? "" : Constant.BREAK_LINE)
+                + mValidator.validateValueNonEmpty(keyWord);
+        mMainView.showInvalidUserName(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
+
+        return mValidator.validateAll(mMainView, false);
     }
 
     @Override
@@ -29,13 +52,16 @@ class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onStop() {
-
+        mCompositeSubscription.clear();
     }
 
     @Override
-    public void searchUsers(int limit, String term) {
-        mUserRepository.getRemoteDataSource()
-                .searchUsers(limit, term)
+    public void searchUsers(int limit, String keyWord) {
+        if (!validateDataInput(limit, keyWord)) {
+            return;
+        }
+        Subscription subscription = mUserRepository.getRemoteDataSource()
+                .searchUsers(limit, keyWord)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<UsersList>() {
@@ -49,5 +75,6 @@ class MainPresenter implements MainContract.Presenter {
                         mMainView.showError(throwable);
                     }
                 });
+        mCompositeSubscription.add(subscription);
     }
 }
