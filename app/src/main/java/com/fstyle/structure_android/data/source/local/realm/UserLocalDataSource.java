@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserDataSource;
 import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 import java.util.List;
 import rx.Observable;
@@ -62,7 +63,7 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
         return mRealmApi.realmTransaction(new Action2<Subscriber<? super Void>, Realm>() {
             @Override
             public void call(Subscriber<? super Void> subscriber, Realm realm) {
-                user.deleteFromRealm();
+                RealmObject.deleteFromRealm(user);
                 subscriber.onCompleted();
             }
         });

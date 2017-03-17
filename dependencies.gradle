@@ -3,8 +3,7 @@ ext {
                   mockito           : 'org.mockito:mockito-core:2.7.7',
 
                   constraintLayout  : 'com.android.support.constraint:constraint-layout:1.0.1',
-                  appCompatV7       : 'com.android.support:appcompat-v7:25.2.0',
-                  recyclerview      : 'com.android.support:recyclerview-v7:25.2.0',
+                  supportDesign     : 'com.android.support:design:25.2.0',
 
                   rxJava            : 'io.reactivex:rxjava:1.1.5',
                   rxAndroid         : 'io.reactivex:rxandroid:1.2.0',

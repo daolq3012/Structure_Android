@@ -33,6 +33,6 @@ public interface UserDataSource {
      * RemoteData For User
      */
     interface RemoteDataSource {
-        Observable<UsersList> searchUsers(int limit, String searchTerm);
+        Observable<UsersList> searchUsers(int limit, String keyWord);
     }
 }

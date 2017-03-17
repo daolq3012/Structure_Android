@@ -13,4 +13,6 @@ public final class Constant {
 
     // For bundle
     public static final String LIST_USER_ARGS = "list_user_args";
+
+    public static final String BREAK_LINE = "\n";
 }

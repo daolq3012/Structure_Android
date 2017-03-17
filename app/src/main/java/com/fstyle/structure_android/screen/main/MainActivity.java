@@ -3,6 +3,7 @@ package com.fstyle.structure_android.screen.main;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -14,6 +15,9 @@ import com.fstyle.structure_android.data.source.remote.api.service.NameServiceCl
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
 import com.fstyle.structure_android.utils.Navigator;
+import com.fstyle.structure_android.utils.validator.Rule;
+import com.fstyle.structure_android.utils.validator.ValidType;
+import com.fstyle.structure_android.utils.validator.Validation;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import com.fstyle.structure_android.widget.dialog.DialogManagerImpl;
 import java.util.ArrayList;
@@ -28,21 +32,39 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
     private MainContract.Presenter mPresenter;
 
-    private EditText mEditTextSearch;
+    private TextInputLayout mTextInputLayoutKeyword;
+    private EditText mEditTextKeyword;
+    private TextInputLayout mTextInputLayoutNumberLimit;
     private EditText mEditNumberLimit;
 
     private DialogManager mDialogManager;
+
+    @Validation({
+            @Rule(types = {
+                    ValidType.NG_WORD, ValidType.NON_EMPTY
+            }, message = R.string.error_unusable_characters)
+    })
+    private String mKeyWord;
+    @Validation({
+            @Rule(types = ValidType.VALUE_RANGE_0_100, message = R.string
+                    .error_lenght_from_0_to_100),
+            @Rule(types = ValidType.NON_EMPTY, message = R.string.must_not_empty)
+    })
+    private int mLimit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        UserRepository mUserRepository =
+        UserRepository userRepository =
                 new UserRepository(null, new UserRemoteDataSource(NameServiceClient.getInstance()));
-        new MainPresenter(this, mUserRepository);
+        new MainPresenter(this, userRepository);
 
-        mEditTextSearch = (EditText) findViewById(R.id.edtSearch);
+        mTextInputLayoutKeyword = (TextInputLayout) findViewById(R.id.txtInputLayoutKeyword);
+        mEditTextKeyword = (EditText) findViewById(R.id.edtKeyword);
+        mTextInputLayoutNumberLimit =
+                (TextInputLayout) findViewById(R.id.txtInputLayoutNumberLimit);
         mEditNumberLimit = (EditText) findViewById(R.id.edtNumberLimit);
 
         mDialogManager = new DialogManagerImpl(this);
@@ -84,12 +106,20 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         new Navigator(this).startActivity(SearchResultActivity.class, bundle);
     }
 
+    @Override
+    public void showInvalidLimit(String errorMsg) {
+        mTextInputLayoutNumberLimit.setError(errorMsg);
+    }
+
+    @Override
+    public void showInvalidUserName(String errorMsg) {
+        mTextInputLayoutKeyword.setError(errorMsg);
+    }
+
     public void onSearchButtonClicked(View view) {
-        String keyword = mEditTextSearch.getText().toString().trim();
+        mKeyWord = mEditTextKeyword.getText().toString().trim();
         String limitStr = mEditNumberLimit.getText().toString().trim();
-        int limit = TextUtils.isEmpty(limitStr) ? 0 : Integer.parseInt(limitStr);
-        if (!TextUtils.isEmpty(keyword)) {
-            mPresenter.searchUsers(limit, keyword);
-        }
+        mLimit = TextUtils.isEmpty(limitStr) ? Integer.MIN_VALUE : Integer.parseInt(limitStr);
+        mPresenter.searchUsers(mLimit, mKeyWord);
     }
 }

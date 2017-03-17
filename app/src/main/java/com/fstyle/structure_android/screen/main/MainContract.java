@@ -17,12 +17,17 @@ public interface MainContract {
         void showError(Throwable throwable);
 
         void showListUser(UsersList usersList);
+
+        void showInvalidLimit(String errorMsg);
+
+        void showInvalidUserName(String errorMsg);
     }
 
     /**
      * Presenter
      */
     interface Presenter extends BasePresenter {
-        void searchUsers(int limit, String term);
+
+        void searchUsers(int limit, String keyWord);
     }
 }
