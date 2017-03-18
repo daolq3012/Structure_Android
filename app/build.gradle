@@ -23,10 +23,6 @@ android {
     vectorDrawables.useSupportLibrary = true
   }
 
-  dataBinding {
-    enabled = true
-  }
-
   lintOptions {
     abortOnError false
   }
