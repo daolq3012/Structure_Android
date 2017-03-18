@@ -18,6 +18,7 @@ import com.fstyle.structure_android.utils.navigator.NavigatorImpl;
 import com.fstyle.structure_android.utils.validator.Rule;
 import com.fstyle.structure_android.utils.validator.ValidType;
 import com.fstyle.structure_android.utils.validator.Validation;
+import com.fstyle.structure_android.utils.validator.Validator;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import com.fstyle.structure_android.widget.dialog.DialogManagerImpl;
 import java.util.ArrayList;
@@ -59,7 +60,8 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
         UserRepository userRepository =
                 new UserRepository(null, new UserRemoteDataSource(NameServiceClient.getInstance()));
-        new MainPresenter(this, userRepository);
+        Validator validator = new Validator(getApplicationContext(),this);
+        mPresenter = new MainPresenter(this, userRepository,validator);
 
         mTextInputLayoutKeyword = (TextInputLayout) findViewById(R.id.txtInputLayoutKeyword);
         mEditTextKeyword = (EditText) findViewById(R.id.edtKeyword);
@@ -68,11 +70,6 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         mEditNumberLimit = (EditText) findViewById(R.id.edtNumberLimit);
 
         mDialogManager = new DialogManagerImpl(this);
-    }
-
-    @Override
-    public void setPresenter(MainContract.Presenter presenter) {
-        mPresenter = presenter;
     }
 
     @Override
