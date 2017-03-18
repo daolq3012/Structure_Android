@@ -14,7 +14,7 @@ import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.data.source.remote.api.service.NameServiceClient;
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
-import com.fstyle.structure_android.utils.Navigator;
+import com.fstyle.structure_android.utils.navigator.NavigatorImpl;
 import com.fstyle.structure_android.utils.validator.Rule;
 import com.fstyle.structure_android.utils.validator.ValidType;
 import com.fstyle.structure_android.utils.validator.Validation;
@@ -103,7 +103,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(LIST_USER_ARGS,
                 (ArrayList<? extends Parcelable>) usersList.getItems());
-        new Navigator(this).startActivity(SearchResultActivity.class, bundle);
+        new NavigatorImpl(this).startActivity(SearchResultActivity.class, bundle);
     }
 
     @Override
