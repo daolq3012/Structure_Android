@@ -12,7 +12,6 @@ final class SearchResultPresenter implements SearchResultContract.Presenter {
 
     SearchResultPresenter(SearchResultContract.View view) {
         mView = view;
-        mView.setPresenter(this);
     }
 
     @Override

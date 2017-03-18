@@ -2,17 +2,21 @@ package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.model.UsersList;
-import com.fstyle.structure_android.data.source.UserDataSource;
 import com.fstyle.structure_android.data.source.UserRepository;
+import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
+import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.utils.validator.Validator;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observable;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
@@ -31,9 +35,9 @@ public class MainPresenterTest {
     @Mock
     MainActivity mView;
     @Mock
-    UserDataSource.LocalDataSource mLocalDataSource;
+    UserLocalDataSource mLocalDataSource;
     @Mock
-    UserDataSource.RemoteDataSource mRemoteDataSource;
+    UserRemoteDataSource mRemoteDataSource;
     @Mock
     Validator mValidator;
 
@@ -50,8 +54,7 @@ public class MainPresenterTest {
             }
         });
         mUserRepository = new UserRepository(mLocalDataSource, mRemoteDataSource);
-        mMainPresenter = new MainPresenter(mView, mUserRepository);
-        mView.setPresenter(mMainPresenter);
+        mMainPresenter = new MainPresenter(mView, mUserRepository, mValidator);
     }
 
     @After
@@ -73,7 +76,7 @@ public class MainPresenterTest {
                 .thenReturn(Observable.just(usersList));
 
         // Then
-        //        mMainPresenter.searchUsers(2, USER_LOGIN_1);
+        mMainPresenter.searchUsers(2, USER_LOGIN_1);
 
         //        Mockito.verify(mView, Mockito.never()).showError(null);
         //        Mockito.verify(mView).showListUser(usersList);

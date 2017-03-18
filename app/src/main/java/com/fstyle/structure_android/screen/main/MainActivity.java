@@ -7,20 +7,21 @@ import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+
+import com.fstyle.structure_android.MainApplication;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.UsersList;
-import com.fstyle.structure_android.data.source.UserRepository;
-import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
-import com.fstyle.structure_android.data.source.remote.api.service.NameServiceClient;
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
-import com.fstyle.structure_android.utils.navigator.NavigatorImpl;
+import com.fstyle.structure_android.utils.navigator.Navigator;
 import com.fstyle.structure_android.utils.validator.Rule;
 import com.fstyle.structure_android.utils.validator.ValidType;
 import com.fstyle.structure_android.utils.validator.Validation;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
-import com.fstyle.structure_android.widget.dialog.DialogManagerImpl;
+
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import static com.fstyle.structure_android.utils.Constant.LIST_USER_ARGS;
 
@@ -30,14 +31,17 @@ import static com.fstyle.structure_android.utils.Constant.LIST_USER_ARGS;
 public class MainActivity extends BaseActivity implements MainContract.View {
     private static final String TAG = MainActivity.class.getName();
 
-    private MainContract.Presenter mPresenter;
+    @Inject
+    MainContract.Presenter mPresenter;
+    @Inject
+    DialogManager mDialogManager;
+    @Inject
+    Navigator mNavigator;
 
     private TextInputLayout mTextInputLayoutKeyword;
     private EditText mEditTextKeyword;
     private TextInputLayout mTextInputLayoutNumberLimit;
     private EditText mEditNumberLimit;
-
-    private DialogManager mDialogManager;
 
     @Validation({
             @Rule(types = {
@@ -54,25 +58,17 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DaggerMainComponent.builder().appComponent(((MainApplication) getApplication())
+                .getAppComponent()).mainModule(new MainModule(this)).build().inject(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        UserRepository userRepository =
-                new UserRepository(null, new UserRemoteDataSource(NameServiceClient.getInstance()));
-        new MainPresenter(this, userRepository);
 
         mTextInputLayoutKeyword = (TextInputLayout) findViewById(R.id.txtInputLayoutKeyword);
         mEditTextKeyword = (EditText) findViewById(R.id.edtKeyword);
         mTextInputLayoutNumberLimit =
                 (TextInputLayout) findViewById(R.id.txtInputLayoutNumberLimit);
         mEditNumberLimit = (EditText) findViewById(R.id.edtNumberLimit);
-
-        mDialogManager = new DialogManagerImpl(this);
-    }
-
-    @Override
-    public void setPresenter(MainContract.Presenter presenter) {
-        mPresenter = presenter;
     }
 
     @Override
@@ -103,7 +99,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(LIST_USER_ARGS,
                 (ArrayList<? extends Parcelable>) usersList.getItems());
-        new NavigatorImpl(this).startActivity(SearchResultActivity.class, bundle);
+        mNavigator.startActivity(SearchResultActivity.class, bundle);
     }
 
     @Override

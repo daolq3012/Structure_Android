@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Patterns;
 
+import com.fstyle.structure_android.screen.BaseView;
+
 /**
  * Created by le.quang.dao on 14/03/2017.
  */
@@ -19,6 +21,12 @@ public class NavigatorImpl implements Navigator {
 
     public NavigatorImpl(@NonNull Activity activity) {
         mActivity = activity;
+    }
+
+    public <V extends BaseView> NavigatorImpl(@NonNull V view) {
+        if (view instanceof Activity) {
+            mActivity = (Activity) view;
+        }
     }
 
     @Override
