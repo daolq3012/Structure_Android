@@ -54,7 +54,7 @@ public class UserRepositoryTest {
 
         // When
         TestSubscriber<UsersList> subscriber = new TestSubscriber<>();
-        mUserRepository.getRemoteDataSource().searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
+        mUserRepository.getRemoteDataSource().searchUsers(USER_LOGIN_1, 2).subscribe(subscriber);
 
         // Then
         subscriber.awaitTerminalEvent();
@@ -88,7 +88,7 @@ public class UserRepositoryTest {
 
         // When
         TestSubscriber<UsersList> subscriber = new TestSubscriber<>();
-        mUserRepository.getRemoteDataSource().searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
+        mUserRepository.getRemoteDataSource().searchUsers(USER_LOGIN_1, 2).subscribe(subscriber);
 
         // Then
         subscriber.awaitTerminalEvent();

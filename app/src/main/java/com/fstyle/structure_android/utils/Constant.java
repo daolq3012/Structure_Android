@@ -12,7 +12,7 @@ public final class Constant {
     public static final String END_POINT_URL = "https://api.github.com";
 
     // For bundle
-    public static final String LIST_USER_ARGS = "list_user_args";
+    public static final String ARGUMENT_LIST_USER = "ARGUMENT_LIST_USER";
 
     public static final String BREAK_LINE = "\n";
 }

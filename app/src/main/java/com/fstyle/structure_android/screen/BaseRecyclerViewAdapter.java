@@ -23,4 +23,11 @@ public abstract class BaseRecyclerViewAdapter<V extends RecyclerView.ViewHolder>
     protected Context getContext() {
         return mContext;
     }
+
+    /**
+     * OnRecyclerViewItemClickListener
+     */
+    public interface OnRecyclerViewItemClickListener<T> {
+        void onItemRecyclerViewClick(T item);
+    }
 }
