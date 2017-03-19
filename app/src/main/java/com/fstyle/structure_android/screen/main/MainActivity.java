@@ -60,8 +60,8 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
         UserRepository userRepository =
                 new UserRepository(null, new UserRemoteDataSource(NameServiceClient.getInstance()));
-        Validator validator = new Validator(getApplicationContext(),this);
-        mPresenter = new MainPresenter(this, userRepository,validator);
+        Validator validator = new Validator(getApplicationContext(), this);
+        mPresenter = new MainPresenter(this, userRepository, validator);
 
         mTextInputLayoutKeyword = (TextInputLayout) findViewById(R.id.txtInputLayoutKeyword);
         mEditTextKeyword = (EditText) findViewById(R.id.edtKeyword);
