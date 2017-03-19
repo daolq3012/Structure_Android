@@ -4,10 +4,7 @@ import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.model.UsersList;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.data.source.remote.api.service.NameApi;
-import java.util.ArrayList;
-import java.util.List;
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,6 +13,12 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
@@ -53,17 +56,17 @@ public class UserRepositoryTest {
                 .thenReturn(Observable.just(githubUserList()));
 
         // When
-        TestSubscriber<UsersList> subscriber = new TestSubscriber<>();
+        TestSubscriber<List<User>> subscriber = new TestSubscriber<>();
         mUserRepository.getRemoteDataSource().searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
 
         // Then
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        List<UsersList> onNextEvents = subscriber.getOnNextEvents();
-        UsersList usersList = onNextEvents.get(0);
-        Assert.assertEquals(USER_LOGIN_1, usersList.getItems().get(0).getLogin());
-        Assert.assertEquals(USER_LOGIN_2, usersList.getItems().get(1).getLogin());
+        List<List<User>> onNextEvents = subscriber.getOnNextEvents();
+        List<User> users = onNextEvents.get(0);
+        Assert.assertEquals(USER_LOGIN_1, users.get(0).getLogin());
+        Assert.assertEquals(USER_LOGIN_2, users.get(1).getLogin());
         Mockito.verify(mNameApi).searchGithubUsers(2, USER_LOGIN_1);
     }
 
@@ -87,7 +90,7 @@ public class UserRepositoryTest {
                 .thenReturn(get403ForbiddenError());
 
         // When
-        TestSubscriber<UsersList> subscriber = new TestSubscriber<>();
+        TestSubscriber<List<User>> subscriber = new TestSubscriber<>();
         mUserRepository.getRemoteDataSource().searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
 
         // Then
