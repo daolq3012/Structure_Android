@@ -120,8 +120,8 @@ dependencies {
   compile dependencies.retrofitGson
   compile dependencies.loggingInterceptor
 
+  apt dependencies.dagger2Compile
   compile dependencies.dagger2
-  compile dependencies.dagger2Compile
 
   testCompile dependencies.junit
   testCompile dependencies.mockito

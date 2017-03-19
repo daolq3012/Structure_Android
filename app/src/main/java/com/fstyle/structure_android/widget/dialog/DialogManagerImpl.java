@@ -2,6 +2,9 @@ package com.fstyle.structure_android.widget.dialog;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
+
+import com.fstyle.structure_android.screen.BaseView;
 
 /**
  * Created by le.quang.dao on 14/03/2017.
@@ -14,6 +17,12 @@ public class DialogManagerImpl implements DialogManager {
 
     public DialogManagerImpl(Activity activity) {
         mActivity = activity;
+    }
+
+    public <V extends BaseView> DialogManagerImpl(@NonNull V view) {
+        if (view instanceof Activity) {
+            mActivity = (Activity) view;
+        }
     }
 
     @Override
