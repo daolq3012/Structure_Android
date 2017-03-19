@@ -7,8 +7,9 @@ import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+
 import com.fstyle.structure_android.R;
-import com.fstyle.structure_android.data.model.UsersList;
+import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.data.source.remote.api.service.NameServiceClient;
@@ -21,7 +22,9 @@ import com.fstyle.structure_android.utils.validator.Validation;
 import com.fstyle.structure_android.utils.validator.Validator;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import com.fstyle.structure_android.widget.dialog.DialogManagerImpl;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.fstyle.structure_android.utils.Constant.LIST_USER_ARGS;
 
@@ -96,10 +99,9 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     }
 
     @Override
-    public void showListUser(UsersList usersList) {
+    public void showListUser(List<User> users) {
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(LIST_USER_ARGS,
-                (ArrayList<? extends Parcelable>) usersList.getItems());
+        bundle.putParcelableArrayList(LIST_USER_ARGS, (ArrayList<? extends Parcelable>) users);
         new NavigatorImpl(this).startActivity(SearchResultActivity.class, bundle);
     }
 

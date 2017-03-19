@@ -1,9 +1,9 @@
 package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
-import com.fstyle.structure_android.data.model.UsersList;
-import com.fstyle.structure_android.data.source.UserDataSource;
 import com.fstyle.structure_android.data.source.UserRepository;
+import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
+import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.utils.validator.Validator;
 
 import org.junit.After;
@@ -34,9 +34,9 @@ public class MainPresenterTest {
     @Mock
     MainActivity mView;
     @Mock
-    UserDataSource.LocalDataSource mLocalDataSource;
+    UserLocalDataSource mLocalDataSource;
     @Mock
-    UserDataSource.RemoteDataSource mRemoteDataSource;
+    UserRemoteDataSource mRemoteDataSource;
     @Mock
     Validator mValidator;
 
@@ -67,18 +67,17 @@ public class MainPresenterTest {
         List<User> users = new ArrayList<>();
         users.add(new User(USER_LOGIN_1));
         users.add(new User(USER_LOGIN_2));
-        UsersList usersList = new UsersList(users);
 
         // When
         Mockito.when(mUserRepository.getRemoteDataSource()
                 .searchUsers(Mockito.anyInt(), Mockito.anyString()))
-                .thenReturn(Observable.just(usersList));
+                .thenReturn(Observable.just(users));
 
         // Then
-        //        mMainPresenter.searchUsers(2, USER_LOGIN_1);
+        mMainPresenter.searchUsers(2, USER_LOGIN_1);
 
-        //        Mockito.verify(mView, Mockito.never()).showError(null);
-        //        Mockito.verify(mView).showListUser(usersList);
+        Mockito.verify(mView, Mockito.never()).showError(null);
+        //        Mockito.verify(mView).showListUser(users);
 
         // Give
         String errorMsg = "No internet";
@@ -87,12 +86,12 @@ public class MainPresenterTest {
         // When
         Mockito.when(mUserRepository.getRemoteDataSource()
                 .searchUsers(Mockito.anyInt(), Mockito.anyString()))
-                .thenReturn(Observable.<UsersList>error(throwable));
+                .thenReturn(Observable.<List<User>>error(throwable));
 
         // Then
-        //        mMainPresenter.searchUsers(Mockito.anyInt(), Mockito.anyString());
+        mMainPresenter.searchUsers(2, Mockito.anyString());
 
-        //        Mockito.verify(mView, Mockito.never()).showListUser(null);
-        //        Mockito.verify(mView).showError(throwable);
+        Mockito.verify(mView, Mockito.never()).showListUser(null);
+//        Mockito.verify(mView).showError(throwable);
     }
 }
