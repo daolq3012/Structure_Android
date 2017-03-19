@@ -1,11 +1,12 @@
 package com.fstyle.structure_android.screen.main;
 
-import android.app.Activity;
 import android.text.TextUtils;
+
 import com.fstyle.structure_android.data.model.UsersList;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.Constant;
 import com.fstyle.structure_android.utils.validator.Validator;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -24,11 +25,10 @@ class MainPresenter implements MainContract.Presenter {
     private final CompositeSubscription mCompositeSubscription;
     private Validator mValidator;
 
-    MainPresenter(MainContract.View view, UserRepository userRepository) {
+    MainPresenter(MainContract.View view, UserRepository userRepository, Validator validator) {
         mMainView = view;
         mUserRepository = userRepository;
-        mMainView.setPresenter(this);
-        mValidator = new Validator(((Activity) mMainView).getApplicationContext(), mMainView);
+        mValidator = validator;
         mValidator.initNGWordPattern();
         mCompositeSubscription = new CompositeSubscription();
     }

@@ -5,14 +5,17 @@ import com.fstyle.structure_android.data.model.UsersList;
 import com.fstyle.structure_android.data.source.UserDataSource;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.validator.Validator;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observable;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
@@ -50,8 +53,7 @@ public class MainPresenterTest {
             }
         });
         mUserRepository = new UserRepository(mLocalDataSource, mRemoteDataSource);
-        mMainPresenter = new MainPresenter(mView, mUserRepository);
-        mView.setPresenter(mMainPresenter);
+        mMainPresenter = new MainPresenter(mView, mUserRepository, mValidator);
     }
 
     @After

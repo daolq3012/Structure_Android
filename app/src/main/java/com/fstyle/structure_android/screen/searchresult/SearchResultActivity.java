@@ -25,7 +25,7 @@ public class SearchResultActivity extends BaseActivity implements SearchResultCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searchresult);
 
-        new SearchResultPresenter(this);
+        mPresenter = new SearchResultPresenter(this);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.resultRecyclerView);
 
@@ -33,11 +33,6 @@ public class SearchResultActivity extends BaseActivity implements SearchResultCo
         mSearchResultAdapter = new SearchResultAdapter(this, users);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mSearchResultAdapter);
-    }
-
-    @Override
-    public void setPresenter(SearchResultContract.Presenter presenter) {
-        mPresenter = presenter;
     }
 
     @Override
