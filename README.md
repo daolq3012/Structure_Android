@@ -4,4 +4,4 @@ Follow android-mvp-architecture (googlesamples): https://github.com/googlesample
 <img src="https://github.com/googlesamples/android-architecture/wiki/images/mvp.png" alt="Illustration of the MVP architechture for this version of the app."/>
 
 # Templates
-Template MVP-Dagger Activity & MVP-Dagger Fragment: https://github.com/daolq3012/Structure_Android/blob/mvp-architecture/templates/MVP-Dagger-Templates.rar?raw=true
+Template MVP-Dagger Activity & MVP-Dagger Fragment: https://github.com/daolq3012/Structure_Android/blob/mvp-dagger-architecture/templates/MVP-Dagger-Templates.rar?raw=true
