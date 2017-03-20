@@ -12,7 +12,7 @@ import android.util.Patterns;
  * Created by le.quang.dao on 14/03/2017.
  */
 
-public class NavigatorImpl implements Navigator {
+public final class NavigatorImpl implements Navigator {
 
     @NonNull
     private Activity mActivity;
