@@ -1,14 +1,11 @@
 package com.fstyle.structure_android.screen.main;
 
 import android.text.TextUtils;
-
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.Constant;
 import com.fstyle.structure_android.utils.validator.Validator;
-
 import java.util.List;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -22,34 +19,21 @@ import rx.subscriptions.CompositeSubscription;
 class MainPresenter implements MainContract.Presenter {
     private static final String TAG = MainPresenter.class.getName();
 
-    private final MainContract.View mMainView;
+    private final MainContract.ViewModel mMainViewModel;
     private UserRepository mUserRepository;
-    private final CompositeSubscription mCompositeSubscription;
     private Validator mValidator;
+    private final CompositeSubscription mCompositeSubscription;
 
-    MainPresenter(MainContract.View view, UserRepository userRepository, Validator validator) {
-        mMainView = view;
+    MainPresenter(MainContract.ViewModel view, UserRepository userRepository, Validator validator) {
+        mMainViewModel = view;
         mUserRepository = userRepository;
         mValidator = validator;
         mValidator.initNGWordPattern();
         mCompositeSubscription = new CompositeSubscription();
     }
 
-    private boolean validateDataInput(int limit, String keyWord) {
-        String errorMsg = mValidator.validateValueRangeFrom0to100(limit);
-        mMainView.showInvalidLimit(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
-
-        errorMsg = mValidator.validateNGWord(keyWord);
-        errorMsg += (TextUtils.isEmpty(errorMsg) ? "" : Constant.BREAK_LINE)
-                + mValidator.validateValueNonEmpty(keyWord);
-        mMainView.showInvalidUserName(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
-
-        return mValidator.validateAll(mMainView, false);
-    }
-
     @Override
     public void onStart() {
-
     }
 
     @Override
@@ -69,14 +53,26 @@ class MainPresenter implements MainContract.Presenter {
                 .subscribe(new Action1<List<User>>() {
                     @Override
                     public void call(List<User> users) {
-                        mMainView.showListUser(users);
+                        mMainViewModel.searchUsersSuccess(users);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        mMainView.showError(throwable);
+                        mMainViewModel.searchError(throwable);
                     }
                 });
         mCompositeSubscription.add(subscription);
+    }
+
+    private boolean validateDataInput(int limit, String keyWord) {
+        String errorMsg = mValidator.validateNGWord(keyWord);
+        errorMsg += (TextUtils.isEmpty(errorMsg) ? "" : Constant.BREAK_LINE)
+                + mValidator.validateValueNonEmpty(keyWord);
+        mMainViewModel.invalidKeyWord(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
+
+        errorMsg = mValidator.validateValueRangeFrom0to100(limit);
+        mMainViewModel.invalidLimitNumber(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
+
+        return mValidator.validateAll(mMainViewModel, false);
     }
 }

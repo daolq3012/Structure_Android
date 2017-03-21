@@ -1,14 +1,14 @@
 package com.fstyle.structure_android.screen.searchresult;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
+import com.fstyle.structure_android.databinding.ItemSearchResultBinding;
 import com.fstyle.structure_android.screen.BaseRecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,7 @@ public class SearchResultAdapter
         extends BaseRecyclerViewAdapter<SearchResultAdapter.ItemViewHolder> {
 
     private List<User> mUsers;
+    private BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<User> mItemClickListener;
 
     protected SearchResultAdapter(@NonNull Context context, List<User> users) {
         super(context);
@@ -33,14 +34,15 @@ public class SearchResultAdapter
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layoutItem = LayoutInflater.from(getContext())
-                .inflate(R.layout.layout_item_search_result, parent, false);
-        return new ItemViewHolder(layoutItem);
+        ItemSearchResultBinding binding =
+                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                        R.layout.item_search_result, parent, false);
+        return new ItemViewHolder(binding, mItemClickListener);
     }
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        holder.setData(mUsers.get(position));
+        holder.bind(mUsers.get(position));
     }
 
     @Override
@@ -48,20 +50,28 @@ public class SearchResultAdapter
         return mUsers.size();
     }
 
+    void setItemClickListener(OnRecyclerViewItemClickListener<User> itemClickListener) {
+        mItemClickListener = itemClickListener;
+    }
+
     /**
      * ItemViewHolder
      */
     static class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mTextViewUserLogin;
+        private ItemSearchResultBinding mBinding;
+        private BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<User> mItemClickListener;
 
-        ItemViewHolder(View itemView) {
-            super(itemView);
-            mTextViewUserLogin = (TextView) itemView.findViewById(R.id.tvUserLogin);
+        ItemViewHolder(ItemSearchResultBinding binding,
+                BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<User> listener) {
+            super(binding.getRoot());
+            mBinding = binding;
+            mItemClickListener = listener;
         }
 
-        public void setData(User user) {
-            mTextViewUserLogin.setText(user.getLogin());
+        void bind(User user) {
+            mBinding.setViewModel(new ItemSearchResultViewModel(user, mItemClickListener));
+            mBinding.executePendingBindings();
         }
     }
 }

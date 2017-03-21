@@ -2,7 +2,7 @@ package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.screen.BasePresenter;
-import com.fstyle.structure_android.screen.BaseView;
+import com.fstyle.structure_android.screen.BaseViewModel;
 import java.util.List;
 
 /**
@@ -14,14 +14,14 @@ public interface MainContract {
     /**
      * View
      */
-    interface View extends BaseView {
-        void showError(Throwable throwable);
+    interface ViewModel extends BaseViewModel<Presenter> {
+        void searchError(Throwable throwable);
 
-        void showListUser(List<User> users);
+        void searchUsersSuccess(List<User> users);
 
-        void showInvalidLimit(String errorMsg);
+        void invalidKeyWord(String errorMsg);
 
-        void showInvalidUserName(String errorMsg);
+        void invalidLimitNumber(String errorMsg);
     }
 
     /**

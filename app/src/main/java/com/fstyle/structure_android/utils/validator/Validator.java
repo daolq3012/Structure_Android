@@ -9,7 +9,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.BaseModel;
-import com.fstyle.structure_android.screen.BaseView;
+import com.fstyle.structure_android.screen.BaseViewModel;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,7 +35,7 @@ public class Validator {
     private SparseArray<Method> mValidatedMethods;
     private BaseModel mModelCache;
 
-    private BaseView mViewCache;
+    private BaseViewModel mViewCache;
 
     private SparseArray<Integer> mAllErrorMessage;
 
@@ -45,9 +45,9 @@ public class Validator {
     /**
      * @param context Application context
      * @param clzz View
-     * @param <T> Class extend from {@link BaseView}
+     * @param <T> Class extend from {@link BaseViewModel}
      */
-    public <T extends BaseView> Validator(@ApplicationContext Context context, T clzz) {
+    public <T extends BaseViewModel> Validator(@ApplicationContext Context context, T clzz) {
         if (context instanceof Activity) {
             throw new ValidationException(
                     "Context should be get From Application to avoid leak memory");
@@ -154,7 +154,7 @@ public class Validator {
         return isValid;
     }
 
-    private <T extends BaseModel, V extends BaseView> boolean validateAll(T model, V view,
+    private <T extends BaseModel, V extends BaseViewModel> boolean validateAll(T model, V view,
             boolean onlyValidateChange) {
 
         Object object = model != null ? model : view;
@@ -207,7 +207,7 @@ public class Validator {
         return validateAll(model, null, onlyValidateChange);
     }
 
-    public <V extends BaseView> boolean validateAll(V view, boolean onlyValidateChange) {
+    public <V extends BaseViewModel> boolean validateAll(V view, boolean onlyValidateChange) {
         return validateAll(null, view, onlyValidateChange);
     }
 
