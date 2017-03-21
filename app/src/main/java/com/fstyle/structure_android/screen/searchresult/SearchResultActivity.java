@@ -1,10 +1,10 @@
 package com.fstyle.structure_android.screen.searchresult;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
+import com.fstyle.structure_android.databinding.ActivitySearchResultBinding;
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.utils.Constant;
 import java.util.ArrayList;
@@ -12,38 +12,37 @@ import java.util.ArrayList;
 /**
  * SearchResult Screen.
  */
-public class SearchResultActivity extends BaseActivity implements SearchResultContract.View {
+public class SearchResultActivity extends BaseActivity {
 
-    private SearchResultContract.Presenter mPresenter;
-
-    private RecyclerView mRecyclerView;
-
-    private SearchResultAdapter mSearchResultAdapter;
+    private SearchResultViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_searchresult);
 
-        mPresenter = new SearchResultPresenter(this);
+        ArrayList<User> users =
+                getIntent().getParcelableArrayListExtra(Constant.ARGUMENT_LIST_USER);
+        SearchResultAdapter searchResultAdapter = new SearchResultAdapter(this, users);
+        mViewModel = new SearchResultViewModel(searchResultAdapter);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.resultRecyclerView);
+        SearchResultContract.Presenter presenter = new SearchResultPresenter(mViewModel);
 
-        ArrayList<User> users = getIntent().getParcelableArrayListExtra(Constant.LIST_USER_ARGS);
-        mSearchResultAdapter = new SearchResultAdapter(this, users);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(mSearchResultAdapter);
+        mViewModel.setPresenter(presenter);
+
+        ActivitySearchResultBinding binding =
+                DataBindingUtil.setContentView(this, R.layout.activity_search_result);
+        binding.setViewModel(mViewModel);
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
-        mPresenter.onStart();
+        mViewModel.onStart();
     }
 
     @Override
-    protected void onStop() {
-        mPresenter.onStop();
+    public void onStop() {
+        mViewModel.onStop();
         super.onStop();
     }
 }
