@@ -14,7 +14,7 @@ public interface MainContract {
     /**
      * View
      */
-    interface ViewModel extends BaseViewModel<Presenter> {
+    interface ViewModel extends BaseViewModel {
         void searchError(Throwable throwable);
 
         void searchUsersSuccess(List<User> users);
@@ -27,7 +27,7 @@ public interface MainContract {
     /**
      * Presenter
      */
-    interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter<ViewModel> {
 
         void searchUsers(int limit, String keyWord);
     }

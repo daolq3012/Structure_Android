@@ -19,13 +19,12 @@ import rx.subscriptions.CompositeSubscription;
 class MainPresenter implements MainContract.Presenter {
     private static final String TAG = MainPresenter.class.getName();
 
-    private final MainContract.ViewModel mMainViewModel;
+    private MainContract.ViewModel mMainViewModel;
     private UserRepository mUserRepository;
     private Validator mValidator;
     private final CompositeSubscription mCompositeSubscription;
 
-    MainPresenter(MainContract.ViewModel view, UserRepository userRepository, Validator validator) {
-        mMainViewModel = view;
+    MainPresenter(UserRepository userRepository, Validator validator) {
         mUserRepository = userRepository;
         mValidator = validator;
         mValidator.initNGWordPattern();
@@ -39,6 +38,11 @@ class MainPresenter implements MainContract.Presenter {
     @Override
     public void onStop() {
         mCompositeSubscription.clear();
+    }
+
+    @Override
+    public void setViewModel(MainContract.ViewModel viewModel) {
+        mMainViewModel = viewModel;
     }
 
     @Override

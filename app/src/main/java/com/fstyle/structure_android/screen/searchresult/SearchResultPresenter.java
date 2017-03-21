@@ -11,10 +11,9 @@ import com.fstyle.structure_android.data.model.User;
 final class SearchResultPresenter implements SearchResultContract.Presenter {
     private static final String TAG = SearchResultPresenter.class.getName();
 
-    private final SearchResultContract.ViewModel mViewModel;
+    private SearchResultContract.ViewModel mViewModel;
 
-    SearchResultPresenter(SearchResultContract.ViewModel viewModel) {
-        mViewModel = viewModel;
+    SearchResultPresenter() {
     }
 
     @Override
@@ -23,6 +22,11 @@ final class SearchResultPresenter implements SearchResultContract.Presenter {
 
     @Override
     public void onStop() {
+    }
+
+    @Override
+    public void setViewModel(SearchResultContract.ViewModel viewModel) {
+        mViewModel = viewModel;
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserDataSource;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -24,6 +25,7 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
     private UserDbHelper mDbHelper;
     private SQLiteDatabase mDatabase;
 
+    @Inject
     public UserLocalDataSource(@NonNull Context context) {
         mDbHelper = new UserDbHelper(context);
     }

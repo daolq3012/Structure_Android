@@ -45,31 +45,16 @@ public class Validator {
     /**
      * @param context Application context
      * @param clzz View
-     * @param <T> Class extend from {@link BaseViewModel}
+     * @param <T> Class
      */
-    public <T extends BaseViewModel> Validator(@ApplicationContext Context context, T clzz) {
+    public <T> Validator(@ApplicationContext Context context, T clzz) {
         if (context instanceof Activity) {
             throw new ValidationException(
                     "Context should be get From Application to avoid leak memory");
         }
         mContext = context;
         mValidatedMethods = cacheValidatedMethod();
-        mAllErrorMessage = getAllErrorMessage(clzz.getClass());
-    }
-
-    /**
-     * @param context Application context
-     * @param clzz View
-     * @param <T> Class extend from {@link BaseModel}
-     */
-    public <T extends BaseModel> Validator(@ApplicationContext Context context, T clzz) {
-        if (context instanceof Activity) {
-            throw new ValidationException(
-                    "Context should be get From Application to avoid leak memory");
-        }
-        mContext = context;
-        mValidatedMethods = cacheValidatedMethod();
-        mAllErrorMessage = getAllErrorMessage(clzz.getClass());
+        mAllErrorMessage = getAllErrorMessage((Class) clzz);
     }
 
     private SparseArray<Method> cacheValidatedMethod() {

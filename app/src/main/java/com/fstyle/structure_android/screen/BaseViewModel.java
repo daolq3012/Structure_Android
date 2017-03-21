@@ -7,11 +7,9 @@ package com.fstyle.structure_android.screen;
 /**
  * BaseView
  */
-public interface BaseViewModel<T extends BasePresenter> {
+public interface BaseViewModel {
 
     void onStart();
 
     void onStop();
-
-    void setPresenter(T presenter);
 }

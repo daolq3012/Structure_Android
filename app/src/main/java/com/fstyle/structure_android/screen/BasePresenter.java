@@ -1,12 +1,16 @@
 package com.fstyle.structure_android.screen;
 
 /**
- * Created by le.quang.dao on 10/03/2017.
+ * BasePresenter
+ *
+ * @param <T> class extend from BaseViewModel
  */
 
-public interface BasePresenter {
+public interface BasePresenter<T extends BaseViewModel> {
 
     void onStart();
 
     void onStop();
+
+    void setViewModel(T viewModel);
 }
