@@ -13,7 +13,7 @@ public interface MainContract {
     /**
      * View
      */
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         void showError(Throwable throwable);
 
         void showListUser(UsersList usersList);
