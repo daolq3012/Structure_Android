@@ -10,7 +10,7 @@ interface SearchResultContract {
     /**
      * View.
      */
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
     }
 
     /**
