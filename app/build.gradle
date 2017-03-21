@@ -124,6 +124,9 @@ dependencies {
   compile dependencies.retrofitGson
   compile dependencies.loggingInterceptor
 
+  apt dependencies.dagger2Compile
+  compile dependencies.dagger2
+
   testCompile dependencies.junit
   testCompile dependencies.mockito
 
