@@ -3,7 +3,6 @@ package com.fstyle.structure_android.screen.main;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.screen.BasePresenter;
 import com.fstyle.structure_android.screen.BaseView;
-
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ public interface MainContract {
     /**
      * View
      */
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
         void showError(Throwable throwable);
 
         void showListUser(List<User> users);
