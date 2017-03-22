@@ -1,15 +1,13 @@
 package com.fstyle.structure_android.screen.main;
 
+import android.app.Activity;
 import android.content.Context;
-
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.dagger.ActivityScope;
 import com.fstyle.structure_android.utils.navigator.Navigator;
-import com.fstyle.structure_android.utils.navigator.NavigatorImpl;
 import com.fstyle.structure_android.utils.validator.Validator;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import com.fstyle.structure_android.widget.dialog.DialogManagerImpl;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -48,6 +46,6 @@ public class MainModule {
     @ActivityScope
     @Provides
     public Navigator provideNavigator() {
-        return new NavigatorImpl(mView);
+        return new Navigator((Activity) mView);
     }
 }
