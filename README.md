@@ -7,8 +7,10 @@ Edit depend on [MVVM](https://github.com/daolq3012/Structure_Android/tree/mvvm-a
 TBD
 
 # Templates
-Template MVVMP Activity & MVVMP Fragment: [template](https://github.com/daolq3012/Structure_Android/blob/mvvmp-architecture/templates/MVVMP_templates.rar?raw=true)
-Extract this file and copy into `..\Android Studio\plugins\android\lib\templates`
-to be create MVVMP Activity or Fragment easier
-Like photo below:
+Template MVVMP Activity & MVVMP Fragment: [MVVMP_templates.rar](https://github.com/daolq3012/Structure_Android/blob/mvvmp-architecture/templates/MVVMP_templates.rar?raw=true)
+
+Extract this file and copy into 
+**..\Android Studio\plugins\android\lib\templates**
+to create MVVMP Activity or Fragment easier like photo below:
+
 ![template](https://raw.githubusercontent.com/daolq3012/Structure_Android/mvvmp-architecture/templates/Templates.png)
