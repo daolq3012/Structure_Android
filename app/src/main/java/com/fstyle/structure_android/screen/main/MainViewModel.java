@@ -1,6 +1,5 @@
 package com.fstyle.structure_android.screen.main;
 
-import android.content.DialogInterface;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.os.Bundle;
@@ -67,13 +66,7 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
 
     @Override
     public void searchError(Throwable throwable) {
-        mDialogManager.dialogMainStyle(throwable.getMessage(),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        mDialogManager.dialogMainStyle(throwable.getMessage(), (dialog, which) -> dialog.dismiss());
     }
 
     @Override

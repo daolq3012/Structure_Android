@@ -1,14 +1,11 @@
 package com.fstyle.structure_android.screen.main;
 
 import android.text.TextUtils;
-import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.Constant;
 import com.fstyle.structure_android.utils.validator.Validator;
-import java.util.List;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -54,17 +51,8 @@ class MainPresenter implements MainContract.Presenter {
                 .searchUsers(limit, keyWord)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<User>>() {
-                    @Override
-                    public void call(List<User> users) {
-                        mMainViewModel.searchUsersSuccess(users);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mMainViewModel.searchError(throwable);
-                    }
-                });
+                .subscribe(users -> mMainViewModel.searchUsersSuccess(users),
+                        throwable -> mMainViewModel.searchError(throwable));
         mCompositeSubscription.add(subscription);
     }
 
