@@ -20,6 +20,6 @@ https://github.com/daolq3012/Structure_Android/tree/mvvm-architecture
 https://github.com/daolq3012/Structure_Android/tree/mvvmp-architecture
   
 ## MVVMP using Dagger 2
-- Only this archirtech use [Retrolambda](https://github.com/evant/gradle-retrolambda)
+- Only this architech use [Retrolambda](https://github.com/evant/gradle-retrolambda)
 
 https://github.com/daolq3012/Structure_Android/tree/mvvmp-dagger-architecture
