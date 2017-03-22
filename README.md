@@ -1,5 +1,5 @@
 # Structure_Android
-Edit depend on [MVVM](https://github.com/daolq3012/Structure_Android/tree/mvvm-architecture): split ViewModel to 2 components ViewModel & Presenter
+Edit base on [MVVM](https://github.com/daolq3012/Structure_Android/tree/mvvm-architecture): split ViewModel to 2 components ViewModel & Presenter
 - ViewModel binding data with view(layout), Logic processing not using in here
 - Presenter reponsible for logic and comunicate with ViewModel
 
