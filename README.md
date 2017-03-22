@@ -23,3 +23,7 @@ https://github.com/daolq3012/Structure_Android/tree/mvvmp-architecture
 - Only this architech use [Retrolambda](https://github.com/evant/gradle-retrolambda)
 
 https://github.com/daolq3012/Structure_Android/tree/mvvmp-dagger-architecture
+
+
+## Code Style using for this project
+- Download and import to Android studio [codestyle.jar](https://github.com/daolq3012/Structure_Android/blob/master/codestyle/codestyle.jar?raw=true)
