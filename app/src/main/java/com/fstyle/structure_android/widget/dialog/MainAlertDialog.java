@@ -66,22 +66,16 @@ public class MainAlertDialog extends AppCompatDialog implements DialogInterface 
         mTextViewMessage.setText(mParams.mMessage);
         assert mButtonNegative != null;
         mButtonNegative.setVisibility(mParams.mInvisibleButtonCancle ? View.GONE : View.VISIBLE);
-        mButtonNegative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                assert mParams.mNegativeListener != null;
-                mParams.mNegativeListener.onClick(MainAlertDialog.this,
-                        DialogInterface.BUTTON_NEGATIVE);
-            }
+        mButtonNegative.setOnClickListener(v -> {
+            assert mParams.mNegativeListener != null;
+            mParams.mNegativeListener.onClick(MainAlertDialog.this,
+                    DialogInterface.BUTTON_NEGATIVE);
         });
         assert mButtonPositive != null;
-        mButtonPositive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                assert mParams.mPositiveListener != null;
-                mParams.mPositiveListener.onClick(MainAlertDialog.this,
-                        DialogInterface.BUTTON_POSITIVE);
-            }
+        mButtonPositive.setOnClickListener(v -> {
+            assert mParams.mPositiveListener != null;
+            mParams.mPositiveListener.onClick(MainAlertDialog.this,
+                    DialogInterface.BUTTON_POSITIVE);
         });
     }
 

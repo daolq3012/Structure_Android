@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'realm-android'
 apply from: '../autodimension.gradle'
+apply plugin: 'me.tatarka.retrolambda'
 
 /**
  * start config and check ci*/
@@ -21,6 +21,11 @@ android {
     versionName rootProject.ext.versionName
 
     vectorDrawables.useSupportLibrary = true
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
   }
 
   dataBinding {
@@ -108,6 +113,10 @@ def appendVersionNameVersionCode(variant) {
   }
 }
 
+retrolambda {
+  javaVersion JavaVersion.VERSION_1_7
+}
+
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -124,8 +133,9 @@ dependencies {
   compile dependencies.retrofitGson
   compile dependencies.loggingInterceptor
 
-  apt dependencies.dagger2Compile
+  annotationProcessor dependencies.dagger2Compile
   compile dependencies.dagger2
+  provided dependencies.annotation
 
   testCompile dependencies.junit
   testCompile dependencies.mockito

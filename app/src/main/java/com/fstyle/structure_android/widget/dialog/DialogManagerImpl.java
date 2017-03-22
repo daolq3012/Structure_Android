@@ -23,10 +23,7 @@ public class DialogManagerImpl implements DialogManager {
 
     @Override
     public boolean isShowing() {
-        if (mDialog == null) {
-            return false;
-        }
-        return mDialog.isShowing();
+        return mDialog != null && mDialog.isShowing();
     }
 
     @Override
