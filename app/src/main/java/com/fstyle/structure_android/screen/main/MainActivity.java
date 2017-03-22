@@ -9,7 +9,6 @@ import com.fstyle.structure_android.data.source.remote.api.service.NameServiceCl
 import com.fstyle.structure_android.databinding.ActivityMainBinding;
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.utils.navigator.Navigator;
-import com.fstyle.structure_android.utils.navigator.NavigatorImpl;
 import com.fstyle.structure_android.utils.validator.Validator;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import com.fstyle.structure_android.widget.dialog.DialogManagerImpl;
@@ -27,7 +26,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         DialogManager dialogManager = new DialogManagerImpl(this);
-        Navigator navigator = new NavigatorImpl(this);
+        Navigator navigator = new Navigator(this);
         mMainViewModel = new MainViewModel(dialogManager, navigator);
 
         UserRepository userRepository =
