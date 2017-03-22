@@ -22,7 +22,7 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
     @Override
     public void openTransaction() {
         if (mRealmApi == null) {
-            mRealmApi = new RealmImpl();
+            mRealmApi = new RealmApi();
         }
     }
 
@@ -38,7 +38,7 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
 
     @Override
     public Observable<Void> insertUser(@NonNull final User user) {
-        return mRealmApi.realmTransaction(new Action2<Subscriber<? super Void>, Realm>() {
+        return mRealmApi.realmTransactionAsync(new Action2<Subscriber<? super Void>, Realm>() {
             @Override
             public void call(Subscriber<? super Void> subscriber, Realm realm) {
                 realm.insert(user);
@@ -49,7 +49,7 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
 
     @Override
     public Observable<Void> updateUser(@NonNull final User user) {
-        return mRealmApi.realmTransaction(new Action2<Subscriber<? super Void>, Realm>() {
+        return mRealmApi.realmTransactionAsync(new Action2<Subscriber<? super Void>, Realm>() {
             @Override
             public void call(Subscriber<? super Void> subscriber, Realm realm) {
                 realm.insertOrUpdate(user);
@@ -60,7 +60,7 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
 
     @Override
     public Observable<Void> deleteUser(@NonNull final User user) {
-        return mRealmApi.realmTransaction(new Action2<Subscriber<? super Void>, Realm>() {
+        return mRealmApi.realmTransactionAsync(new Action2<Subscriber<? super Void>, Realm>() {
             @Override
             public void call(Subscriber<? super Void> subscriber, Realm realm) {
                 RealmObject.deleteFromRealm(user);
@@ -71,7 +71,7 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
 
     @Override
     public Observable<Void> insertOrUpdateUser(@NonNull final User user) {
-        return mRealmApi.realmTransaction(new Action2<Subscriber<? super Void>, Realm>() {
+        return mRealmApi.realmTransactionAsync(new Action2<Subscriber<? super Void>, Realm>() {
             @Override
             public void call(Subscriber<? super Void> subscriber, Realm realm) {
                 realm.insertOrUpdate(user);
@@ -82,7 +82,7 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
 
     @Override
     public Observable<List<User>> getAllUser() {
-        return mRealmApi.realmOnNewThread(new Action2<Subscriber<? super List<User>>, Realm>() {
+        return mRealmApi.realmGet(new Action2<Subscriber<? super List<User>>, Realm>() {
             @Override
             public void call(Subscriber<? super List<User>> subscriber, Realm realm) {
                 RealmResults<User> users = realm.where(User.class).findAll();
@@ -95,7 +95,7 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
 
     @Override
     public Observable<User> getUserByUserLogin(final String userLogin) {
-        return mRealmApi.realmOnNewThread(new Action2<Subscriber<? super User>, Realm>() {
+        return mRealmApi.realmGet(new Action2<Subscriber<? super User>, Realm>() {
             @Override
             public void call(Subscriber<? super User> subscriber, Realm realm) {
                 User user = realm.where(User.class).equalTo("login", userLogin).findFirst();
