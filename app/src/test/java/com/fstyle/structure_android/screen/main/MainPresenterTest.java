@@ -5,17 +5,14 @@ import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.utils.validator.Validator;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import rx.Observable;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
@@ -32,7 +29,7 @@ public class MainPresenterTest {
     private static final String USER_LOGIN_2 = "user_login_2";
 
     @Mock
-    MainViewModel mView;
+    MainViewModel mViewModel;
     @Mock
     UserLocalDataSource mLocalDataSource;
     @Mock
@@ -53,7 +50,8 @@ public class MainPresenterTest {
             }
         });
         mUserRepository = new UserRepository(mLocalDataSource, mRemoteDataSource);
-        mMainPresenter = new MainPresenter(mView, mUserRepository, mValidator);
+        mMainPresenter = new MainPresenter(mUserRepository, mValidator);
+        mMainPresenter.setViewModel(mViewModel);
     }
 
     @After
@@ -76,7 +74,7 @@ public class MainPresenterTest {
         // Then
         mMainPresenter.searchUsers(2, USER_LOGIN_1);
 
-        Mockito.verify(mView, Mockito.never()).searchError(null);
+        Mockito.verify(mViewModel, Mockito.never()).searchError(null);
         //        Mockito.verify(mView).showListUser(users);
 
         // Give
@@ -91,7 +89,7 @@ public class MainPresenterTest {
         // Then
         mMainPresenter.searchUsers(2, Mockito.anyString());
 
-        Mockito.verify(mView, Mockito.never()).searchUsersSuccess(null);
-//        Mockito.verify(mView).showError(throwable);
+        Mockito.verify(mViewModel, Mockito.never()).searchUsersSuccess(null);
+        //        Mockito.verify(mView).showError(throwable);
     }
 }

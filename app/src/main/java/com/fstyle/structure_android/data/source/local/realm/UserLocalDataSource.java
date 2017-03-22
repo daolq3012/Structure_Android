@@ -7,6 +7,7 @@ import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 import java.util.List;
+import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action2;
@@ -18,6 +19,11 @@ import rx.functions.Action2;
 public class UserLocalDataSource implements UserDataSource.LocalDataSource {
 
     private RealmApi mRealmApi;
+
+    @Inject
+    public UserLocalDataSource(RealmApi realmApi) {
+        this.mRealmApi = realmApi;
+    }
 
     @Override
     public void openTransaction() {

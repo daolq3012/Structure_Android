@@ -11,13 +11,13 @@ interface SearchResultContract {
     /**
      * View.
      */
-    interface ViewModel extends BaseViewModel<Presenter> {
+    interface ViewModel extends BaseViewModel {
     }
 
     /**
      * Presenter.
      */
-    interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter<ViewModel> {
 
         void onItemUserClicked(User user);
     }

@@ -15,7 +15,10 @@ public class SearchResultViewModel extends BaseObservable implements SearchResul
 
     private SearchResultAdapter mAdapter;
 
-    public SearchResultViewModel(SearchResultAdapter adapter) {
+    public SearchResultViewModel(SearchResultContract.Presenter presenter,
+            SearchResultAdapter adapter) {
+        mPresenter = presenter;
+        mPresenter.setViewModel(this);
         mAdapter = adapter;
         mAdapter.setItemClickListener(this);
     }
@@ -32,11 +35,6 @@ public class SearchResultViewModel extends BaseObservable implements SearchResul
     @Override
     public void onStop() {
         mPresenter.onStop();
-    }
-
-    @Override
-    public void setPresenter(SearchResultContract.Presenter presenter) {
-        mPresenter = presenter;
     }
 
     @Override

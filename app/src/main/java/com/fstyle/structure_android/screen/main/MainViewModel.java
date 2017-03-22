@@ -47,7 +47,10 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
     private String mKeywordErrorMsg;
     private String mLimitErrorMsg;
 
-    public MainViewModel(DialogManager dialogManager, Navigator navigator) {
+    public MainViewModel(MainContract.Presenter presenter, DialogManager dialogManager,
+            Navigator navigator) {
+        this.mPresenter = presenter;
+        mPresenter.setViewModel(this);
         this.mDialogManager = dialogManager;
         this.mNavigator = navigator;
     }
@@ -60,11 +63,6 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
     @Override
     public void onStop() {
         mPresenter.onStop();
-    }
-
-    @Override
-    public void setPresenter(MainContract.Presenter presenter) {
-        mPresenter = presenter;
     }
 
     @Override

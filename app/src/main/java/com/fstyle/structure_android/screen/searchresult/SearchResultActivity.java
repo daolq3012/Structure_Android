@@ -2,36 +2,33 @@ package com.fstyle.structure_android.screen.searchresult;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import com.fstyle.structure_android.MainApplication;
 import com.fstyle.structure_android.R;
-import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.databinding.ActivitySearchResultBinding;
 import com.fstyle.structure_android.screen.BaseActivity;
-import com.fstyle.structure_android.utils.Constant;
-import java.util.ArrayList;
+import javax.inject.Inject;
 
 /**
  * SearchResult Screen.
  */
 public class SearchResultActivity extends BaseActivity {
 
-    private SearchResultViewModel mViewModel;
+    @Inject
+    SearchResultContract.ViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DaggerSearchResultComponent.builder()
+                .appComponent(((MainApplication) getApplication()).getAppComponent())
+                .searchResultModule(new SearchResultModule(this))
+                .build()
+                .inject(this);
+
         super.onCreate(savedInstanceState);
-
-        ArrayList<User> users =
-                getIntent().getParcelableArrayListExtra(Constant.ARGUMENT_LIST_USER);
-        SearchResultAdapter searchResultAdapter = new SearchResultAdapter(this, users);
-        mViewModel = new SearchResultViewModel(searchResultAdapter);
-
-        SearchResultContract.Presenter presenter = new SearchResultPresenter(mViewModel);
-
-        mViewModel.setPresenter(presenter);
 
         ActivitySearchResultBinding binding =
                 DataBindingUtil.setContentView(this, R.layout.activity_search_result);
-        binding.setViewModel(mViewModel);
+        binding.setViewModel((SearchResultViewModel) mViewModel);
     }
 
     @Override
