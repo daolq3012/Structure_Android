@@ -2,29 +2,66 @@ package com.fstyle.structure_android.utils.navigator;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Patterns;
 
 /**
- * Created by le.quang.dao on 17/03/2017.
+ * Created by le.quang.dao on 14/03/2017.
  */
 
-public interface Navigator {
+public class Navigator {
 
-    void startActivity(@NonNull Intent intent);
+    @NonNull
+    private Activity mActivity;
 
-    void startActivity(@NonNull Class<? extends Activity> clazz);
+    public Navigator(@NonNull Activity activity) {
+        mActivity = activity;
+    }
 
-    void startActivity(@NonNull Class<? extends Activity> clazz, Bundle args);
+    public void startActivity(@NonNull Intent intent) {
+        mActivity.startActivity(intent);
+    }
 
-    void startActivityAtRoot(@NonNull Class<? extends Activity> clazz);
+    public void startActivity(@NonNull Class<? extends Activity> clazz) {
+        mActivity.startActivity(new Intent(mActivity, clazz));
+    }
 
-    void startActivityForResult(@NonNull Intent intent, int requestCode);
+    public void startActivity(@NonNull Class<? extends Activity> clazz, Bundle args) {
+        Intent intent = new Intent(mActivity, clazz);
+        intent.putExtras(args);
+        startActivity(intent);
+    }
 
-    void startActivityForResult(@NonNull Class<? extends Activity> clazz, Bundle args,
-            int requestCode);
+    public void startActivityAtRoot(@NonNull Class<? extends Activity> clazz) {
+        Intent intent = new Intent(mActivity, clazz);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 
-    void finishActivityWithResult(Intent intent, int resultCode);
+    public void startActivityForResult(@NonNull Intent intent, int requestCode) {
+        mActivity.startActivityForResult(intent, requestCode);
+    }
 
-    void openUrl(String url);
+    public void startActivityForResult(@NonNull Class<? extends Activity> clazz, Bundle args,
+            int requestCode) {
+        Intent intent = new Intent(mActivity, clazz);
+        intent.putExtras(args);
+        startActivityForResult(intent, requestCode);
+    }
+
+    public void finishActivityWithResult(Intent intent, int resultCode) {
+        mActivity.setResult(resultCode, intent);
+        mActivity.finish();
+    }
+
+    public void openUrl(String url) {
+        if (TextUtils.isEmpty(url) || !Patterns.WEB_URL.matcher(url).matches()) {
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
+        mActivity.startActivity(intent);
+    }
 }
