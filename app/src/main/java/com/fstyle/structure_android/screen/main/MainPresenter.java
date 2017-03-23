@@ -51,8 +51,8 @@ class MainPresenter implements MainContract.Presenter {
                 .searchUsers(limit, keyWord)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(users -> mMainViewModel.searchUsersSuccess(users),
-                        throwable -> mMainViewModel.searchError(throwable));
+                .subscribe(users -> mMainViewModel.onSearchUsersSuccess(users),
+                        throwable -> mMainViewModel.onSearchError(throwable));
         mCompositeSubscription.add(subscription);
     }
 
@@ -60,10 +60,10 @@ class MainPresenter implements MainContract.Presenter {
         String errorMsg = mValidator.validateNGWord(keyWord);
         errorMsg += (TextUtils.isEmpty(errorMsg) ? "" : Constant.BREAK_LINE)
                 + mValidator.validateValueNonEmpty(keyWord);
-        mMainViewModel.invalidKeyWord(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
+        mMainViewModel.onInvalidKeyWord(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
 
         errorMsg = mValidator.validateValueRangeFrom0to100(limit);
-        mMainViewModel.invalidLimitNumber(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
+        mMainViewModel.onInvalidLimitNumber(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
 
         return mValidator.validateAll(mMainViewModel, false);
     }
