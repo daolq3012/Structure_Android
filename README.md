@@ -9,7 +9,7 @@ Split ViewModel to 2 components ViewModel & Presenter
 TBD
 
 # Templates
-Template MVVMP Activity & MVVMP Fragment: [MVVMP_templates.rar](https://github.com/daolq3012/Structure_Android/blob/mvvmp-dagger-architecture/templates/MVVMP_Dagger_templates.rar?raw=true)
+Template MVVMP Activity & MVVMP Fragment: [MVVMP_templates.rar](https://github.com/daolq3012/Structure_Android/blob/mvvmp-dagger-architecture/templates/MVVMP_Dagger_templates.zip?raw=true)
 
 Extract this file and copy into
 **..\Android Studio\plugins\android\lib\templates**
