@@ -41,7 +41,6 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
         mDatabase.close();
     }
 
-    @Override
     public void openReadTransaction() {
         mDbHelper.getReadableDatabase();
     }
