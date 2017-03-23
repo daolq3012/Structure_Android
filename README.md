@@ -1,5 +1,18 @@
 # Structure_Android
-Follow android-mvp-architecture (googlesamples): https://github.com/googlesamples/android-architecture/tree/todo-mvp
-<img src="https://github.com/googlesamples/android-architecture/wiki/images/mvp.png" alt="Illustration of the MVP architechture for this version of the app."/>
+Mixing [MVP](https://github.com/daolq3012/Structure_Android/tree/mvp-architecture) & [MVVM](https://github.com/daolq3012/Structure_Android/tree/mvvm-architecture)
+
+Split ViewModel to 2 components ViewModel & Presenter
+- ViewModel binding data with view(layout), Logic processing not using in here
+- Presenter reponsible for logic and reflected on ViewModel
+
+# Diagram
+TBD
+
 # Templates
-Template MVP Activity & MVP Fragment: https://github.com/daolq3012/Structure_Android/blob/mvp-architecture/templates/MVP_templates.rar?raw=true
+Template MVVMP Activity & MVVMP Fragment: [MVVMP_templates.rar](https://github.com/daolq3012/Structure_Android/blob/mvvmp-dagger-architecture/templates/MVVMP_Dagger_templates.rar?raw=true)
+
+Extract this file and copy into
+**..\Android Studio\plugins\android\lib\templates**
+to create MVVMP Activity or Fragment easier like photo below:
+
+![template](https://raw.githubusercontent.com/daolq3012/Structure_Android/mvvmp-architecture/templates/Templates.png)
