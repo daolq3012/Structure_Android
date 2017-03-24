@@ -1,7 +1,10 @@
 package com.fstyle.structure_android.data.source;
 
+import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
+import java.util.List;
+import rx.Observable;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
@@ -18,11 +21,7 @@ public class UserRepository {
         mRemoteDataSource = remoteDataSource;
     }
 
-    public UserDataSource.LocalDataSource getLocalDataSource() {
-        return mLocalDataSource;
-    }
-
-    public UserDataSource.RemoteDataSource getRemoteDataSource() {
-        return mRemoteDataSource;
+    public Observable<List<User>> searchUsers(int limit, String keyWord) {
+        return mRemoteDataSource.searchUsers(limit, keyWord);
     }
 }

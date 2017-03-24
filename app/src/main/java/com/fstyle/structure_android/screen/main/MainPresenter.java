@@ -4,13 +4,13 @@ import android.text.TextUtils;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.Constant;
+import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.validator.Validator;
 import java.util.List;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
@@ -21,15 +21,16 @@ class MainPresenter implements MainContract.Presenter {
 
     private final MainContract.View mMainView;
     private UserRepository mUserRepository;
-    private final CompositeSubscription mCompositeSubscription;
+    private final CustomCompositeSubscription mCompositeSubscription;
     private Validator mValidator;
 
-    MainPresenter(MainContract.View view, UserRepository userRepository, Validator validator) {
+    MainPresenter(MainContract.View view, UserRepository userRepository, Validator validator,
+            CustomCompositeSubscription subscription) {
         mMainView = view;
         mUserRepository = userRepository;
         mValidator = validator;
         mValidator.initNGWordPattern();
-        mCompositeSubscription = new CompositeSubscription();
+        mCompositeSubscription = subscription;
     }
 
     private boolean validateDataInput(int limit, String keyWord) {
@@ -59,8 +60,7 @@ class MainPresenter implements MainContract.Presenter {
         if (!validateDataInput(limit, keyWord)) {
             return;
         }
-        Subscription subscription = mUserRepository.getRemoteDataSource()
-                .searchUsers(limit, keyWord)
+        Subscription subscription = mUserRepository.searchUsers(limit, keyWord)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<User>>() {

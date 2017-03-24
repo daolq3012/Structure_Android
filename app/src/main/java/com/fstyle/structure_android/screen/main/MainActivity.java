@@ -15,6 +15,7 @@ import com.fstyle.structure_android.data.source.remote.api.service.NameServiceCl
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
 import com.fstyle.structure_android.utils.navigator.Navigator;
+import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.validator.Rule;
 import com.fstyle.structure_android.utils.validator.ValidType;
 import com.fstyle.structure_android.utils.validator.Validation;
@@ -62,7 +63,8 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         UserRepository userRepository =
                 new UserRepository(null, new UserRemoteDataSource(NameServiceClient.getInstance()));
         Validator validator = new Validator(getApplicationContext(), this);
-        mPresenter = new MainPresenter(this, userRepository, validator);
+        CustomCompositeSubscription subscription = new CustomCompositeSubscription();
+        mPresenter = new MainPresenter(this, userRepository, validator, subscription);
 
         mTextInputLayoutKeyword = (TextInputLayout) findViewById(R.id.txtInputLayoutKeyword);
         mEditTextKeyword = (EditText) findViewById(R.id.edtKeyword);

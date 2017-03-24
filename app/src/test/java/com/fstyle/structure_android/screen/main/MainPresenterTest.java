@@ -4,18 +4,16 @@ import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
+import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.validator.Validator;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import rx.Observable;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
@@ -39,6 +37,8 @@ public class MainPresenterTest {
     UserRemoteDataSource mRemoteDataSource;
     @Mock
     Validator mValidator;
+    @Mock
+    CustomCompositeSubscription mSubscription;
 
     private UserRepository mUserRepository;
     private MainPresenter mMainPresenter;
@@ -53,7 +53,7 @@ public class MainPresenterTest {
             }
         });
         mUserRepository = new UserRepository(mLocalDataSource, mRemoteDataSource);
-        mMainPresenter = new MainPresenter(mView, mUserRepository, mValidator);
+        mMainPresenter = new MainPresenter(mView, mUserRepository, mValidator, mSubscription);
     }
 
     @After
@@ -69,8 +69,7 @@ public class MainPresenterTest {
         users.add(new User(USER_LOGIN_2));
 
         // When
-        Mockito.when(mUserRepository.getRemoteDataSource()
-                .searchUsers(Mockito.anyInt(), Mockito.anyString()))
+        Mockito.when(mUserRepository.searchUsers(Mockito.anyInt(), Mockito.anyString()))
                 .thenReturn(Observable.just(users));
 
         // Then
@@ -84,14 +83,13 @@ public class MainPresenterTest {
         Throwable throwable = new Throwable(errorMsg);
 
         // When
-        Mockito.when(mUserRepository.getRemoteDataSource()
-                .searchUsers(Mockito.anyInt(), Mockito.anyString()))
+        Mockito.when(mUserRepository.searchUsers(Mockito.anyInt(), Mockito.anyString()))
                 .thenReturn(Observable.<List<User>>error(throwable));
 
         // Then
         mMainPresenter.searchUsers(2, Mockito.anyString());
 
         Mockito.verify(mView, Mockito.never()).onSearchUsersSuccess(null);
-//        Mockito.verify(mView).showError(throwable);
+        //        Mockito.verify(mView).showError(throwable);
     }
 }
