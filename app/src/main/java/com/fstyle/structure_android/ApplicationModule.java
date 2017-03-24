@@ -1,11 +1,10 @@
 package com.fstyle.structure_android;
 
 import android.content.Context;
-
 import com.fstyle.structure_android.data.source.local.sharedprf.SharedPrefsApi;
 import com.fstyle.structure_android.data.source.local.sharedprf.SharedPrefsImpl;
 import com.fstyle.structure_android.utils.dagger.AppScope;
-
+import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import dagger.Module;
 import dagger.Provides;
 
@@ -32,5 +31,11 @@ public class ApplicationModule {
     @AppScope
     public SharedPrefsApi provideSharedPrefsApi() {
         return new SharedPrefsImpl(mContext);
+    }
+
+    @Provides
+    @AppScope
+    public CustomCompositeSubscription provideCompositeSubscription() {
+        return new CustomCompositeSubscription();
     }
 }

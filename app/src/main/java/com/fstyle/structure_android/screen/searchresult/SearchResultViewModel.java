@@ -39,6 +39,6 @@ public class SearchResultViewModel extends BaseObservable implements SearchResul
 
     @Override
     public void onItemRecyclerViewClick(User user) {
-        mPresenter.onItemUserClicked(user);
+
     }
 }

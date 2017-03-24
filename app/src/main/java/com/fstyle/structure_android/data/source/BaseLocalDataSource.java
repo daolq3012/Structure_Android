@@ -8,6 +8,4 @@ public interface BaseLocalDataSource {
     void openTransaction();
 
     void closeTransaction();
-
-    void openReadTransaction();
 }

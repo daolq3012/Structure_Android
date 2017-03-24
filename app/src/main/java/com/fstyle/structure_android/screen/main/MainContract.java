@@ -15,13 +15,13 @@ public interface MainContract {
      * View
      */
     interface ViewModel extends BaseViewModel {
-        void searchError(Throwable throwable);
+        void onSearchError(Throwable throwable);
 
-        void searchUsersSuccess(List<User> users);
+        void onSearchUsersSuccess(List<User> users);
 
-        void invalidKeyWord(String errorMsg);
+        void onInvalidKeyWord(String errorMsg);
 
-        void invalidLimitNumber(String errorMsg);
+        void onInvalidLimitNumber(String errorMsg);
     }
 
     /**

@@ -1,8 +1,5 @@
 package com.fstyle.structure_android.screen.searchresult;
 
-import android.util.Log;
-import com.fstyle.structure_android.data.model.User;
-
 /**
  * Listens to user actions from the UI ({@link SearchResultActivity}), retrieves the data and
  * updates
@@ -27,10 +24,5 @@ final class SearchResultPresenter implements SearchResultContract.Presenter {
     @Override
     public void setViewModel(SearchResultContract.ViewModel viewModel) {
         mViewModel = viewModel;
-    }
-
-    @Override
-    public void onItemUserClicked(User user) {
-        Log.d(TAG, "onItemUserClicked: " + user.getLogin());
     }
 }

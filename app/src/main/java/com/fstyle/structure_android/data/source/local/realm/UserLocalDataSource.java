@@ -35,11 +35,6 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
     }
 
     @Override
-    public void openReadTransaction() {
-        // No-op
-    }
-
-    @Override
     public Observable<Void> insertUser(@NonNull final User user) {
         return mRealmApi.realmTransactionAsync((subscriber, realm) -> {
             realm.insert(user);
