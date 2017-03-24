@@ -15,6 +15,7 @@ import com.fstyle.structure_android.data.source.remote.api.service.NameServiceCl
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
 import com.fstyle.structure_android.utils.navigator.Navigator;
+import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.validator.Rule;
 import com.fstyle.structure_android.utils.validator.ValidType;
 import com.fstyle.structure_android.utils.validator.Validation;
@@ -62,7 +63,8 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         UserRepository userRepository =
                 new UserRepository(null, new UserRemoteDataSource(NameServiceClient.getInstance()));
         Validator validator = new Validator(getApplicationContext(), this);
-        mPresenter = new MainPresenter(this, userRepository, validator);
+        CustomCompositeSubscription subscription = new CustomCompositeSubscription();
+        mPresenter = new MainPresenter(this, userRepository, validator, subscription);
 
         mTextInputLayoutKeyword = (TextInputLayout) findViewById(R.id.txtInputLayoutKeyword);
         mEditTextKeyword = (EditText) findViewById(R.id.edtKeyword);
@@ -86,7 +88,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     }
 
     @Override
-    public void showError(Throwable throwable) {
+    public void onSearchError(Throwable throwable) {
         mDialogManager.dialogMainStyle(throwable.getMessage(),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -97,20 +99,20 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     }
 
     @Override
-    public void showListUser(List<User> users) {
+    public void onSearchUsersSuccess(List<User> users) {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(LIST_USER_ARGS, (ArrayList<? extends Parcelable>) users);
         new Navigator(this).startActivity(SearchResultActivity.class, bundle);
     }
 
     @Override
-    public void showInvalidLimit(String errorMsg) {
-        mTextInputLayoutNumberLimit.setError(errorMsg);
+    public void onInvalidKeyWord(String errorMsg) {
+        mTextInputLayoutKeyword.setError(errorMsg);
     }
 
     @Override
-    public void showInvalidUserName(String errorMsg) {
-        mTextInputLayoutKeyword.setError(errorMsg);
+    public void onInvalidLimitNumber(String errorMsg) {
+        mTextInputLayoutNumberLimit.setError(errorMsg);
     }
 
     public void onSearchButtonClicked(View view) {
