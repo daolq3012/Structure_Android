@@ -86,7 +86,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     }
 
     @Override
-    public void showError(Throwable throwable) {
+    public void onSearchError(Throwable throwable) {
         mDialogManager.dialogMainStyle(throwable.getMessage(),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -97,20 +97,20 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     }
 
     @Override
-    public void showListUser(List<User> users) {
+    public void onSearchUsersSuccess(List<User> users) {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(LIST_USER_ARGS, (ArrayList<? extends Parcelable>) users);
         new Navigator(this).startActivity(SearchResultActivity.class, bundle);
     }
 
     @Override
-    public void showInvalidLimit(String errorMsg) {
-        mTextInputLayoutNumberLimit.setError(errorMsg);
+    public void onInvalidKeyWord(String errorMsg) {
+        mTextInputLayoutKeyword.setError(errorMsg);
     }
 
     @Override
-    public void showInvalidUserName(String errorMsg) {
-        mTextInputLayoutKeyword.setError(errorMsg);
+    public void onInvalidLimitNumber(String errorMsg) {
+        mTextInputLayoutNumberLimit.setError(errorMsg);
     }
 
     public void onSearchButtonClicked(View view) {

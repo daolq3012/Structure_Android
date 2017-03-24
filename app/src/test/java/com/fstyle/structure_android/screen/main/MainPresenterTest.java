@@ -76,7 +76,7 @@ public class MainPresenterTest {
         // Then
         mMainPresenter.searchUsers(2, USER_LOGIN_1);
 
-        Mockito.verify(mView, Mockito.never()).showError(null);
+        Mockito.verify(mView, Mockito.never()).onSearchError(null);
         //        Mockito.verify(mView).showListUser(users);
 
         // Give
@@ -91,7 +91,7 @@ public class MainPresenterTest {
         // Then
         mMainPresenter.searchUsers(2, Mockito.anyString());
 
-        Mockito.verify(mView, Mockito.never()).showListUser(null);
+        Mockito.verify(mView, Mockito.never()).onSearchUsersSuccess(null);
 //        Mockito.verify(mView).showError(throwable);
     }
 }

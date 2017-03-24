@@ -15,13 +15,13 @@ public interface MainContract {
      * View
      */
     interface View extends BaseView {
-        void showError(Throwable throwable);
+        void onSearchError(Throwable throwable);
 
-        void showListUser(List<User> users);
+        void onSearchUsersSuccess(List<User> users);
 
-        void showInvalidLimit(String errorMsg);
+        void onInvalidKeyWord(String errorMsg);
 
-        void showInvalidUserName(String errorMsg);
+        void onInvalidLimitNumber(String errorMsg);
     }
 
     /**

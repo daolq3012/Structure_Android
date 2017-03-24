@@ -1,14 +1,11 @@
 package com.fstyle.structure_android.screen.main;
 
 import android.text.TextUtils;
-
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.Constant;
 import com.fstyle.structure_android.utils.validator.Validator;
-
 import java.util.List;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -37,12 +34,12 @@ class MainPresenter implements MainContract.Presenter {
 
     private boolean validateDataInput(int limit, String keyWord) {
         String errorMsg = mValidator.validateValueRangeFrom0to100(limit);
-        mMainView.showInvalidLimit(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
+        mMainView.onInvalidLimitNumber(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
 
         errorMsg = mValidator.validateNGWord(keyWord);
         errorMsg += (TextUtils.isEmpty(errorMsg) ? "" : Constant.BREAK_LINE)
                 + mValidator.validateValueNonEmpty(keyWord);
-        mMainView.showInvalidUserName(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
+        mMainView.onInvalidKeyWord(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
 
         return mValidator.validateAll(mMainView, false);
     }
@@ -69,12 +66,12 @@ class MainPresenter implements MainContract.Presenter {
                 .subscribe(new Action1<List<User>>() {
                     @Override
                     public void call(List<User> users) {
-                        mMainView.showListUser(users);
+                        mMainView.onSearchUsersSuccess(users);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        mMainView.showError(throwable);
+                        mMainView.onSearchError(throwable);
                     }
                 });
         mCompositeSubscription.add(subscription);
