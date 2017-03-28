@@ -5,20 +5,18 @@ import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
+import com.fstyle.structure_android.utils.rx.ImmediateSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Validator;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import rx.Observable;
-import rx.Scheduler;
-import rx.android.plugins.RxAndroidPlugins;
-import rx.android.plugins.RxAndroidSchedulersHook;
-import rx.schedulers.Schedulers;
+
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Sun on 3/12/2017.
@@ -39,58 +37,53 @@ public class MainPresenterTest {
     Validator mValidator;
     @Mock
     CustomCompositeSubscription mSubscription;
+    @Mock
+    UserRepository mUserRepository;
 
-    private UserRepository mUserRepository;
     private MainPresenter mMainPresenter;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
-            @Override
-            public Scheduler getMainThreadScheduler() {
-                return Schedulers.immediate();
-            }
-        });
-        mUserRepository = new UserRepository(mLocalDataSource, mRemoteDataSource);
-        mMainPresenter = new MainPresenter(mUserRepository, mValidator, mSubscription);
+        mMainPresenter = new MainPresenter(mUserRepository, mValidator, mSubscription,
+                new ImmediateSchedulerProvider());
         mMainPresenter.setViewModel(mViewModel);
     }
 
-    @After
-    public void tearDown() {
-        RxAndroidPlugins.getInstance().reset();
-    }
-
     @Test
-    public void searchUsers() throws Exception {
+    public void searchUsers_ValidDataInput_ShowListUser() {
         // Give
         List<User> users = new ArrayList<>();
         users.add(new User(USER_LOGIN_1));
         users.add(new User(USER_LOGIN_2));
 
         // When
-        Mockito.when(mUserRepository.searchUsers(Mockito.anyInt(), Mockito.anyString()))
-                .thenReturn(Observable.just(users));
+        when(mUserRepository.searchUsers(Mockito.anyInt(), Mockito.anyString())).thenReturn(
+                Observable.just(users));
+        when(mValidator.validateAll(mViewModel, false)).thenReturn(true);
 
         // Then
         mMainPresenter.searchUsers(2, USER_LOGIN_1);
 
         Mockito.verify(mViewModel, Mockito.never()).onSearchError(null);
-        //        Mockito.verify(mView).showListUser(users);
+        Mockito.verify(mViewModel).onSearchUsersSuccess(users);
+    }
 
+    @Test
+    public void searchUsers_ValidDataInputNetworkError_ShowError() {
         // Give
         String errorMsg = "No internet";
         Throwable throwable = new Throwable(errorMsg);
 
         // When
-        Mockito.when(mUserRepository.searchUsers(Mockito.anyInt(), Mockito.anyString()))
-                .thenReturn(Observable.error(throwable));
+        when(mUserRepository.searchUsers(Mockito.anyInt(), Mockito.anyString())).thenReturn(
+                Observable.error(throwable));
+        when(mValidator.validateAll(mViewModel, false)).thenReturn(true);
 
         // Then
-        mMainPresenter.searchUsers(2, Mockito.anyString());
+        mMainPresenter.searchUsers(2, USER_LOGIN_1);
 
         Mockito.verify(mViewModel, Mockito.never()).onSearchUsersSuccess(null);
-        //        Mockito.verify(mView).showError(throwable);
+        Mockito.verify(mViewModel).onSearchError(throwable);
     }
 }

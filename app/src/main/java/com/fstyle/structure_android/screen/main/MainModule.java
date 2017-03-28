@@ -5,6 +5,7 @@ import android.content.Context;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.dagger.ActivityScope;
 import com.fstyle.structure_android.utils.navigator.Navigator;
+import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.validator.Validator;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
@@ -35,8 +36,9 @@ public class MainModule {
     @ActivityScope
     @Provides
     public MainContract.Presenter providePresenter(UserRepository userRepository,
-            Validator validator, CustomCompositeSubscription subscription) {
-        return new MainPresenter(userRepository, validator, subscription);
+            Validator validator, CustomCompositeSubscription subscription,
+            BaseSchedulerProvider schedulerProvider) {
+        return new MainPresenter(userRepository, validator, subscription, schedulerProvider);
     }
 
     @ActivityScope

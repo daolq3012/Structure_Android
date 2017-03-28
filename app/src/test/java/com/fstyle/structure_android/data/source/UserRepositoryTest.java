@@ -2,10 +2,14 @@ package com.fstyle.structure_android.data.source;
 
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.model.UsersList;
+import com.fstyle.structure_android.data.source.local.realm.RealmApi;
+import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.data.source.remote.api.service.NameApi;
-
-import org.junit.After;
+import java.util.ArrayList;
+import java.util.List;
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,12 +17,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
@@ -34,18 +32,16 @@ public class UserRepositoryTest {
 
     @Mock
     NameApi mNameApi;
+    @Mock
+    RealmApi mRealmApi;
 
     private UserRepository mUserRepository;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mUserRepository = new UserRepository(null, new UserRemoteDataSource(mNameApi));
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
+        mUserRepository = new UserRepository(new UserLocalDataSource(mRealmApi),
+                new UserRemoteDataSource(mNameApi));
     }
 
     @Test

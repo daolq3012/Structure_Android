@@ -5,6 +5,7 @@ import com.fstyle.structure_android.data.source.RepositoryModule;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.data.source.remote.api.NetworkModule;
 import com.fstyle.structure_android.utils.dagger.AppScope;
+import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import dagger.Component;
 
@@ -25,4 +26,6 @@ public interface AppComponent {
     Context applicationContext();
 
     CustomCompositeSubscription customCompositeSubscription();
+
+    BaseSchedulerProvider baseSchedulerProvider();
 }
