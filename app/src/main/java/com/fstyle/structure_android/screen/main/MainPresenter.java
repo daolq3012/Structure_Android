@@ -19,14 +19,13 @@ import rx.schedulers.Schedulers;
 class MainPresenter implements MainContract.Presenter {
     private static final String TAG = MainPresenter.class.getName();
 
-    private final MainContract.View mMainView;
+    private MainContract.View mMainView;
     private UserRepository mUserRepository;
     private final CustomCompositeSubscription mCompositeSubscription;
     private Validator mValidator;
 
-    MainPresenter(MainContract.View view, UserRepository userRepository, Validator validator,
+    MainPresenter(UserRepository userRepository, Validator validator,
             CustomCompositeSubscription subscription) {
-        mMainView = view;
         mUserRepository = userRepository;
         mValidator = validator;
         mValidator.initNGWordPattern();
@@ -47,6 +46,11 @@ class MainPresenter implements MainContract.Presenter {
         } catch (IllegalAccessException e) {
             return false;
         }
+    }
+
+    @Override
+    public void setView(MainContract.View view) {
+        mMainView = view;
     }
 
     @Override

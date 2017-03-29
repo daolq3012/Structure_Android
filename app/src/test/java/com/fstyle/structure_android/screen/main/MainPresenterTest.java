@@ -30,7 +30,7 @@ public class MainPresenterTest {
     private static final String USER_LOGIN_2 = "user_login_2";
 
     @Mock
-    MainActivity mView;
+    MainActivity mMainView;
     @Mock
     UserLocalDataSource mLocalDataSource;
     @Mock
@@ -53,7 +53,8 @@ public class MainPresenterTest {
             }
         });
         mUserRepository = new UserRepository(mLocalDataSource, mRemoteDataSource);
-        mMainPresenter = new MainPresenter(mView, mUserRepository, mValidator, mSubscription);
+        mMainPresenter = new MainPresenter(mUserRepository, mValidator, mSubscription);
+        mMainPresenter.setView(mMainView);
     }
 
     @After
@@ -75,7 +76,7 @@ public class MainPresenterTest {
         // Then
         mMainPresenter.searchUsers(2, USER_LOGIN_1);
 
-        Mockito.verify(mView, Mockito.never()).onSearchError(null);
+        Mockito.verify(mMainView, Mockito.never()).onSearchError(null);
         //        Mockito.verify(mView).showListUser(users);
 
         // Give
@@ -89,7 +90,7 @@ public class MainPresenterTest {
         // Then
         mMainPresenter.searchUsers(2, Mockito.anyString());
 
-        Mockito.verify(mView, Mockito.never()).onSearchUsersSuccess(null);
+        Mockito.verify(mMainView, Mockito.never()).onSearchUsersSuccess(null);
         //        Mockito.verify(mView).showError(throwable);
     }
 }

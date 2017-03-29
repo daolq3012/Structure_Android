@@ -8,9 +8,13 @@ package com.fstyle.structure_android.screen.searchresult;
 final class SearchResultPresenter implements SearchResultContract.Presenter {
     private static final String TAG = SearchResultPresenter.class.getName();
 
-    private final SearchResultContract.View mView;
+    private SearchResultContract.View mView;
 
-    SearchResultPresenter(SearchResultContract.View view) {
+    SearchResultPresenter() {
+    }
+
+    @Override
+    public void setView(SearchResultContract.View view) {
         mView = view;
     }
 

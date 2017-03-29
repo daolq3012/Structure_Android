@@ -27,7 +27,7 @@ public interface MainContract {
     /**
      * Presenter
      */
-    interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter<View> {
 
         void searchUsers(int limit, String keyWord);
     }
