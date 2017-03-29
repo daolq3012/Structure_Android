@@ -3,11 +3,10 @@ package com.fstyle.structure_android.screen.main;
 import android.text.TextUtils;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.Constant;
+import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.validator.Validator;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
@@ -20,17 +19,19 @@ class MainPresenter implements MainContract.Presenter {
     private UserRepository mUserRepository;
     private Validator mValidator;
     private final CustomCompositeSubscription mCompositeSubscription;
+    private BaseSchedulerProvider mSchedulerProvider;
 
     MainPresenter(UserRepository userRepository, Validator validator,
-            CustomCompositeSubscription subscription) {
+            CustomCompositeSubscription subscription, BaseSchedulerProvider schedulerProvider) {
         mUserRepository = userRepository;
         mValidator = validator;
-        mValidator.initNGWordPattern();
         mCompositeSubscription = subscription;
+        mSchedulerProvider = schedulerProvider;
     }
 
     @Override
     public void onStart() {
+        mCompositeSubscription.add(mValidator.initNGWordPattern());
     }
 
     @Override
@@ -49,8 +50,8 @@ class MainPresenter implements MainContract.Presenter {
             return;
         }
         Subscription subscription = mUserRepository.searchUsers(limit, keyWord)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(mSchedulerProvider.io())
+                .observeOn(mSchedulerProvider.ui())
                 .subscribe(users -> mMainViewModel.onSearchUsersSuccess(users),
                         throwable -> mMainViewModel.onSearchError(throwable));
         mCompositeSubscription.add(subscription);

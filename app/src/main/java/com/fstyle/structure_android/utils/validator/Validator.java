@@ -19,9 +19,8 @@ import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import rx.Observable;
-import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -222,41 +221,29 @@ public class Validator {
         return mContext.getString(mAllErrorMessage.keyAt(index));
     }
 
-    public void initNGWordPattern() {
-        Observable.create(new Observable.OnSubscribe<Pattern>() {
-            @Override
-            public void call(Subscriber<? super Pattern> subscriber) {
-                try {
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(mContext.getAssets().open("ng-word")));
-                    StringBuffer buffer = new StringBuffer();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        if (buffer.length() == 0) {
-                            buffer.append("(").append(line.toLowerCase(Locale.ENGLISH));
-                        } else {
-                            buffer.append("|").append(line.toLowerCase(Locale.ENGLISH));
-                        }
+    public Subscription initNGWordPattern() {
+        return Observable.create((Observable.OnSubscribe<Pattern>) subscriber -> {
+            try {
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(mContext.getAssets().open("ng-word")));
+                StringBuilder buffer = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (buffer.length() == 0) {
+                        buffer.append("(").append(line.toLowerCase(Locale.ENGLISH));
+                    } else {
+                        buffer.append("|").append(line.toLowerCase(Locale.ENGLISH));
                     }
-                    subscriber.onNext(Pattern.compile(buffer.append(")").toString()));
-                } catch (IOException e) {
-                    subscriber.onError(e);
                 }
+                subscriber.onNext(Pattern.compile(buffer.append(")").toString()));
+            } catch (IOException e) {
+                subscriber.onError(e);
             }
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Pattern>() {
-                    @Override
-                    public void call(Pattern pattern) {
-                        mNGWordPattern = pattern;
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throw new ValidationException("Error when open ng-word", throwable);
-                    }
-                });
+                .subscribe(pattern -> mNGWordPattern = pattern,
+                        throwable -> new ValidationException("Error when open ng-word", throwable));
     }
 
     @ValidMethod(type = { ValidType.NG_WORD })
