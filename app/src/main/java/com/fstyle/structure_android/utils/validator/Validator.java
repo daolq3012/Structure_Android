@@ -148,8 +148,8 @@ public class Validator {
             boolean isOptional = optional != null;
             field.setAccessible(true);
 
-            Object real = field.get(mObject);
-            boolean valid = validate(real, rules, isOptional);
+            Object object = field.get(mObject);
+            boolean valid = validate(object, rules, isOptional);
             if (!valid) {
                 isValid = false;
             }
@@ -202,25 +202,38 @@ public class Validator {
                     new NullPointerException());
         }
         boolean isValid =
-                TextUtils.isEmpty(str) || !mNGWordPattern.matcher(str.toLowerCase(Locale.ENGLISH))
+                !TextUtils.isEmpty(str) && !mNGWordPattern.matcher(str.toLowerCase(Locale.ENGLISH))
                         .find();
-        return isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NG_WORD));
+        return isValid ? "" : TextUtils.isEmpty(str) ? validateValueNonEmpty(str)
+                : mContext.getString(mAllErrorMessage.valueAt(ValidType.NG_WORD));
     }
 
     @ValidMethod(type = { ValidType.VALUE_RANGE_0_100 })
-    public String validateValueRangeFrom0to100(int value) {
+    public String validateValueRangeFrom0to100(String str) {
+        int value = convertStringToInteger(str);
         boolean isValid = value >= 0 && value <= 100;
         return isValid ? "" : value == Integer.MIN_VALUE ? validateValueNonEmpty(value)
                 : mContext.getString(mAllErrorMessage.valueAt(ValidType.VALUE_RANGE_0_100));
     }
 
     @ValidMethod(type = { ValidType.NON_EMPTY })
-    public String validateValueNonEmpty(Object value) {
+    private String validateValueNonEmpty(Object value) {
         boolean isValid = !TextUtils.isEmpty(value.toString());
         if (value instanceof Integer) {
             isValid = (Integer) value != Integer.MIN_VALUE;
         }
         return isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NON_EMPTY));
+    }
+
+    /**
+     * @return Integer.MIN_VALUE if convert error
+     */
+    private int convertStringToInteger(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return Integer.MIN_VALUE;
+        }
     }
 
     /**
