@@ -42,7 +42,11 @@ class MainPresenter implements MainContract.Presenter {
                 + mValidator.validateValueNonEmpty(keyWord);
         mMainView.onInvalidKeyWord(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
 
-        return mValidator.validateAll(mMainView, false);
+        try {
+            return mValidator.validateAll();
+        } catch (IllegalAccessException e) {
+            return false;
+        }
     }
 
     @Override
