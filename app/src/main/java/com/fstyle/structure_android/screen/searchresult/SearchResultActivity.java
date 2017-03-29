@@ -25,7 +25,8 @@ public class SearchResultActivity extends BaseActivity implements SearchResultCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searchresult);
 
-        mPresenter = new SearchResultPresenter(this);
+        mPresenter = new SearchResultPresenter();
+        mPresenter.setView(this);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.resultRecyclerView);
 
