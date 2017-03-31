@@ -30,5 +30,7 @@ public interface MainContract {
     interface Presenter extends BasePresenter<View> {
 
         void searchUsers(int limit, String keyWord);
+
+        boolean validateDataInput(String keyWord, String limit);
     }
 }
