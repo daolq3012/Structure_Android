@@ -3,13 +3,18 @@ package com.fstyle.structure_android.screen.main;
 import android.app.Activity;
 import android.content.Context;
 import com.fstyle.structure_android.data.source.UserRepository;
+import com.fstyle.structure_android.data.source.UserRepositoryImpl;
+import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
+import com.fstyle.structure_android.data.source.remote.api.service.NameApi;
 import com.fstyle.structure_android.utils.dagger.ActivityScope;
 import com.fstyle.structure_android.utils.navigator.Navigator;
+import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Validator;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import com.fstyle.structure_android.widget.dialog.DialogManagerImpl;
 import dagger.Module;
 import dagger.Provides;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Sun on 3/18/2017.
@@ -26,9 +31,16 @@ public class MainModule {
 
     @ActivityScope
     @Provides
-    public MainContract.Presenter providePresenter(UserRepository userRepository, Validator
-            validator) {
-        return new MainPresenter(mView, userRepository, validator);
+    public MainContract.Presenter providePresenter(UserRepository userRepository,
+            Validator validator, CompositeSubscription subscription,
+            BaseSchedulerProvider provider) {
+        return new MainPresenter(mView, userRepository, validator, subscription, provider);
+    }
+
+    @ActivityScope
+    @Provides
+    public UserRepository provideUserRepository(NameApi nameApi) {
+        return new UserRepositoryImpl(null, new UserRemoteDataSource(nameApi));
     }
 
     @ActivityScope

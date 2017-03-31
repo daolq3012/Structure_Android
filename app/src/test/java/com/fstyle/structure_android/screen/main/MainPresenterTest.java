@@ -1,27 +1,18 @@
 package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
-import com.fstyle.structure_android.data.model.UsersList;
 import com.fstyle.structure_android.data.source.UserRepository;
-import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
-import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
+import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Validator;
-
-import org.junit.After;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import rx.Observable;
-import rx.Scheduler;
-import rx.android.plugins.RxAndroidPlugins;
-import rx.android.plugins.RxAndroidSchedulersHook;
-import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Sun on 3/12/2017.
@@ -35,31 +26,21 @@ public class MainPresenterTest {
     @Mock
     MainActivity mView;
     @Mock
-    UserLocalDataSource mLocalDataSource;
-    @Mock
-    UserRemoteDataSource mRemoteDataSource;
+    UserRepository mUserRepository;
     @Mock
     Validator mValidator;
+    @Mock
+    CompositeSubscription mSubscription;
+    @Mock
+    BaseSchedulerProvider mSchedulerProvider;
 
-    private UserRepository mUserRepository;
     private MainPresenter mMainPresenter;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
-            @Override
-            public Scheduler getMainThreadScheduler() {
-                return Schedulers.immediate();
-            }
-        });
-        mUserRepository = new UserRepository(mLocalDataSource, mRemoteDataSource);
-        mMainPresenter = new MainPresenter(mView, mUserRepository, mValidator);
-    }
-
-    @After
-    public void tearDown() {
-        RxAndroidPlugins.getInstance().reset();
+        mMainPresenter = new MainPresenter(mView, mUserRepository, mValidator, mSubscription,
+                mSchedulerProvider);
     }
 
     @Test
@@ -68,12 +49,10 @@ public class MainPresenterTest {
         List<User> users = new ArrayList<>();
         users.add(new User(USER_LOGIN_1));
         users.add(new User(USER_LOGIN_2));
-        UsersList usersList = new UsersList(users);
 
         // When
-        Mockito.when(mUserRepository.getRemoteDataSource()
-                .searchUsers(Mockito.anyInt(), Mockito.anyString()))
-                .thenReturn(Observable.just(usersList));
+        Mockito.when(mUserRepository.searchUsers(Mockito.anyInt(), Mockito.anyString()))
+                .thenReturn(Observable.just(users));
 
         // Then
         mMainPresenter.searchUsers(2, USER_LOGIN_1);
@@ -86,9 +65,8 @@ public class MainPresenterTest {
         Throwable throwable = new Throwable(errorMsg);
 
         // When
-        Mockito.when(mUserRepository.getRemoteDataSource()
-                .searchUsers(Mockito.anyInt(), Mockito.anyString()))
-                .thenReturn(Observable.<UsersList>error(throwable));
+        Mockito.when(mUserRepository.searchUsers(Mockito.anyInt(), Mockito.anyString()))
+                .thenReturn(Observable.<List<User>>error(throwable));
 
         // Then
         //        mMainPresenter.searchUsers(Mockito.anyInt(), Mockito.anyString());
