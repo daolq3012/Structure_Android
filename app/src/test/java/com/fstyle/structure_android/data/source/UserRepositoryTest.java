@@ -37,7 +37,7 @@ public class UserRepositoryTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mUserRepository = new UserRepository(null, new UserRemoteDataSource(mNameApi));
+        mUserRepository = new UserRepositoryImpl(null, new UserRemoteDataSource(mNameApi));
     }
 
     @After
@@ -53,17 +53,17 @@ public class UserRepositoryTest {
                 .thenReturn(Observable.just(githubUserList()));
 
         // When
-        TestSubscriber<UsersList> subscriber = new TestSubscriber<>();
-        mUserRepository.getRemoteDataSource().searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
+        TestSubscriber<List<User>> subscriber = new TestSubscriber<>();
+        mUserRepository.searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
 
         // Then
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        List<UsersList> onNextEvents = subscriber.getOnNextEvents();
-        UsersList usersList = onNextEvents.get(0);
-        Assert.assertEquals(USER_LOGIN_1, usersList.getItems().get(0).getLogin());
-        Assert.assertEquals(USER_LOGIN_2, usersList.getItems().get(1).getLogin());
+        List<List<User>> onNextEvents = subscriber.getOnNextEvents();
+        List<User> usersList = onNextEvents.get(0);
+        Assert.assertEquals(USER_LOGIN_1, usersList.get(0).getLogin());
+        Assert.assertEquals(USER_LOGIN_2, usersList.get(1).getLogin());
         Mockito.verify(mNameApi).searchGithubUsers(2, USER_LOGIN_1);
     }
 
@@ -87,8 +87,8 @@ public class UserRepositoryTest {
                 .thenReturn(get403ForbiddenError());
 
         // When
-        TestSubscriber<UsersList> subscriber = new TestSubscriber<>();
-        mUserRepository.getRemoteDataSource().searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
+        TestSubscriber<List> subscriber = new TestSubscriber<>();
+        mUserRepository.searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
 
         // Then
         subscriber.awaitTerminalEvent();
