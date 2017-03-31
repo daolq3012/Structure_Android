@@ -4,13 +4,11 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-
 import com.fstyle.structure_android.MainApplication;
 import com.fstyle.structure_android.R;
-import com.fstyle.structure_android.data.model.UsersList;
+import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
 import com.fstyle.structure_android.utils.navigator.Navigator;
@@ -18,9 +16,8 @@ import com.fstyle.structure_android.utils.validator.Rule;
 import com.fstyle.structure_android.utils.validator.ValidType;
 import com.fstyle.structure_android.utils.validator.Validation;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
-
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.inject.Inject;
 
 import static com.fstyle.structure_android.utils.Constant.LIST_USER_ARGS;
@@ -44,9 +41,8 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     private EditText mEditNumberLimit;
 
     @Validation({
-            @Rule(types = {
-                    ValidType.NG_WORD, ValidType.NON_EMPTY
-            }, message = R.string.error_unusable_characters)
+            @Rule(types = ValidType.NG_WORD, message = R.string.error_unusable_characters),
+            @Rule(types = ValidType.NON_EMPTY, message = R.string.must_not_empty)
     })
     private String mKeyWord;
     @Validation({
@@ -54,12 +50,15 @@ public class MainActivity extends BaseActivity implements MainContract.View {
                     .error_lenght_from_0_to_100),
             @Rule(types = ValidType.NON_EMPTY, message = R.string.must_not_empty)
     })
-    private int mLimit;
+    private String mLimit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        DaggerMainComponent.builder().appComponent(((MainApplication) getApplication())
-                .getAppComponent()).mainModule(new MainModule(this)).build().inject(this);
+        DaggerMainComponent.builder()
+                .appComponent(((MainApplication) getApplication()).getAppComponent())
+                .mainModule(new MainModule(this))
+                .build()
+                .inject(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -84,7 +83,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     }
 
     @Override
-    public void showError(Throwable throwable) {
+    public void onSearchError(Throwable throwable) {
         mDialogManager.dialogMainStyle(throwable.getMessage(),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -95,27 +94,29 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     }
 
     @Override
-    public void showListUser(UsersList usersList) {
+    public void onSearchUsersSuccess(List<User> users) {
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(LIST_USER_ARGS,
-                (ArrayList<? extends Parcelable>) usersList.getItems());
+        bundle.putParcelableArrayList(LIST_USER_ARGS, (ArrayList<? extends Parcelable>) users);
         mNavigator.startActivity(SearchResultActivity.class, bundle);
     }
 
     @Override
-    public void showInvalidLimit(String errorMsg) {
+    public void onInvalidLimitNumber(String errorMsg) {
         mTextInputLayoutNumberLimit.setError(errorMsg);
     }
 
     @Override
-    public void showInvalidUserName(String errorMsg) {
+    public void onInvalidKeyWord(String errorMsg) {
         mTextInputLayoutKeyword.setError(errorMsg);
     }
 
     public void onSearchButtonClicked(View view) {
         mKeyWord = mEditTextKeyword.getText().toString().trim();
-        String limitStr = mEditNumberLimit.getText().toString().trim();
-        mLimit = TextUtils.isEmpty(limitStr) ? Integer.MIN_VALUE : Integer.parseInt(limitStr);
-        mPresenter.searchUsers(mLimit, mKeyWord);
+        mLimit = mEditNumberLimit.getText().toString().trim();
+
+        if (!mPresenter.validateDataInput(mKeyWord, mLimit)) {
+            return;
+        }
+        mPresenter.searchUsers(Integer.parseInt(mLimit), mKeyWord);
     }
 }

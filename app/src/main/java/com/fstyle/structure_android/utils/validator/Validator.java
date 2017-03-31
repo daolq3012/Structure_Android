@@ -3,12 +3,9 @@ package com.fstyle.structure_android.utils.validator;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
-import com.fstyle.structure_android.R;
-import com.fstyle.structure_android.data.model.BaseModel;
 import com.fstyle.structure_android.screen.BaseView;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,9 +30,8 @@ public class Validator {
 
     private Context mContext;
     private SparseArray<Method> mValidatedMethods;
-    private BaseModel mModelCache;
-
-    private BaseView mViewCache;
+    private Object mObject;
+    private String mMessage;
 
     private SparseArray<Integer> mAllErrorMessage;
 
@@ -47,7 +43,7 @@ public class Validator {
      * @param clzz View
      * @param <T> Class extend from {@link BaseView}
      */
-    public <T extends BaseView> Validator(@ApplicationContext Context context, T clzz) {
+    public <T> Validator(@ApplicationContext Context context, T clzz) {
         if (context instanceof Activity) {
             throw new ValidationException(
                     "Context should be get From Application to avoid leak memory");
@@ -55,21 +51,7 @@ public class Validator {
         mContext = context;
         mValidatedMethods = cacheValidatedMethod();
         mAllErrorMessage = getAllErrorMessage(clzz.getClass());
-    }
-
-    /**
-     * @param context Application context
-     * @param clzz View
-     * @param <T> Class extend from {@link BaseModel}
-     */
-    public <T extends BaseModel> Validator(@ApplicationContext Context context, T clzz) {
-        if (context instanceof Activity) {
-            throw new ValidationException(
-                    "Context should be get From Application to avoid leak memory");
-        }
-        mContext = context;
-        mValidatedMethods = cacheValidatedMethod();
-        mAllErrorMessage = getAllErrorMessage(clzz.getClass());
+        mObject = clzz;
     }
 
     private SparseArray<Method> cacheValidatedMethod() {
@@ -137,8 +119,9 @@ public class Validator {
                     continue;
                 }
                 try {
-                    boolean valid = (isOptional && isValidOptional(factor)) || TextUtils.isEmpty(
-                            (String) method.invoke(this, factor));
+                    boolean valid =
+                            (isOptional && isValidOptional(factor)) || (Boolean) method.invoke(this,
+                                    factor);
                     if (!valid) {
                         isValid = false;
                     }
@@ -154,14 +137,10 @@ public class Validator {
         return isValid;
     }
 
-    private <T extends BaseModel, V extends BaseView> boolean validateAll(T model, V view,
-            boolean onlyValidateChange) {
-
-        Object object = model != null ? model : view;
-
+    public boolean validateAll() throws IllegalAccessException {
         boolean isValid = true;
 
-        for (Field field : object.getClass().getDeclaredFields()) {
+        for (Field field : mObject.getClass().getDeclaredFields()) {
             Validation annotation = field.getAnnotation(Validation.class);
             if (annotation == null) {
                 continue;
@@ -171,70 +150,13 @@ public class Validator {
             boolean isOptional = optional != null;
             field.setAccessible(true);
 
-            try {
-                Object cache = null;
-                if (mModelCache != null || mViewCache != null) {
-                    cache = field.get(model != null ? mModelCache : mViewCache);
-                }
-                Object real = field.get(object);
-                // detect when data has changed only if onlyValidateTheChange is true.
-                // Otherwise, always run validation on all of fields .
-                if (!onlyValidateChange || (cache == null && real != null) || (cache != null
-                        && cache.equals(real))) {
-                    boolean valid = validate(real, rules, isOptional);
-                    if (!valid) {
-                        isValid = false;
-                    }
-                }
-            } catch (IllegalAccessException e) {
-                Log.e(TAG, "validate: ", e);
-            }
-            try {
-                if (model != null) {
-                    mModelCache = model.clone();
-                }
-                mViewCache = view;
-            } catch (CloneNotSupportedException e) {
-                mModelCache = null;
-                mViewCache = null;
-                Log.e(TAG, "validate: ", e);
+            Object object = field.get(mObject);
+            boolean valid = validate(object, rules, isOptional);
+            if (!valid) {
+                isValid = false;
             }
         }
         return isValid;
-    }
-
-    public <T extends BaseModel> boolean validateAll(T model, boolean onlyValidateChange) {
-        return validateAll(model, null, onlyValidateChange);
-    }
-
-    public <V extends BaseView> boolean validateAll(V view, boolean onlyValidateChange) {
-        return validateAll(null, view, onlyValidateChange);
-    }
-
-    public <T extends BaseModel> Validator prepare(T model) {
-        try {
-            mModelCache = model.clone();
-        } catch (CloneNotSupportedException e) {
-            Log.e(TAG, "prepare: ", e);
-        }
-        return this;
-    }
-
-    @StringRes
-    public int getErrorByTypeInt(@ValidType int type) {
-        int index = mAllErrorMessage.indexOfValue(type);
-        if (index == -1) {
-            return R.string.empty;
-        }
-        return mAllErrorMessage.keyAt(index);
-    }
-
-    public String getErrorByType(@ValidType int type) {
-        int index = mAllErrorMessage.indexOfValue(type);
-        if (index == -1 || mAllErrorMessage.keyAt(index) == -1) {
-            return null;
-        }
-        return mContext.getString(mAllErrorMessage.keyAt(index));
     }
 
     public void initNGWordPattern() {
@@ -275,32 +197,51 @@ public class Validator {
     }
 
     @ValidMethod(type = { ValidType.NG_WORD })
-    public String validateNGWord(String str) {
+    public boolean validateNGWord(String str) {
         if (mNGWordPattern == null) {
             throw new ValidationException(
                     "NGWordPattern is null!!! \n Call initNGWordPattern() before call this method!",
                     new NullPointerException());
         }
         boolean isValid =
-                TextUtils.isEmpty(str) || !mNGWordPattern.matcher(str.toLowerCase(Locale.ENGLISH))
+                !TextUtils.isEmpty(str) && !mNGWordPattern.matcher(str.toLowerCase(Locale.ENGLISH))
                         .find();
-        return isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NG_WORD));
+        mMessage = mContext.getString(mAllErrorMessage.valueAt(ValidType.NG_WORD));
+        return isValid;
     }
 
     @ValidMethod(type = { ValidType.VALUE_RANGE_0_100 })
-    public String validateValueRangeFrom0to100(int value) {
+    public boolean validateValueRangeFrom0to100(String str) {
+        int value = convertStringToInteger(str);
         boolean isValid = value >= 0 && value <= 100;
-        return isValid ? "" : value == Integer.MIN_VALUE ? validateValueNonEmpty(value)
+        mMessage = isValid ? ""
                 : mContext.getString(mAllErrorMessage.valueAt(ValidType.VALUE_RANGE_0_100));
+        return isValid;
     }
 
     @ValidMethod(type = { ValidType.NON_EMPTY })
-    public String validateValueNonEmpty(Object value) {
-        boolean isValid = !TextUtils.isEmpty(value.toString());
-        if (value instanceof Integer) {
-            isValid = (Integer) value != Integer.MIN_VALUE;
+    public boolean validateValueNonEmpty(String value) {
+        boolean isValid = !TextUtils.isEmpty(value);
+        mMessage = isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NON_EMPTY));
+        return isValid;
+    }
+
+    /**
+     * @return latest message error after validate
+     */
+    public String getMessage() {
+        return mMessage;
+    }
+
+    /**
+     * @return Integer.MIN_VALUE if convert error
+     */
+    private int convertStringToInteger(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return Integer.MIN_VALUE;
         }
-        return isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NON_EMPTY));
     }
 
     /**
