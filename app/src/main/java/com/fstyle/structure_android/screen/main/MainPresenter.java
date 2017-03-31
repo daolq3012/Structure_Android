@@ -1,6 +1,5 @@
 package com.fstyle.structure_android.screen.main;
 
-import android.text.TextUtils;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
@@ -68,11 +67,17 @@ class MainPresenter implements MainContract.Presenter {
 
     @Override
     public boolean validateDataInput(String keyWord, String limit) {
-        String errorMsg = mValidator.validateNGWord(keyWord);
-        mMainView.onInvalidKeyWord(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
+        if (!mValidator.validateValueNonEmpty(keyWord)) {
+            mMainView.onInvalidKeyWord(mValidator.getMessage());
+        } else if (!mValidator.validateNGWord(keyWord)) {
+            mMainView.onInvalidKeyWord(mValidator.getMessage());
+        }
 
-        errorMsg = mValidator.validateValueRangeFrom0to100(limit);
-        mMainView.onInvalidLimitNumber(TextUtils.isEmpty(errorMsg) ? "" : errorMsg);
+        if (!mValidator.validateValueNonEmpty(limit)) {
+            mMainView.onInvalidLimitNumber(mValidator.getMessage());
+        } else if (!mValidator.validateValueRangeFrom0to100(limit)) {
+            mMainView.onInvalidLimitNumber(mValidator.getMessage());
+        }
 
         try {
             return mValidator.validateAll();

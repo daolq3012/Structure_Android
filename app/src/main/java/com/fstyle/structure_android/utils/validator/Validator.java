@@ -31,6 +31,7 @@ public class Validator {
     private Context mContext;
     private SparseArray<Method> mValidatedMethods;
     private Object mObject;
+    private String mMessage;
 
     private SparseArray<Integer> mAllErrorMessage;
 
@@ -118,8 +119,9 @@ public class Validator {
                     continue;
                 }
                 try {
-                    boolean valid = (isOptional && isValidOptional(factor)) || TextUtils.isEmpty(
-                            (String) method.invoke(this, factor));
+                    boolean valid =
+                            (isOptional && isValidOptional(factor)) || (Boolean) method.invoke(this,
+                                    factor);
                     if (!valid) {
                         isValid = false;
                     }
@@ -195,7 +197,7 @@ public class Validator {
     }
 
     @ValidMethod(type = { ValidType.NG_WORD })
-    public String validateNGWord(String str) {
+    public boolean validateNGWord(String str) {
         if (mNGWordPattern == null) {
             throw new ValidationException(
                     "NGWordPattern is null!!! \n Call initNGWordPattern() before call this method!",
@@ -204,25 +206,31 @@ public class Validator {
         boolean isValid =
                 !TextUtils.isEmpty(str) && !mNGWordPattern.matcher(str.toLowerCase(Locale.ENGLISH))
                         .find();
-        return isValid ? "" : TextUtils.isEmpty(str) ? validateValueNonEmpty(str)
-                : mContext.getString(mAllErrorMessage.valueAt(ValidType.NG_WORD));
+        mMessage = mContext.getString(mAllErrorMessage.valueAt(ValidType.NG_WORD));
+        return isValid;
     }
 
     @ValidMethod(type = { ValidType.VALUE_RANGE_0_100 })
-    public String validateValueRangeFrom0to100(String str) {
+    public boolean validateValueRangeFrom0to100(String str) {
         int value = convertStringToInteger(str);
         boolean isValid = value >= 0 && value <= 100;
-        return isValid ? "" : value == Integer.MIN_VALUE ? validateValueNonEmpty(value)
+        mMessage = isValid ? ""
                 : mContext.getString(mAllErrorMessage.valueAt(ValidType.VALUE_RANGE_0_100));
+        return isValid;
     }
 
     @ValidMethod(type = { ValidType.NON_EMPTY })
-    private String validateValueNonEmpty(Object value) {
-        boolean isValid = !TextUtils.isEmpty(value.toString());
-        if (value instanceof Integer) {
-            isValid = (Integer) value != Integer.MIN_VALUE;
-        }
-        return isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NON_EMPTY));
+    public boolean validateValueNonEmpty(String value) {
+        boolean isValid = !TextUtils.isEmpty(value);
+        mMessage = isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NON_EMPTY));
+        return isValid;
+    }
+
+    /**
+     * @return latest message error after validate
+     */
+    public String getMessage() {
+        return mMessage;
     }
 
     /**
