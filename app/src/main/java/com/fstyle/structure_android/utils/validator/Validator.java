@@ -296,7 +296,7 @@ public class Validator {
 
     @ValidMethod(type = { ValidType.NON_EMPTY })
     public String validateValueNonEmpty(Object value) {
-        boolean isValid = !TextUtils.isEmpty(value.toString());
+        boolean isValid = value != null && !TextUtils.isEmpty(value.toString());
         if (value instanceof Integer) {
             isValid = (Integer) value != Integer.MIN_VALUE;
         }

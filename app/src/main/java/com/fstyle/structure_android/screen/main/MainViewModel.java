@@ -68,7 +68,7 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
     }
 
     @Override
-    public void searchError(Throwable throwable) {
+    public void onSearchError(Throwable throwable) {
         mDialogManager.dialogMainStyle(throwable.getMessage(),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -79,20 +79,20 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
     }
 
     @Override
-    public void searchUsersSuccess(List<User> users) {
+    public void onSearchUsersSuccess(List<User> users) {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARGUMENT_LIST_USER, (ArrayList<? extends Parcelable>) users);
         mNavigator.startActivity(SearchResultActivity.class, bundle);
     }
 
     @Override
-    public void invalidKeyWord(String errorMsg) {
+    public void onInvalidKeyWord(String errorMsg) {
         setKeywordErrorMsg(errorMsg);
         notifyPropertyChanged(BR.keywordErrorMsg);
     }
 
     @Override
-    public void invalidLimitNumber(String errorMsg) {
+    public void onInvalidLimitNumber(String errorMsg) {
         setLimitErrorMsg(errorMsg);
         notifyPropertyChanged(BR.limitErrorMsg);
     }
