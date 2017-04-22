@@ -14,7 +14,6 @@ import com.fstyle.structure_android.data.source.remote.api.service.NameServiceCl
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
 import com.fstyle.structure_android.utils.navigator.Navigator;
-import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.rx.SchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Rule;
 import com.fstyle.structure_android.utils.validator.ValidType;
@@ -62,9 +61,9 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         UserRepositoryImpl userRepository = new UserRepositoryImpl(null,
                 new UserRemoteDataSource(NameServiceClient.getInstance()));
         Validator validator = new Validator(getApplicationContext(), this);
-        mPresenter = new MainPresenter(userRepository, validator, new CustomCompositeSubscription(),
-                SchedulerProvider.getInstance());
+        mPresenter = new MainPresenter(userRepository, validator);
         mPresenter.setView(this);
+        mPresenter.setSchedulerProvider(SchedulerProvider.getInstance());
 
         mTextInputLayoutKeyword = (TextInputLayout) findViewById(R.id.txtInputLayoutKeyword);
         mEditTextKeyword = (EditText) findViewById(R.id.edtKeyword);
