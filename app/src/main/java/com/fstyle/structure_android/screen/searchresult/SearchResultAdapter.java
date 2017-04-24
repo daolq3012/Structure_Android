@@ -22,12 +22,9 @@ public class SearchResultAdapter
 
     private List<User> mUsers;
 
-    protected SearchResultAdapter(@NonNull Context context, List<User> users) {
+    protected SearchResultAdapter(@NonNull Context context, @NonNull List<User> users) {
         super(context);
         mUsers = new ArrayList<>();
-        if (users == null) {
-            return;
-        }
         mUsers.addAll(users);
     }
 

@@ -2,13 +2,13 @@ package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
-import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.rx.ImmediateSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Validator;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -26,22 +26,22 @@ public class MainPresenterTest {
     private static final String USER_LOGIN_1 = "user_login_1";
     private static final String USER_LOGIN_2 = "user_login_2";
 
+    @InjectMocks
+    MainPresenter mMainPresenter;
     @Mock
     MainContract.View mMainView;
     @Mock
     UserRepository mUserRepository;
     @Mock
     Validator mValidator;
-
-    private MainContract.Presenter mMainPresenter;
+    @InjectMocks
+    ImmediateSchedulerProvider mSchedulerProvider;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mMainPresenter =
-                new MainPresenter(mUserRepository, mValidator, new CustomCompositeSubscription(),
-                        new ImmediateSchedulerProvider());
         mMainPresenter.setView(mMainView);
+        mMainPresenter.setSchedulerProvider(mSchedulerProvider);
     }
 
     @Test

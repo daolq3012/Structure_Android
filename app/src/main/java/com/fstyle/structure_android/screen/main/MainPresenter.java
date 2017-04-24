@@ -3,11 +3,11 @@ package com.fstyle.structure_android.screen.main;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
-import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.validator.Validator;
 import java.util.List;
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
@@ -18,16 +18,19 @@ class MainPresenter implements MainContract.Presenter {
 
     private MainContract.View mMainView;
     private UserRepository mUserRepository;
-    private final CustomCompositeSubscription mCompositeSubscription;
+    private CompositeSubscription mCompositeSubscription;
     private BaseSchedulerProvider mSchedulerProvider;
     private Validator mValidator;
 
-    MainPresenter(UserRepository userRepository, Validator validator,
-            CustomCompositeSubscription subscription, BaseSchedulerProvider schedulerProvider) {
+    MainPresenter(UserRepository userRepository, Validator validator) {
         mUserRepository = userRepository;
         mValidator = validator;
         mValidator.initNGWordPattern();
-        mCompositeSubscription = subscription;
+        mCompositeSubscription = new CompositeSubscription();
+    }
+
+    @Override
+    public void setSchedulerProvider(BaseSchedulerProvider schedulerProvider) {
         mSchedulerProvider = schedulerProvider;
     }
 
