@@ -206,7 +206,7 @@ public class Validator {
         boolean isValid =
                 !TextUtils.isEmpty(str) && !mNGWordPattern.matcher(str.toLowerCase(Locale.ENGLISH))
                         .find();
-        mMessage = mContext.getString(mAllErrorMessage.valueAt(ValidType.NG_WORD));
+        mMessage = isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NG_WORD));
         return isValid;
     }
 

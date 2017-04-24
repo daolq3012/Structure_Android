@@ -9,7 +9,6 @@ import com.fstyle.structure_android.data.source.remote.api.service.NameApi;
 import com.fstyle.structure_android.utils.dagger.ActivityScope;
 import com.fstyle.structure_android.utils.navigator.Navigator;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
-import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.validator.Validator;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import com.fstyle.structure_android.widget.dialog.DialogManagerImpl;
@@ -32,9 +31,10 @@ public class MainModule {
     @ActivityScope
     @Provides
     public MainContract.Presenter providePresenter(UserRepository userRepository,
-            Validator validator, CustomCompositeSubscription subscription,
-            BaseSchedulerProvider provider) {
-        return new MainPresenter(mView, userRepository, validator, subscription, provider);
+            Validator validator, BaseSchedulerProvider provider) {
+        MainPresenter mainPresenter = new MainPresenter(mView, userRepository, validator);
+        mainPresenter.setSchedulerProvider(provider);
+        return mainPresenter;
     }
 
     @ActivityScope

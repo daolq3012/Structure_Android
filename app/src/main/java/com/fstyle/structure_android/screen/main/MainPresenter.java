@@ -3,11 +3,11 @@ package com.fstyle.structure_android.screen.main;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
-import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.validator.Validator;
 import java.util.List;
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
@@ -19,16 +19,14 @@ public class MainPresenter implements MainContract.Presenter {
     private MainContract.View mMainView;
     private UserRepository mUserRepository;
     private Validator mValidator;
-    private CustomCompositeSubscription mCompositeSubscription;
     private BaseSchedulerProvider mSchedulerProvider;
+    private CompositeSubscription mCompositeSubscription;
 
-    MainPresenter(MainContract.View view, UserRepository userRepository, Validator validator,
-            CustomCompositeSubscription subscription, BaseSchedulerProvider schedulerProvider) {
+    MainPresenter(MainContract.View view, UserRepository userRepository, Validator validator) {
         mMainView = view;
         mUserRepository = userRepository;
         mValidator = validator;
-        mCompositeSubscription = subscription;
-        mSchedulerProvider = schedulerProvider;
+        mCompositeSubscription = new CompositeSubscription();
 
         mValidator.initNGWordPattern();
     }
@@ -41,6 +39,11 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void onStop() {
         mCompositeSubscription.clear();
+    }
+
+    @Override
+    public void setSchedulerProvider(BaseSchedulerProvider schedulerProvider) {
+        mSchedulerProvider = schedulerProvider;
     }
 
     @Override
@@ -64,17 +67,15 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public boolean validateDataInput(String keyWord, String limit) {
-        if (!mValidator.validateValueNonEmpty(keyWord)) {
-            mMainView.onInvalidKeyWord(mValidator.getMessage());
-        } else if (!mValidator.validateNGWord(keyWord)) {
-            mMainView.onInvalidKeyWord(mValidator.getMessage());
+        if (mValidator.validateValueNonEmpty(keyWord)) {
+            mValidator.validateNGWord(keyWord);
         }
+        mMainView.onInvalidKeyWord(mValidator.getMessage());
 
-        if (!mValidator.validateValueNonEmpty(limit)) {
-            mMainView.onInvalidLimitNumber(mValidator.getMessage());
-        } else if (!mValidator.validateValueRangeFrom0to100(limit)) {
-            mMainView.onInvalidLimitNumber(mValidator.getMessage());
+        if (mValidator.validateValueNonEmpty(limit)) {
+            mValidator.validateValueRangeFrom0to100(limit);
         }
+        mMainView.onInvalidLimitNumber(mValidator.getMessage());
 
         try {
             return mValidator.validateAll();

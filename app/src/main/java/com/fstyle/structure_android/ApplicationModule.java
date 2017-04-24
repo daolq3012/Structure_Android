@@ -5,7 +5,6 @@ import com.fstyle.structure_android.data.source.local.sharedprf.SharedPrefsApi;
 import com.fstyle.structure_android.data.source.local.sharedprf.SharedPrefsImpl;
 import com.fstyle.structure_android.utils.dagger.AppScope;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
-import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.rx.SchedulerProvider;
 import dagger.Module;
 import dagger.Provides;
@@ -39,11 +38,5 @@ public class ApplicationModule {
     @AppScope
     public BaseSchedulerProvider provideBaseSchedulerProvider() {
         return SchedulerProvider.getInstance();
-    }
-
-    @AppScope
-    @Provides
-    public CustomCompositeSubscription provideCustomCompositeSubscription() {
-        return new CustomCompositeSubscription();
     }
 }
