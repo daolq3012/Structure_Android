@@ -26,6 +26,8 @@ public class MainPresenterTest {
     private static final String USER_LOGIN_1 = "user_login_1";
     private static final String USER_LOGIN_2 = "user_login_2";
 
+    @InjectMocks
+    MainPresenter mMainPresenter;
     @Mock
     MainContract.View mMainView;
     @Mock
@@ -33,13 +35,13 @@ public class MainPresenterTest {
     @Mock
     Validator mValidator;
     @InjectMocks
-    MainPresenter mMainPresenter;
+    ImmediateSchedulerProvider mSchedulerProvider;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         mMainPresenter.setView(mMainView);
-        mMainPresenter.setSchedulerProvider(new ImmediateSchedulerProvider());
+        mMainPresenter.setSchedulerProvider(mSchedulerProvider);
     }
 
     @Test
