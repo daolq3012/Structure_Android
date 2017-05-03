@@ -2,6 +2,7 @@ package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
+import com.fstyle.structure_android.utils.common.StringUtils;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Validator;
 import java.util.List;
@@ -50,6 +51,37 @@ class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
+    public boolean validateKeywordInput(String keyword) {
+        String message = mValidator.validateValueNonEmpty(keyword);
+        if (StringUtils.isBlank(message)) {
+            message = mValidator.validateNGWord(keyword);
+        }
+        mMainView.onInvalidKeyWord(message);
+        return StringUtils.isBlank(message);
+    }
+
+    @Override
+    public boolean validateLimitNumberInput(String limit) {
+        String message = mValidator.validateValueNonEmpty(limit);
+        if (StringUtils.isBlank(message)) {
+            message = mValidator.validateValueRangeFrom0to100(limit);
+        }
+        mMainView.onInvalidLimitNumber(message);
+        return StringUtils.isBlank(message);
+    }
+
+    @Override
+    public boolean validateDataInput(String keyword, String limit) {
+        validateKeywordInput(keyword);
+        validateLimitNumberInput(limit);
+        try {
+            return mValidator.validateAll();
+        } catch (IllegalAccessException e) {
+            return false;
+        }
+    }
+
+    @Override
     public void searchUsers(int limit, String keyWord) {
         Subscription subscription = mUserRepository.searchUsers(limit, keyWord)
                 .subscribeOn(mSchedulerProvider.io())
@@ -66,26 +98,5 @@ class MainPresenter implements MainContract.Presenter {
                     }
                 });
         mCompositeSubscription.add(subscription);
-    }
-
-    @Override
-    public boolean validateDataInput(String keyWord, String limit) {
-        if (!mValidator.validateValueNonEmpty(keyWord)) {
-            mMainView.onInvalidKeyWord(mValidator.getMessage());
-        } else if (!mValidator.validateNGWord(keyWord)) {
-            mMainView.onInvalidKeyWord(mValidator.getMessage());
-        }
-
-        if (!mValidator.validateValueNonEmpty(limit)) {
-            mMainView.onInvalidLimitNumber(mValidator.getMessage());
-        } else if (!mValidator.validateValueRangeFrom0to100(limit)) {
-            mMainView.onInvalidLimitNumber(mValidator.getMessage());
-        }
-
-        try {
-            return mValidator.validateAll();
-        } catch (IllegalAccessException e) {
-            return false;
-        }
     }
 }

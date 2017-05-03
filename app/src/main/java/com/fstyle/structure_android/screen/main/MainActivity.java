@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import com.fstyle.structure_android.R;
@@ -13,6 +14,7 @@ import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.data.source.remote.api.service.NameServiceClient;
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
+import com.fstyle.structure_android.utils.common.SimpleTextWatcher;
 import com.fstyle.structure_android.utils.navigator.Navigator;
 import com.fstyle.structure_android.utils.rx.SchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Rule;
@@ -35,23 +37,20 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     private MainContract.Presenter mPresenter;
 
     private TextInputLayout mTextInputLayoutKeyword;
-    private EditText mEditTextKeyword;
-    private TextInputLayout mTextInputLayoutNumberLimit;
-    private EditText mEditNumberLimit;
-
-    private DialogManager mDialogManager;
-
     @Validation({
             @Rule(types = ValidType.NG_WORD, message = R.string.error_unusable_characters),
             @Rule(types = ValidType.NON_EMPTY, message = R.string.must_not_empty)
     })
-    private String mKeyWord;
+    private EditText mEditTextKeyword;
+    private TextInputLayout mTextInputLayoutNumberLimit;
     @Validation({
             @Rule(types = ValidType.VALUE_RANGE_0_100, message = R.string
                     .error_lenght_from_0_to_100),
             @Rule(types = ValidType.NON_EMPTY, message = R.string.must_not_empty)
     })
-    private String mLimit;
+    private EditText mEditNumberLimit;
+
+    private DialogManager mDialogManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +66,21 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
         mTextInputLayoutKeyword = (TextInputLayout) findViewById(R.id.txtInputLayoutKeyword);
         mEditTextKeyword = (EditText) findViewById(R.id.edtKeyword);
+        mEditTextKeyword.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                mPresenter.validateKeywordInput(s.toString());
+            }
+        });
         mTextInputLayoutNumberLimit =
                 (TextInputLayout) findViewById(R.id.txtInputLayoutNumberLimit);
         mEditNumberLimit = (EditText) findViewById(R.id.edtNumberLimit);
+        mEditNumberLimit.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                mPresenter.validateLimitNumberInput(s.toString());
+            }
+        });
 
         mDialogManager = new DialogManagerImpl(this);
     }
@@ -115,12 +126,12 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     }
 
     public void onSearchButtonClicked(View view) {
-        mKeyWord = mEditTextKeyword.getText().toString().trim();
-        mLimit = mEditNumberLimit.getText().toString().trim();
+        String keyWord = mEditTextKeyword.getText().toString().trim();
+        String limit = mEditNumberLimit.getText().toString().trim();
 
-        if (!mPresenter.validateDataInput(mKeyWord, mLimit)) {
+        if (!mPresenter.validateDataInput(keyWord, limit)) {
             return;
         }
-        mPresenter.searchUsers(Integer.parseInt(mLimit), mKeyWord);
+        mPresenter.searchUsers(Integer.parseInt(limit), keyWord);
     }
 }
