@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.databinding.Bindable;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import android.view.View;
 import com.fstyle.structure_android.BR;
 import com.fstyle.structure_android.R;
@@ -13,7 +12,7 @@ import com.fstyle.structure_android.data.model.UsersList;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.screen.BaseViewModel;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
-import com.fstyle.structure_android.utils.Constant;
+import com.fstyle.structure_android.utils.common.StringUtils;
 import com.fstyle.structure_android.utils.navigator.Navigator;
 import com.fstyle.structure_android.utils.validator.Rule;
 import com.fstyle.structure_android.utils.validator.ValidType;
@@ -52,7 +51,7 @@ public class MainViewModel extends BaseViewModel {
                     .error_lenght_from_0_to_100),
             @Rule(types = ValidType.NON_EMPTY, message = R.string.must_not_empty)
     })
-    private int mLimit = Integer.MIN_VALUE;
+    private String mLimit;
     private String mKeywordErrorMsg;
     private String mLimitErrorMsg;
 
@@ -74,18 +73,17 @@ public class MainViewModel extends BaseViewModel {
 
     public void setKeyWord(String keyWord) {
         mKeyWord = keyWord;
+        validateKeywordInput();
     }
 
     @Bindable
     public String getLimit() {
-        return mLimit == Integer.MIN_VALUE ? "" : String.valueOf(mLimit);
+        return mLimit;
     }
 
     public void setLimit(String limit) {
-        if (TextUtils.isEmpty(limit)) {
-            return;
-        }
-        mLimit = Integer.parseInt(limit);
+        mLimit = limit;
+        validateLimitNumberInput();
     }
 
     @Bindable
@@ -107,11 +105,11 @@ public class MainViewModel extends BaseViewModel {
     }
 
     public void onSearchButtonClicked(View view) {
-        if (!validateDataInput(mKeyWord, mLimit)) {
+        if (!validateDataInput()) {
             return;
         }
         Subscription subscription = mUserRepository.getRemoteDataSource()
-                .searchUsers(mKeyWord, mLimit)
+                .searchUsers(mKeyWord, Integer.parseInt(mLimit))
                 .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<UsersList, Observable<List<User>>>() {
                     @Override
@@ -143,17 +141,29 @@ public class MainViewModel extends BaseViewModel {
         startSubscriber(subscription);
     }
 
-    private boolean validateDataInput(String keyWord, int limit) {
-        String errorMsg = mValidator.validateNGWord(keyWord);
-        errorMsg += (TextUtils.isEmpty(errorMsg) ? "" : Constant.BREAK_LINE)
-                + mValidator.validateValueNonEmpty(keyWord);
-        mKeywordErrorMsg = TextUtils.isEmpty(errorMsg) ? null : errorMsg;
+    private void validateKeywordInput() {
+        mKeywordErrorMsg = mValidator.validateValueNonEmpty(mKeyWord);
+        if (StringUtils.isBlank(mKeywordErrorMsg)) {
+            mKeywordErrorMsg = mValidator.validateNGWord(mKeyWord);
+        }
         notifyPropertyChanged(BR.keywordErrorMsg);
+    }
 
-        errorMsg = mValidator.validateValueRangeFrom0to100(limit);
-        mLimitErrorMsg = TextUtils.isEmpty(errorMsg) ? null : errorMsg;
+    private void validateLimitNumberInput() {
+        mLimitErrorMsg = mValidator.validateValueNonEmpty(mLimit);
+        if (StringUtils.isBlank(mLimitErrorMsg)) {
+            mLimitErrorMsg = mValidator.validateValueRangeFrom0to100(mLimit);
+        }
         notifyPropertyChanged(BR.limitErrorMsg);
+    }
 
-        return mValidator.validateAll(this, false);
+    private boolean validateDataInput() {
+        validateKeywordInput();
+        validateLimitNumberInput();
+        try {
+            return mValidator.validateAll();
+        } catch (IllegalAccessException e) {
+            return false;
+        }
     }
 }
