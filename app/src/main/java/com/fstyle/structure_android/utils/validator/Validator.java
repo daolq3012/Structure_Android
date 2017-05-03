@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
+import android.widget.EditText;
 import com.fstyle.structure_android.screen.BaseView;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -110,7 +111,7 @@ public class Validator {
     /**
      * Validate all field.
      */
-    private boolean validate(Object factor, Rule[] rules, boolean isOptional) {
+    private boolean validate(EditText factor, Rule[] rules, boolean isOptional) {
         boolean isValid = true;
         for (Rule rule : rules) {
             for (int type : rule.types()) {
@@ -119,9 +120,8 @@ public class Validator {
                     continue;
                 }
                 try {
-                    boolean valid =
-                            (isOptional && isValidOptional(factor)) || (Boolean) method.invoke(this,
-                                    factor);
+                    boolean valid = (isOptional && isValidOptional(factor)) || TextUtils.isEmpty(
+                            (String) (method.invoke(this, factor.getText().toString().trim())));
                     if (!valid) {
                         isValid = false;
                     }
@@ -150,8 +150,11 @@ public class Validator {
             boolean isOptional = optional != null;
             field.setAccessible(true);
 
+            boolean valid = false;
             Object object = field.get(mObject);
-            boolean valid = validate(object, rules, isOptional);
+            if (object instanceof EditText) {
+                valid = validate((EditText) object, rules, isOptional);
+            }
             if (!valid) {
                 isValid = false;
             }
@@ -197,7 +200,7 @@ public class Validator {
     }
 
     @ValidMethod(type = { ValidType.NG_WORD })
-    public boolean validateNGWord(String str) {
+    public String validateNGWord(String str) {
         if (mNGWordPattern == null) {
             throw new ValidationException(
                     "NGWordPattern is null!!! \n Call initNGWordPattern() before call this method!",
@@ -206,30 +209,23 @@ public class Validator {
         boolean isValid =
                 !TextUtils.isEmpty(str) && !mNGWordPattern.matcher(str.toLowerCase(Locale.ENGLISH))
                         .find();
-        mMessage = mContext.getString(mAllErrorMessage.valueAt(ValidType.NG_WORD));
-        return isValid;
+        mMessage = isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NG_WORD));
+        return mMessage;
     }
 
     @ValidMethod(type = { ValidType.VALUE_RANGE_0_100 })
-    public boolean validateValueRangeFrom0to100(String str) {
+    public String validateValueRangeFrom0to100(String str) {
         int value = convertStringToInteger(str);
         boolean isValid = value >= 0 && value <= 100;
         mMessage = isValid ? ""
                 : mContext.getString(mAllErrorMessage.valueAt(ValidType.VALUE_RANGE_0_100));
-        return isValid;
+        return mMessage;
     }
 
     @ValidMethod(type = { ValidType.NON_EMPTY })
-    public boolean validateValueNonEmpty(String value) {
+    public String validateValueNonEmpty(String value) {
         boolean isValid = !TextUtils.isEmpty(value);
         mMessage = isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NON_EMPTY));
-        return isValid;
-    }
-
-    /**
-     * @return latest message error after validate
-     */
-    public String getMessage() {
         return mMessage;
     }
 
