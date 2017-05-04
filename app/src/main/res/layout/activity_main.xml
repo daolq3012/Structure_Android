@@ -57,6 +57,7 @@
         <Button
             android:layout_width="100dp"
             android:layout_height="60dp"
+            android:enabled="@{viewModel.enableSearchButton}"
             android:onClick="@{viewModel::onSearchButtonClicked}"
             android:text="@string/search"
             android:textAllCaps="false"
