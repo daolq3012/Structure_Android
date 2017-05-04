@@ -13,8 +13,8 @@ import rx.Observable;
 
 public interface NameApi {
     @GET("/search/users")
-    Observable<UsersList> searchGithubUsers(@Query("per_page") int limit,
-            @Query("q") String searchTerm);
+    Observable<UsersList> searchGithubUsers(@Query("q") String searchTerm,
+            @Query("per_page") int limit);
 
     @GET("/users/{username}")
     Observable<User> getUser(@Path("username") String username);
