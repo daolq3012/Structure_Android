@@ -5,6 +5,7 @@ package com.fstyle.structure_android.screen;
  */
 
 import android.databinding.BaseObservable;
+import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -32,4 +33,6 @@ public abstract class BaseViewModel extends BaseObservable {
     private void stopSubscriptions() {
         mCompositeSubscription.clear();
     }
+
+    public abstract void setSchedulerProvider(BaseSchedulerProvider schedulerProvider);
 }

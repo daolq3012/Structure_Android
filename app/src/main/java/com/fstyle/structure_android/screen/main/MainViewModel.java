@@ -8,12 +8,13 @@ import android.view.View;
 import com.fstyle.structure_android.BR;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
-import com.fstyle.structure_android.data.model.UsersList;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.screen.BaseViewModel;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
+import com.fstyle.structure_android.utils.Constant;
 import com.fstyle.structure_android.utils.common.StringUtils;
 import com.fstyle.structure_android.utils.navigator.Navigator;
+import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Rule;
 import com.fstyle.structure_android.utils.validator.ValidType;
 import com.fstyle.structure_android.utils.validator.Validation;
@@ -21,17 +22,12 @@ import com.fstyle.structure_android.utils.validator.Validator;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import java.util.ArrayList;
 import java.util.List;
-import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
-import static com.fstyle.structure_android.utils.Constant.ARGUMENT_LIST_USER;
 
 /**
  * Created by Sun on 3/19/2017.
+ * Relative @{@link MainActivity}
  */
 
 public class MainViewModel extends BaseViewModel {
@@ -39,6 +35,7 @@ public class MainViewModel extends BaseViewModel {
     private UserRepository mUserRepository;
     private DialogManager mDialogManager;
     private Navigator mNavigator;
+    private BaseSchedulerProvider mSchedulerProvider;
 
     @Validation({
             @Rule(types = {
@@ -62,6 +59,11 @@ public class MainViewModel extends BaseViewModel {
         this.mNavigator = navigator;
     }
 
+    @Override
+    public void setSchedulerProvider(BaseSchedulerProvider schedulerProvider) {
+        mSchedulerProvider = schedulerProvider;
+    }
+
     public void setValidator(Validator validator) {
         mValidator = validator;
     }
@@ -73,7 +75,7 @@ public class MainViewModel extends BaseViewModel {
 
     public void setKeyWord(String keyWord) {
         mKeyWord = keyWord;
-        validateKeywordInput();
+        validateKeywordInput(keyWord);
     }
 
     @Bindable
@@ -83,7 +85,7 @@ public class MainViewModel extends BaseViewModel {
 
     public void setLimit(String limit) {
         mLimit = limit;
-        validateLimitNumberInput();
+        validateLimitNumberInput(limit);
     }
 
     @Bindable
@@ -104,66 +106,66 @@ public class MainViewModel extends BaseViewModel {
         mLimitErrorMsg = limitErrorMsg;
     }
 
-    public void onSearchButtonClicked(View view) {
-        if (!validateDataInput()) {
-            return;
-        }
-        Subscription subscription = mUserRepository.getRemoteDataSource()
-                .searchUsers(mKeyWord, Integer.parseInt(mLimit))
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<UsersList, Observable<List<User>>>() {
-                    @Override
-                    public Observable<List<User>> call(UsersList usersList) {
-                        return Observable.just(usersList.getItems());
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<User>>() {
-                    @Override
-                    public void call(List<User> users) {
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelableArrayList(ARGUMENT_LIST_USER,
-                                (ArrayList<? extends Parcelable>) users);
-                        mNavigator.startActivity(SearchResultActivity.class, bundle);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mDialogManager.dialogMainStyle(throwable.getMessage(),
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                    }
-                });
-        startSubscriber(subscription);
-    }
-
-    private void validateKeywordInput() {
-        mKeywordErrorMsg = mValidator.validateValueNonEmpty(mKeyWord);
-        if (StringUtils.isBlank(mKeywordErrorMsg)) {
-            mKeywordErrorMsg = mValidator.validateNGWord(mKeyWord);
-        }
-        notifyPropertyChanged(BR.keywordErrorMsg);
-    }
-
-    private void validateLimitNumberInput() {
-        mLimitErrorMsg = mValidator.validateValueNonEmpty(mLimit);
-        if (StringUtils.isBlank(mLimitErrorMsg)) {
-            mLimitErrorMsg = mValidator.validateValueRangeFrom0to100(mLimit);
-        }
-        notifyPropertyChanged(BR.limitErrorMsg);
-    }
-
-    private boolean validateDataInput() {
-        validateKeywordInput();
-        validateLimitNumberInput();
+    @Bindable
+    public boolean isEnableSearchButton() {
         try {
             return mValidator.validateAll();
         } catch (IllegalAccessException e) {
             return false;
         }
+    }
+
+    public void onSearchButtonClicked(View view) {
+        Subscription subscription =
+                mUserRepository.searchUsers(mKeyWord, StringUtils.convertStringToNumber(mLimit))
+                        .subscribeOn(mSchedulerProvider.io())
+                        .observeOn(mSchedulerProvider.ui())
+                        .subscribe(new Action1<List<User>>() {
+                            @Override
+                            public void call(List<User> users) {
+                                gotoSearchResultActivity(users);
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                showDialogError(throwable);
+                            }
+                        });
+        startSubscriber(subscription);
+    }
+
+    public void showDialogError(Throwable throwable) {
+        mDialogManager.dialogMainStyle(throwable.getMessage(),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+    }
+
+    public void gotoSearchResultActivity(List<User> users) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(Constant.ARGUMENT_LIST_USER,
+                (ArrayList<? extends Parcelable>) users);
+        mNavigator.startActivity(SearchResultActivity.class, bundle);
+    }
+
+    public void validateKeywordInput(String keyWord) {
+        mKeywordErrorMsg = mValidator.validateValueNonEmpty(keyWord);
+        if (StringUtils.isBlank(mKeywordErrorMsg)) {
+            mKeywordErrorMsg = mValidator.validateNGWord(keyWord);
+        }
+        notifyPropertyChanged(BR.keywordErrorMsg);
+        notifyPropertyChanged(BR.enableSearchButton);
+    }
+
+    public void validateLimitNumberInput(String limitNumber) {
+        mLimitErrorMsg = mValidator.validateValueNonEmpty(limitNumber);
+        if (StringUtils.isBlank(mLimitErrorMsg)) {
+            mLimitErrorMsg = mValidator.validateValueRangeFrom0to100(limitNumber);
+        }
+        notifyPropertyChanged(BR.limitErrorMsg);
+        notifyPropertyChanged(BR.enableSearchButton);
     }
 }
