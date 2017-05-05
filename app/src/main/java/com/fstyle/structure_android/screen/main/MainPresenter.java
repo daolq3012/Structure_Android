@@ -1,12 +1,12 @@
 package com.fstyle.structure_android.screen.main;
 
-import android.text.TextUtils;
+import android.util.Log;
 import com.fstyle.structure_android.data.source.UserRepository;
-import com.fstyle.structure_android.utils.Constant;
+import com.fstyle.structure_android.utils.common.StringUtils;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
-import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import com.fstyle.structure_android.utils.validator.Validator;
 import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
@@ -18,20 +18,20 @@ class MainPresenter implements MainContract.Presenter {
     private MainContract.ViewModel mMainViewModel;
     private UserRepository mUserRepository;
     private Validator mValidator;
-    private final CustomCompositeSubscription mCompositeSubscription;
+    private final CompositeSubscription mCompositeSubscription;
     private BaseSchedulerProvider mSchedulerProvider;
 
     MainPresenter(UserRepository userRepository, Validator validator,
-            CustomCompositeSubscription subscription, BaseSchedulerProvider schedulerProvider) {
+            BaseSchedulerProvider schedulerProvider) {
         mUserRepository = userRepository;
         mValidator = validator;
-        mCompositeSubscription = subscription;
         mSchedulerProvider = schedulerProvider;
+        mCompositeSubscription = new CompositeSubscription();
+        mCompositeSubscription.add(mValidator.initNGWordPattern());
     }
 
     @Override
     public void onStart() {
-        mCompositeSubscription.add(mValidator.initNGWordPattern());
     }
 
     @Override
@@ -45,27 +45,42 @@ class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void searchUsers(int limit, String keyWord) {
-        if (!validateDataInput(limit, keyWord)) {
-            return;
+    public void validateKeywordInput(String keyword) {
+        String message = mValidator.validateValueNonEmpty(keyword);
+        if (StringUtils.isBlank(message)) {
+            message = mValidator.validateNGWord(keyword);
         }
+        mMainViewModel.onInvalidKeyWord(message);
+    }
+
+    @Override
+    public void validateLimitNumberInput(String limit) {
+        String message = mValidator.validateValueNonEmpty(limit);
+        if (StringUtils.isBlank(message)) {
+            message = mValidator.validateValueRangeFrom0to100(limit);
+        }
+        mMainViewModel.onInvalidLimitNumber(message);
+    }
+
+    @Override
+    public boolean validateDataInput(String keyword, String limit) {
+        validateKeywordInput(keyword);
+        validateLimitNumberInput(limit);
+        try {
+            return mValidator.validateAll(mMainViewModel);
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "validateDataInput: ", e);
+            return false;
+        }
+    }
+
+    @Override
+    public void searchUsers(String keyWord, int limit) {
         Subscription subscription = mUserRepository.searchUsers(limit, keyWord)
                 .subscribeOn(mSchedulerProvider.io())
                 .observeOn(mSchedulerProvider.ui())
                 .subscribe(users -> mMainViewModel.onSearchUsersSuccess(users),
                         throwable -> mMainViewModel.onSearchError(throwable));
         mCompositeSubscription.add(subscription);
-    }
-
-    private boolean validateDataInput(int limit, String keyWord) {
-        String errorMsg = mValidator.validateNGWord(keyWord);
-        errorMsg += (TextUtils.isEmpty(errorMsg) ? "" : Constant.BREAK_LINE)
-                + mValidator.validateValueNonEmpty(keyWord);
-        mMainViewModel.onInvalidKeyWord(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
-
-        errorMsg = mValidator.validateValueRangeFrom0to100(limit);
-        mMainViewModel.onInvalidLimitNumber(TextUtils.isEmpty(errorMsg) ? null : errorMsg);
-
-        return mValidator.validateAll(mMainViewModel, false);
     }
 }

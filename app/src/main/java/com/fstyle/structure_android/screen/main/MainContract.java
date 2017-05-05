@@ -29,6 +29,12 @@ public interface MainContract {
      */
     interface Presenter extends BasePresenter<ViewModel> {
 
-        void searchUsers(int limit, String keyWord);
+        void validateKeywordInput(String keyword);
+
+        void validateLimitNumberInput(String limit);
+
+        boolean validateDataInput(String keyword, String limit);
+
+        void searchUsers(String keyWord, int limit);
     }
 }
