@@ -48,23 +48,21 @@ class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public boolean validateKeywordInput(String keyword) {
+    public void validateKeywordInput(String keyword) {
         String message = mValidator.validateValueNonEmpty(keyword);
         if (StringUtils.isBlank(message)) {
             message = mValidator.validateNGWord(keyword);
         }
         mMainViewModel.onInvalidKeyWord(message);
-        return StringUtils.isBlank(message);
     }
 
     @Override
-    public boolean validateLimitNumberInput(String limit) {
+    public void validateLimitNumberInput(String limit) {
         String message = mValidator.validateValueNonEmpty(limit);
         if (StringUtils.isBlank(message)) {
             message = mValidator.validateValueRangeFrom0to100(limit);
         }
         mMainViewModel.onInvalidLimitNumber(message);
-        return StringUtils.isBlank(message);
     }
 
     @Override

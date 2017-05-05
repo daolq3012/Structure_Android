@@ -32,9 +32,9 @@ public interface MainContract {
 
         void setSchedulerProvider(BaseSchedulerProvider schedulerProvider);
 
-        boolean validateKeywordInput(String keyword);
+        void validateKeywordInput(String keyword);
 
-        boolean validateLimitNumberInput(String limit);
+        void validateLimitNumberInput(String limit);
 
         boolean validateDataInput(String keyword, String limit);
 
