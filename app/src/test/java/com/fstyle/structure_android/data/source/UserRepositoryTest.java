@@ -1,11 +1,8 @@
 package com.fstyle.structure_android.data.source;
 
 import com.fstyle.structure_android.data.model.User;
-import com.fstyle.structure_android.data.model.UsersList;
-import com.fstyle.structure_android.data.source.local.realm.RealmApi;
 import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
-import com.fstyle.structure_android.data.source.remote.api.service.NameApi;
 import java.util.ArrayList;
 import java.util.List;
 import okhttp3.MediaType;
@@ -14,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -30,30 +28,33 @@ public class UserRepositoryTest {
     private static final String USER_LOGIN_1 = "abc";
     private static final String USER_LOGIN_2 = "def";
 
-    @Mock
-    NameApi mNameApi;
-    @Mock
-    RealmApi mRealmApi;
-
+    @InjectMocks
     private UserRepository mUserRepository;
+    @Mock
+    UserLocalDataSource mLocalDataSource;
+    @Mock
+    UserRemoteDataSource mRemoteDataSource;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mUserRepository = new UserRepository(new UserLocalDataSource(mRealmApi),
-                new UserRemoteDataSource(mNameApi));
     }
 
     @Test
-    public void searchUsers200ResponseCodeInvokesCorrectApiCalls() {
+    public void searchUsers_200ResponseCode_InvokesCorrectApiCalls() {
+        User user = new User(USER_LOGIN_1);
+        User user2 = new User(USER_LOGIN_2);
+
+        List<User> userReturns = new ArrayList<>();
+        userReturns.add(user);
+        userReturns.add(user2);
         // Given
-        Mockito.when(
-                mNameApi.searchGithubUsers(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString()))
-                .thenReturn(Observable.just(githubUserList()));
+        Mockito.when(mRemoteDataSource.searchUsers(ArgumentMatchers.anyString(),
+                ArgumentMatchers.anyInt())).thenReturn(Observable.just(userReturns));
 
         // When
         TestSubscriber<List<User>> subscriber = new TestSubscriber<>();
-        mUserRepository.searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
+        mUserRepository.searchUsers(USER_LOGIN_1, 2).subscribe(subscriber);
 
         // Then
         subscriber.awaitTerminalEvent();
@@ -63,43 +64,26 @@ public class UserRepositoryTest {
         List<User> users = onNextEvents.get(0);
         Assert.assertEquals(USER_LOGIN_1, users.get(0).getLogin());
         Assert.assertEquals(USER_LOGIN_2, users.get(1).getLogin());
-        Mockito.verify(mNameApi).searchGithubUsers(2, USER_LOGIN_1);
-    }
-
-    private UsersList githubUserList() {
-        User user = new User(USER_LOGIN_1);
-
-        User user2 = new User(USER_LOGIN_2);
-
-        List<User> githubUsers = new ArrayList<>();
-        githubUsers.add(user);
-        githubUsers.add(user2);
-        UsersList usersList = new UsersList(githubUsers);
-        return usersList;
+        Mockito.verify(mRemoteDataSource).searchUsers(USER_LOGIN_1, 2);
     }
 
     @Test
-    public void searchUsersOtherHttpErrorSearchTerminatedWithError() {
+    public void searchUsers_OtherHttpError_SearchTerminatedWithError() {
         // Given
-        Mockito.when(
-                mNameApi.searchGithubUsers(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString()))
-                .thenReturn(get403ForbiddenError());
+        Mockito.when(mRemoteDataSource.searchUsers(ArgumentMatchers.anyString(),
+                ArgumentMatchers.anyInt()))
+                .thenReturn(Observable.error(new HttpException(Response.error(403,
+                        ResponseBody.create(MediaType.parse("application/json"), "Forbidden")))));
 
         // When
         TestSubscriber<List<User>> subscriber = new TestSubscriber<>();
-        mUserRepository.searchUsers(2, USER_LOGIN_1).subscribe(subscriber);
+        mUserRepository.searchUsers(USER_LOGIN_1, 2).subscribe(subscriber);
 
         // Then
         subscriber.awaitTerminalEvent();
         subscriber.assertError(HttpException.class);
 
-        Mockito.verify(mNameApi).searchGithubUsers(2, USER_LOGIN_1);
-        Mockito.verify(mNameApi, Mockito.never()).searchGithubUsers(2, USER_LOGIN_2);
-        Mockito.verify(mNameApi, Mockito.never()).getUser(USER_LOGIN_1);
-    }
-
-    private Observable<UsersList> get403ForbiddenError() {
-        return Observable.error(new HttpException(Response.error(403,
-                ResponseBody.create(MediaType.parse("application/json"), "Forbidden"))));
+        Mockito.verify(mRemoteDataSource).searchUsers(USER_LOGIN_1, 2);
+        Mockito.verify(mRemoteDataSource, Mockito.never()).searchUsers(USER_LOGIN_2, 2);
     }
 }

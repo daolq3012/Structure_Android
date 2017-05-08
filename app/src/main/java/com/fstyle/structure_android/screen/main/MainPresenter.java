@@ -18,7 +18,7 @@ class MainPresenter implements MainContract.Presenter {
     private MainContract.ViewModel mMainViewModel;
     private UserRepository mUserRepository;
     private Validator mValidator;
-    private final CompositeSubscription mCompositeSubscription;
+    private CompositeSubscription mCompositeSubscription;
     private BaseSchedulerProvider mSchedulerProvider;
 
     MainPresenter(UserRepository userRepository, Validator validator,
@@ -27,11 +27,19 @@ class MainPresenter implements MainContract.Presenter {
         mValidator = validator;
         mSchedulerProvider = schedulerProvider;
         mCompositeSubscription = new CompositeSubscription();
-        mCompositeSubscription.add(mValidator.initNGWordPattern());
+        Subscription subscription = mValidator.initNGWordPattern();
+        if (subscription != null) {
+            mCompositeSubscription.add(subscription);
+        }
     }
 
     @Override
     public void onStart() {
+    }
+
+    @Override
+    public void setSchedulerProvider(BaseSchedulerProvider schedulerProvider) {
+        mSchedulerProvider = schedulerProvider;
     }
 
     @Override
@@ -76,7 +84,7 @@ class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void searchUsers(String keyWord, int limit) {
-        Subscription subscription = mUserRepository.searchUsers(limit, keyWord)
+        Subscription subscription = mUserRepository.searchUsers(keyWord, limit)
                 .subscribeOn(mSchedulerProvider.io())
                 .observeOn(mSchedulerProvider.ui())
                 .subscribe(users -> mMainViewModel.onSearchUsersSuccess(users),

@@ -20,7 +20,7 @@ public class UserRemoteDataSource extends BaseRemoteDataSource
     }
 
     @Override
-    public Observable<List<User>> searchUsers(int limit, String keyWord) {
+    public Observable<List<User>> searchUsers(String keyWord, int limit) {
         return mNameApi.searchGithubUsers(limit, keyWord)
                 .flatMap(usersList -> usersList == null ? Observable.error(
                         new NullPointerException()) : Observable.just(usersList.getItems()));

@@ -21,7 +21,7 @@ public class UserRepository {
         mRemoteDataSource = remoteDataSource;
     }
 
-    public Observable<List<User>> searchUsers(int limit, String keyword) {
-        return mRemoteDataSource.searchUsers(limit, keyword);
+    public Observable<List<User>> searchUsers(String keyword, int limit) {
+        return mRemoteDataSource.searchUsers(keyword, limit);
     }
 }
