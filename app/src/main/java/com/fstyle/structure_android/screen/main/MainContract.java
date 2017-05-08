@@ -3,6 +3,7 @@ package com.fstyle.structure_android.screen.main;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.screen.BasePresenter;
 import com.fstyle.structure_android.screen.BaseViewModel;
+import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import java.util.List;
 
 /**
@@ -28,6 +29,8 @@ public interface MainContract {
      * Presenter
      */
     interface Presenter extends BasePresenter<ViewModel> {
+
+        void setSchedulerProvider(BaseSchedulerProvider schedulerProvider);
 
         void validateKeywordInput(String keyword);
 
