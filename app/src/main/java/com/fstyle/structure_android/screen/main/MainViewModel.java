@@ -4,12 +4,12 @@ import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import android.view.View;
 import com.fstyle.structure_android.BR;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
+import com.fstyle.structure_android.utils.common.StringUtils;
 import com.fstyle.structure_android.utils.navigator.Navigator;
 import com.fstyle.structure_android.utils.validator.Rule;
 import com.fstyle.structure_android.utils.validator.ValidType;
@@ -42,7 +42,7 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
                     .error_lenght_from_0_to_100),
             @Rule(types = ValidType.NON_EMPTY, message = R.string.must_not_empty)
     })
-    private int mLimit = Integer.MIN_VALUE;
+    private String mLimit;
     private String mKeywordErrorMsg;
     private String mLimitErrorMsg;
 
@@ -79,13 +79,11 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
     @Override
     public void onInvalidKeyWord(String errorMsg) {
         setKeywordErrorMsg(errorMsg);
-        notifyPropertyChanged(BR.keywordErrorMsg);
     }
 
     @Override
     public void onInvalidLimitNumber(String errorMsg) {
         setLimitErrorMsg(errorMsg);
-        notifyPropertyChanged(BR.limitErrorMsg);
     }
 
     @Bindable
@@ -95,18 +93,17 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
 
     public void setKeyWord(String keyWord) {
         mKeyWord = keyWord;
+        mPresenter.validateKeywordInput(keyWord);
     }
 
     @Bindable
     public String getLimit() {
-        return mLimit == Integer.MIN_VALUE ? "" : String.valueOf(mLimit);
+        return mLimit;
     }
 
     public void setLimit(String limit) {
-        if (TextUtils.isEmpty(limit)) {
-            return;
-        }
-        mLimit = Integer.parseInt(limit);
+        mLimit = limit;
+        mPresenter.validateLimitNumberInput(limit);
     }
 
     @Bindable
@@ -116,6 +113,7 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
 
     public void setKeywordErrorMsg(String keywordErrorMsg) {
         mKeywordErrorMsg = keywordErrorMsg;
+        notifyPropertyChanged(BR.keywordErrorMsg);
     }
 
     @Bindable
@@ -125,9 +123,13 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
 
     public void setLimitErrorMsg(String limitErrorMsg) {
         mLimitErrorMsg = limitErrorMsg;
+        notifyPropertyChanged(BR.limitErrorMsg);
     }
 
     public void onSearchButtonClicked(View view) {
-        mPresenter.searchUsers(mLimit, mKeyWord);
+        if (!mPresenter.validateDataInput(mKeyWord, mLimit)) {
+            return;
+        }
+        mPresenter.searchUsers(mKeyWord, StringUtils.convertStringToNumber(mLimit));
     }
 }

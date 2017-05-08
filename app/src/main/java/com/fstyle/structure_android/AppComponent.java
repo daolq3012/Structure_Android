@@ -2,11 +2,11 @@ package com.fstyle.structure_android;
 
 import android.content.Context;
 import com.fstyle.structure_android.data.source.RepositoryModule;
-import com.fstyle.structure_android.data.source.UserRepository;
+import com.fstyle.structure_android.data.source.local.realm.RealmApi;
 import com.fstyle.structure_android.data.source.remote.api.NetworkModule;
+import com.fstyle.structure_android.data.source.remote.api.service.NameApi;
 import com.fstyle.structure_android.utils.dagger.AppScope;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
-import com.fstyle.structure_android.utils.rx.CustomCompositeSubscription;
 import dagger.Component;
 
 /**
@@ -14,18 +14,18 @@ import dagger.Component;
  */
 
 @AppScope
-@Component(modules = {ApplicationModule.class, NetworkModule.class, RepositoryModule.class})
+@Component(modules = { ApplicationModule.class, NetworkModule.class, RepositoryModule.class })
 public interface AppComponent {
 
     //============== Region for Repository ================//
 
-    UserRepository userRepository();
+    RealmApi realmApi();
+
+    NameApi nameApi();
 
     //=============== Region for common ===============//
 
     Context applicationContext();
-
-    CustomCompositeSubscription customCompositeSubscription();
 
     BaseSchedulerProvider baseSchedulerProvider();
 }
