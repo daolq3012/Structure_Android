@@ -1,12 +1,26 @@
 <resources>
     <string name="app_name">Structure_Android</string>
+
+    <!-- Dialog -->
+    <string name="agree">Agree</string>
+    <string name="disagree">Disagree</string>
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
+    <string name="dont_ask_again">Don\'t ask again</string>
+    <string name="more_info">More Info</string>
+    <string name="choose">Choose</string>
+    <string name="clear">Clear</string>
+
+    <!-- Common -->
+    <string name="error">Error</string>
+    <string name="retry">Retry</string>
+
+    <!-- Main Screen -->
     <string name="search_user_github">Search User Github</string>
     <string name="keyword">Keyword</string>
     <string name="search">Search</string>
     <string name="type_number">type number</string>
     <string name="limit_number">Limit number</string>
-    <string name="error">Error</string>
-    <string name="empty"/>
     <string name="error_lenght_from_0_to_100">Limit value must be from 0 to 100</string>
     <string name="must_not_empty">Must not empty</string>
     <string name="error_unusable_characters">There are unusable characters</string>
