@@ -1,12 +1,14 @@
 package com.fstyle.structure_android.screen.main;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
+import com.fstyle.library.DialogAction;
+import com.fstyle.library.MaterialDialog;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepositoryImpl;
@@ -99,17 +101,20 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
     @Override
     public void onSearchError(Throwable throwable) {
-        mDialogManager.dialogMainStyle(throwable.getMessage(),
-                new DialogInterface.OnClickListener() {
+        mDialogManager.dismissProgressDialog();
+        mDialogManager.dialogError(throwable.getMessage(),
+                new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    public void onClick(@NonNull MaterialDialog materialDialog,
+                            @NonNull DialogAction dialogAction) {
+                        onSearchButtonClicked(null);
                     }
                 });
     }
 
     @Override
     public void onSearchUsersSuccess(List<User> users) {
+        mDialogManager.dismissProgressDialog();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(LIST_USER_ARGS, (ArrayList<? extends Parcelable>) users);
         new Navigator(this).startActivity(SearchResultActivity.class, bundle);
@@ -132,6 +137,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         if (!mPresenter.validateDataInput(keyWord, limit)) {
             return;
         }
+        mDialogManager.showIndeterminateProgressDialog();
         mPresenter.searchUsers(Integer.parseInt(limit), keyWord);
     }
 }
