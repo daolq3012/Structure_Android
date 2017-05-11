@@ -6,8 +6,6 @@ create 3 architect **MVP, MVVM, MVVMP** and templates for each kind.
 
 ## MVP
 https://github.com/daolq3012/Structure_Android/tree/mvp-architecture
-## MVP using Dagger 2
-https://github.com/daolq3012/Structure_Android/tree/mvp-dagger-architecture
 ## MVVM
 https://github.com/daolq3012/Structure_Android/tree/mvvm-architecture
 ## MVVMP
