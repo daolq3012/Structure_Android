@@ -18,10 +18,6 @@
         <item name="android:textSize">@dimen/sp_15</item>
     </style>
 
-    <style name="MainAlertDialog">
-        <item name="layout">@layout/dialog_main_alert</item>
-    </style>
-
     <style name="ButtonDialog" parent="Base.Widget.AppCompat.Button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/dp_62</item>

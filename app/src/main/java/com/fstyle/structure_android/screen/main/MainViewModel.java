@@ -1,10 +1,12 @@
 package com.fstyle.structure_android.screen.main;
 
-import android.content.DialogInterface;
 import android.databinding.Bindable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.view.View;
+import com.fstyle.library.DialogAction;
+import com.fstyle.library.MaterialDialog;
 import com.fstyle.structure_android.BR;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
@@ -23,6 +25,7 @@ import com.fstyle.structure_android.widget.dialog.DialogManager;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Action1;
 
 /**
@@ -116,6 +119,11 @@ public class MainViewModel extends BaseViewModel {
     }
 
     public void onSearchButtonClicked(View view) {
+        callAPISearchUsers();
+    }
+
+    private void callAPISearchUsers() {
+        mDialogManager.showIndeterminateProgressDialog();
         Subscription subscription =
                 mUserRepository.searchUsers(mKeyWord, StringUtils.convertStringToNumber(mLimit))
                         .subscribeOn(mSchedulerProvider.io())
@@ -130,16 +138,22 @@ public class MainViewModel extends BaseViewModel {
                             public void call(Throwable throwable) {
                                 showDialogError(throwable);
                             }
+                        }, new Action0() {
+                            @Override
+                            public void call() {
+                                mDialogManager.dismissProgressDialog();
+                            }
                         });
         startSubscriber(subscription);
     }
 
     public void showDialogError(Throwable throwable) {
-        mDialogManager.dialogMainStyle(throwable.getMessage(),
-                new DialogInterface.OnClickListener() {
+        mDialogManager.dialogError(throwable.getMessage(),
+                new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    public void onClick(@NonNull MaterialDialog materialDialog,
+                            @NonNull DialogAction dialogAction) {
+                        callAPISearchUsers();
                     }
                 });
     }
