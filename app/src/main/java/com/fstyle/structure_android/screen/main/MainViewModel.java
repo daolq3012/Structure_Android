@@ -66,11 +66,14 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
 
     @Override
     public void onSearchError(Throwable throwable) {
-        mDialogManager.dialogMainStyle(throwable.getMessage(), (dialog, which) -> dialog.dismiss());
+        mDialogManager.dismissProgressDialog();
+        mDialogManager.dialogError(throwable.getMessage(),
+                (dialog, which) -> onSearchButtonClicked(null));
     }
 
     @Override
     public void onSearchUsersSuccess(List<User> users) {
+        mDialogManager.dismissProgressDialog();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARGUMENT_LIST_USER, (ArrayList<? extends Parcelable>) users);
         mNavigator.startActivity(SearchResultActivity.class, bundle);
@@ -130,6 +133,7 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
         if (!mPresenter.validateDataInput(mKeyWord, mLimit)) {
             return;
         }
+        mDialogManager.showIndeterminateProgressDialog();
         mPresenter.searchUsers(mKeyWord, StringUtils.convertStringToNumber(mLimit));
     }
 }

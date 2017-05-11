@@ -124,6 +124,7 @@ dependencies {
 
   compile dependencies.supportDesign
   compile dependencies.constraintLayout
+  compile dependencies.dialog
 
   compile dependencies.rxJava
   compile dependencies.rxAndroid
