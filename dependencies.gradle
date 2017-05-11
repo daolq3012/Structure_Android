@@ -4,6 +4,7 @@ ext {
 
                   constraintLayout  : 'com.android.support.constraint:constraint-layout:1.0.1',
                   supportDesign     : 'com.android.support:design:25.2.0',
+                  dialog            : 'com.github.daolq3012:DialogManager:0.1',
 
                   rxJava            : 'io.reactivex:rxjava:1.1.5',
                   rxAndroid         : 'io.reactivex:rxandroid:1.2.0',
