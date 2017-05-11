@@ -1,11 +1,13 @@
 package com.fstyle.structure_android.screen.main;
 
-import android.content.DialogInterface;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.view.View;
+import com.fstyle.library.DialogAction;
+import com.fstyle.library.MaterialDialog;
 import com.fstyle.structure_android.BR;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
@@ -26,6 +28,8 @@ import static com.fstyle.structure_android.utils.Constant.ARGUMENT_LIST_USER;
  */
 
 public class MainViewModel extends BaseObservable implements MainContract.ViewModel {
+
+    private static final String TAG = "MainViewModel";
 
     private DialogManager mDialogManager;
     private Navigator mNavigator;
@@ -69,17 +73,20 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
 
     @Override
     public void onSearchError(Throwable throwable) {
-        mDialogManager.dialogMainStyle(throwable.getMessage(),
-                new DialogInterface.OnClickListener() {
+        mDialogManager.dismissProgressDialog();
+        mDialogManager.dialogError(throwable.getMessage(),
+                new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    public void onClick(@NonNull MaterialDialog materialDialog,
+                            @NonNull DialogAction dialogAction) {
+                        onSearchButtonClicked(null);
                     }
                 });
     }
 
     @Override
     public void onSearchUsersSuccess(List<User> users) {
+        mDialogManager.dismissProgressDialog();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARGUMENT_LIST_USER, (ArrayList<? extends Parcelable>) users);
         mNavigator.startActivity(SearchResultActivity.class, bundle);
@@ -139,6 +146,7 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
         if (!mPresenter.validateDataInput(mKeyWord, mLimit)) {
             return;
         }
+        mDialogManager.showIndeterminateProgressDialog();
         mPresenter.searchUsers(mKeyWord, StringUtils.convertStringToNumber(mLimit));
     }
 }
