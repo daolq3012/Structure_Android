@@ -8,6 +8,7 @@ import android.view.View;
 import com.fstyle.structure_android.BR;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
+import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
 import com.fstyle.structure_android.utils.common.StringUtils;
 import com.fstyle.structure_android.utils.navigator.Navigator;
@@ -65,10 +66,9 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
     }
 
     @Override
-    public void onSearchError(Throwable throwable) {
+    public void onSearchError(BaseException e) {
         mDialogManager.dismissProgressDialog();
-        mDialogManager.dialogError(throwable.getMessage(),
-                (dialog, which) -> onSearchButtonClicked(null));
+        mDialogManager.dialogError(e.getMessage(), (dialog, which) -> onSearchButtonClicked(null));
     }
 
     @Override
