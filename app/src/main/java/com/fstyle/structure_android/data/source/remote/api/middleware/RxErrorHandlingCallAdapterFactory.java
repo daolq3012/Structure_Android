@@ -1,9 +1,12 @@
 package com.fstyle.structure_android.data.source.remote.api.middleware;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 
+import com.fstyle.structure_android.data.source.remote.api.response.ErrorResponse;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -84,15 +87,15 @@ public final class RxErrorHandlingCallAdapterFactory extends CallAdapter.Factory
                 Response response = httpException.response();
                 if (response.errorBody() != null) {
                     try {
-                        String errorResponse = response.errorBody().string();
-                        // TODO define with server about ErrorResponse
-                        //      BaseErrorResponse baseErrorResponse = deserializeErrorBody
-                        // (errorResponse);
-                        //      if (baseErrorResponse != null && baseErrorResponse.isError()) {
-                        //           return BaseException.toServerError(baseErrorResponse);
-                        //      } else {
-                        //      return BaseException.toHttpError(response);
-                        //  }
+                        ErrorResponse errorResponse =
+                                new Gson().fromJson(response.errorBody().string(),
+                                        ErrorResponse.class);
+                        if (errorResponse != null && !TextUtils.isEmpty(
+                                errorResponse.getMessage())) {
+                            return BaseException.toServerError(errorResponse);
+                        } else {
+                            return BaseException.toHttpError(response);
+                        }
                     } catch (IOException e) {
                         Log.e(TAG, e.getMessage());
                     }

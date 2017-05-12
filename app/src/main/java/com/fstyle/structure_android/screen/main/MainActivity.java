@@ -13,6 +13,7 @@ import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepositoryImpl;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
+import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 import com.fstyle.structure_android.data.source.remote.api.service.NameServiceClient;
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
@@ -100,9 +101,9 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     }
 
     @Override
-    public void onSearchError(Throwable throwable) {
+    public void onSearchError(BaseException e) {
         mDialogManager.dismissProgressDialog();
-        mDialogManager.dialogError(throwable.getMessage(),
+        mDialogManager.dialogError(e.getMessage(),
                 new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog materialDialog,
