@@ -2,6 +2,7 @@ package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
+import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 import com.fstyle.structure_android.utils.rx.ImmediateSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Validator;
 import java.util.ArrayList;
@@ -141,7 +142,7 @@ public class MainPresenterTest {
      * #searchUsers
      */
     @Test
-    public void whenInputValidDataInvokesListUsers() throws Exception {
+    public void searchUsers_validData_listUsers() throws Exception {
         // Give
         List<User> users = new ArrayList<>();
         users.add(new User(USER_LOGIN_1));
@@ -159,19 +160,19 @@ public class MainPresenterTest {
     }
 
     @Test
-    public void whenInputValidDataAndNetworkErrorInvokesError() throws IllegalAccessException {
+    public void searchUsers_validDataAndNetworkError_Error() throws IllegalAccessException {
         // Give
         String errorMsg = "No internet";
-        Throwable throwable = new Throwable(errorMsg);
+        BaseException e = BaseException.toNetworkError(new Throwable(errorMsg));
 
         // When
         when(mUserRepository.searchUsers(Mockito.anyString(), Mockito.anyInt())).thenReturn(
-                Observable.<List<User>>error(throwable));
+                Observable.<List<User>>error(e));
 
         // Then
         mMainPresenter.searchUsers(USER_LOGIN_1, 2);
 
         verify(mMainViewModel, Mockito.never()).onSearchUsersSuccess(null);
-        verify(mMainViewModel).onSearchError(throwable);
+        verify(mMainViewModel).onSearchError(e);
     }
 }
