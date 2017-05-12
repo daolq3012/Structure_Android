@@ -2,6 +2,8 @@ package com.fstyle.structure_android.screen.main;
 
 import android.util.Log;
 import com.fstyle.structure_android.data.source.UserRepository;
+import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
+import com.fstyle.structure_android.data.source.remote.api.error.RequestError;
 import com.fstyle.structure_android.utils.common.StringUtils;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Validator;
@@ -87,8 +89,12 @@ class MainPresenter implements MainContract.Presenter {
         Subscription subscription = mUserRepository.searchUsers(keyWord, limit)
                 .subscribeOn(mSchedulerProvider.io())
                 .observeOn(mSchedulerProvider.ui())
-                .subscribe(users -> mMainViewModel.onSearchUsersSuccess(users),
-                        throwable -> mMainViewModel.onSearchError(throwable));
+                .subscribe(users -> mMainViewModel.onSearchUsersSuccess(users), new RequestError() {
+                    @Override
+                    public void onRequestError(BaseException error) {
+                        mMainViewModel.onSearchError(error);
+                    }
+                });
         mCompositeSubscription.add(subscription);
     }
 }

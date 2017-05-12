@@ -2,6 +2,7 @@ package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
+import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 import com.fstyle.structure_android.utils.rx.ImmediateSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Validator;
 import java.util.ArrayList;
@@ -159,7 +160,7 @@ public class MainPresenterTest {
     public void whenInputValidDataAndNetworkErrorInvokesError() throws IllegalAccessException {
         // Give
         String errorMsg = "No internet";
-        Throwable throwable = new Throwable(errorMsg);
+        BaseException throwable = BaseException.toNetworkError(new Throwable(errorMsg));
 
         // When
         when(mUserRepository.searchUsers(Mockito.anyString(), Mockito.anyInt())).thenReturn(

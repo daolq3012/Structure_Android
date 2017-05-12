@@ -1,6 +1,7 @@
 package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
+import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 import com.fstyle.structure_android.screen.BasePresenter;
 import com.fstyle.structure_android.screen.BaseViewModel;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
@@ -16,7 +17,7 @@ public interface MainContract {
      * View
      */
     interface ViewModel extends BaseViewModel {
-        void onSearchError(Throwable throwable);
+        void onSearchError(BaseException e);
 
         void onSearchUsersSuccess(List<User> users);
 
