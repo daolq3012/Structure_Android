@@ -7,10 +7,9 @@ package ${featureOut};
 final class ${capFeatureName}Presenter implements ${capFeatureName}Contract.Presenter {
 	private static final String TAG = ${capFeatureName}Presenter.class.getName();
 
-    private final ${capFeatureName}Contract.View mView;
+    private ${capFeatureName}Contract.View mView;
 
-    public ${capFeatureName}Presenter(${capFeatureName}Contract.View view) {
-		mView = view;
+    public ${capFeatureName}Presenter() {
     }
 
     @Override
