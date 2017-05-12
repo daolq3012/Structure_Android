@@ -11,6 +11,8 @@ import com.fstyle.structure_android.BR;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
+import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
+import com.fstyle.structure_android.data.source.remote.api.error.RequestError;
 import com.fstyle.structure_android.screen.BaseViewModel;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
 import com.fstyle.structure_android.utils.Constant;
@@ -25,7 +27,6 @@ import com.fstyle.structure_android.widget.dialog.DialogManager;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Subscription;
-import rx.functions.Action0;
 import rx.functions.Action1;
 
 /**
@@ -131,31 +132,27 @@ public class MainViewModel extends BaseViewModel {
                         .subscribe(new Action1<List<User>>() {
                             @Override
                             public void call(List<User> users) {
+                                mDialogManager.dismissProgressDialog();
                                 gotoSearchResultActivity(users);
                             }
-                        }, new Action1<Throwable>() {
+                        }, new RequestError() {
                             @Override
-                            public void call(Throwable throwable) {
-                                showDialogError(throwable);
-                            }
-                        }, new Action0() {
-                            @Override
-                            public void call() {
+                            public void onRequestError(BaseException error) {
                                 mDialogManager.dismissProgressDialog();
+                                showDialogError(error);
                             }
                         });
         startSubscriber(subscription);
     }
 
-    public void showDialogError(Throwable throwable) {
-        mDialogManager.dialogError(throwable.getMessage(),
-                new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog materialDialog,
-                            @NonNull DialogAction dialogAction) {
-                        callAPISearchUsers();
-                    }
-                });
+    public void showDialogError(BaseException e) {
+        mDialogManager.dialogError(e.getMessage(), new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog materialDialog,
+                    @NonNull DialogAction dialogAction) {
+                callAPISearchUsers();
+            }
+        });
     }
 
     public void gotoSearchResultActivity(List<User> users) {

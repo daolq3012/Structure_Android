@@ -1,11 +1,10 @@
 package com.fstyle.structure_android.data.source.remote.api.error;
 
 import android.support.annotation.Nullable;
-
+import com.fstyle.structure_android.data.source.remote.api.response.ErrorResponse;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-
 import retrofit2.Response;
 
 /**
@@ -18,6 +17,8 @@ public final class BaseException extends RuntimeException {
     private final String type;
     @Nullable
     private Response response;
+    @Nullable
+    private ErrorResponse errorResponse;
 
     private BaseException(@Type String type, Throwable cause) {
         super(cause.getMessage(), cause);
@@ -27,6 +28,11 @@ public final class BaseException extends RuntimeException {
     private BaseException(@Type String type, @Nullable Response response) {
         this.type = type;
         this.response = response;
+    }
+
+    public BaseException(@Type String type, @Nullable ErrorResponse response) {
+        this.type = type;
+        this.errorResponse = response;
     }
 
     public static BaseException toNetworkError(Throwable cause) {
@@ -41,6 +47,10 @@ public final class BaseException extends RuntimeException {
         return new BaseException(Type.UNEXPECTED, cause);
     }
 
+    public static BaseException toServerError(ErrorResponse response) {
+        return new BaseException(Type.SERVER, response);
+    }
+
     @Type
     public String getErrorType() {
         return type;
@@ -49,8 +59,9 @@ public final class BaseException extends RuntimeException {
     public String getMessage() {
         switch (type) {
             case Type.SERVER:
-                // TODO define with server about ErrorResponse
-                //                if (errorResponse != null) return errorResponse.getErrorMessage();
+                if (errorResponse != null) {
+                    return errorResponse.getMessage();
+                }
                 return "";
             case Type.NETWORK:
                 return getNetworkErrorMessage(getCause());
