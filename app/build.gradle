@@ -20,15 +20,19 @@ android {
     versionCode rootProject.ext.versionCode
     versionName rootProject.ext.versionName
 
+    testApplicationId "${APP_ID + ".test"}"
+    testInstrumentationRunner "${APP_ID + ".test.Instrumentation"}"
     vectorDrawables.useSupportLibrary = true
+  }
+
+  sourceSets {
+    androidTest {
+      assets.srcDirs = ['src/androidTest/assets']
+    }
   }
 
   lintOptions {
     abortOnError false
-  }
-
-  testOptions {
-    unitTests.returnDefaultValues = true
   }
 
   signingConfigs {
@@ -53,6 +57,7 @@ android {
   buildTypes {
     debug {
       versionNameSuffix = "debug"
+      testCoverageEnabled = true
 
       applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
       }
@@ -124,6 +129,8 @@ dependencies {
   testCompile dependencies.junit
   testCompile dependencies.mockito
 
+  androidTestCompile 'info.cukes:cucumber-android:1.2.0@jar'
+  androidTestCompile 'info.cukes:cucumber-picocontainer:1.2.0'
   androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
