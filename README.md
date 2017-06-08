@@ -25,3 +25,8 @@ https://github.com/daolq3012/Structure_Android/tree/mvvmp-dagger-architecture
 
 ## Code Style using for this project
 - Download and import to Android studio [codestyle.jar](https://github.com/daolq3012/Structure_Android/blob/master/codestyle/codestyle.jar?raw=true)
+
+
+## DEVELOP BY
+
+[DaoLQ](https://github.com/daolq3012) - dao.le.2511@gmail.com
