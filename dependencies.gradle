@@ -6,12 +6,12 @@ ext {
                   supportDesign     : 'com.android.support:design:25.2.0',
                   dialog            : 'com.github.daolq3012:DialogManager:0.1',
 
-                  rxJava            : 'io.reactivex:rxjava:1.1.5',
-                  rxAndroid         : 'io.reactivex:rxandroid:1.2.0',
+                  rxJava            : 'io.reactivex.rxjava2:rxjava:2.1.0',
+                  rxAndroid         : 'io.reactivex.rxjava2:rxandroid:2.0.1',
 
-                  retrofit2         : 'com.squareup.retrofit2:retrofit:2.0.2',
-                  retrofit2Adapter  : 'com.squareup.retrofit2:adapter-rxjava:2.0.2',
-                  retrofitGson      : 'com.squareup.retrofit2:converter-gson:2.0.2',
+                  retrofit2         : 'com.squareup.retrofit2:retrofit:2.1.0',
+                  retrofit2Adapter  : 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0',
+                  retrofitGson      : 'com.squareup.retrofit2:converter-gson:2.1.0',
                   loggingInterceptor: 'com.squareup.okhttp3:logging-interceptor:3.4.1',
 
                   okhttp            : 'com.squareup.okhttp3:okhttp:3.4.1',

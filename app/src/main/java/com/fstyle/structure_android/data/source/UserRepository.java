@@ -3,8 +3,8 @@ package com.fstyle.structure_android.data.source;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
+import io.reactivex.Observable;
 import java.util.List;
-import rx.Observable;
 
 /**
  * Created by le.quang.dao on 10/03/2017.

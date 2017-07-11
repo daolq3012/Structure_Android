@@ -8,18 +8,18 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 import com.fstyle.structure_android.screen.BaseViewModel;
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.regex.Pattern;
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by le.quang.dao on 16/03/2017.
@@ -154,30 +154,24 @@ public class Validator {
         return isValid;
     }
 
-    public Subscription initNGWordPattern() {
-        return Observable.create((Observable.OnSubscribe<Pattern>) subscriber -> {
-            try {
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(mContext.getAssets().open("ng-word")));
-                StringBuilder buffer = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (buffer.length() == 0) {
-                        buffer.append("(").append(line.toLowerCase(Locale.ENGLISH));
-                    } else {
-                        buffer.append("|").append(line.toLowerCase(Locale.ENGLISH));
-                    }
+    public Disposable initNGWordPattern() {
+        return Observable.create((ObservableOnSubscribe<Pattern>) emitter -> {
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(mContext.getAssets().open("ng-word")));
+            StringBuffer buffer = new StringBuffer();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (buffer.length() == 0) {
+                    buffer.append("(").append(line.toLowerCase(Locale.ENGLISH));
+                } else {
+                    buffer.append("|").append(line.toLowerCase(Locale.ENGLISH));
                 }
-                subscriber.onNext(Pattern.compile(buffer.append(")").toString()));
-            } catch (IOException e) {
-                subscriber.onError(e);
             }
+            emitter.onNext(Pattern.compile(buffer.append(")").toString()));
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(pattern -> mNGWordPattern = pattern, throwable -> {
-                    throw new ValidationException("Error when open ng-word", throwable);
-                });
+                .subscribe(pattern -> mNGWordPattern = pattern);
     }
 
     @ValidMethod(type = { ValidType.NG_WORD })
@@ -190,7 +184,7 @@ public class Validator {
         boolean isValid =
                 !TextUtils.isEmpty(str) && !mNGWordPattern.matcher(str.toLowerCase(Locale.ENGLISH))
                         .find();
-        mMessage = isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NG_WORD));
+        mMessage = isValid ? "" : mContext.getString(mAllErrorMessage.get(ValidType.NG_WORD));
         return mMessage;
     }
 
@@ -199,14 +193,14 @@ public class Validator {
         int value = convertStringToInteger(str);
         boolean isValid = value >= 0 && value <= 100;
         mMessage = isValid ? ""
-                : mContext.getString(mAllErrorMessage.valueAt(ValidType.VALUE_RANGE_0_100));
+                : mContext.getString(mAllErrorMessage.get(ValidType.VALUE_RANGE_0_100));
         return mMessage;
     }
 
     @ValidMethod(type = { ValidType.NON_EMPTY })
     public String validateValueNonEmpty(String value) {
         boolean isValid = !TextUtils.isEmpty(value);
-        mMessage = isValid ? "" : mContext.getString(mAllErrorMessage.valueAt(ValidType.NON_EMPTY));
+        mMessage = isValid ? "" : mContext.getString(mAllErrorMessage.get(ValidType.NON_EMPTY));
         return mMessage;
     }
 

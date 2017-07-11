@@ -3,6 +3,9 @@ package com.fstyle.structure_android.data.source;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
+import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
+import io.reactivex.Observable;
+import io.reactivex.observers.TestObserver;
 import java.util.ArrayList;
 import java.util.List;
 import okhttp3.MediaType;
@@ -16,9 +19,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import retrofit2.Response;
-import retrofit2.adapter.rxjava.HttpException;
-import rx.Observable;
-import rx.observers.TestSubscriber;
 
 /**
  * Created by Sun on 3/11/2017.
@@ -53,14 +53,14 @@ public class UserRepositoryTest {
                 ArgumentMatchers.anyInt())).thenReturn(Observable.just(userReturns));
 
         // When
-        TestSubscriber<List<User>> subscriber = new TestSubscriber<>();
+        TestObserver<List<User>> subscriber = new TestObserver<>();
         mUserRepository.searchUsers(USER_LOGIN_1, 2).subscribe(subscriber);
 
         // Then
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        List<List<User>> onNextEvents = subscriber.getOnNextEvents();
+        List<List<User>> onNextEvents = subscriber.values();
         List<User> users = onNextEvents.get(0);
         Assert.assertEquals(USER_LOGIN_1, users.get(0).getLogin());
         Assert.assertEquals(USER_LOGIN_2, users.get(1).getLogin());
@@ -76,7 +76,7 @@ public class UserRepositoryTest {
                         ResponseBody.create(MediaType.parse("application/json"), "Forbidden")))));
 
         // When
-        TestSubscriber<List<User>> subscriber = new TestSubscriber<>();
+        TestObserver<List<User>> subscriber = new TestObserver<>();
         mUserRepository.searchUsers(USER_LOGIN_1, 2).subscribe(subscriber);
 
         // Then

@@ -1,9 +1,9 @@
 package com.fstyle.structure_android.data.source.local.realm;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.functions.BiConsumer;
 import io.realm.Realm;
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Action2;
 
 /**
  * Created by le.quang.dao on 14/03/2017.
@@ -27,17 +27,22 @@ public class RealmApi {
      * object will become invalid and cause bug.
      */
     public <T> Observable<T> realmTransactionAsync(
-            final Action2<Subscriber<? super T>, Realm> action) {
-        return Observable.create(subscriber -> mRealm.executeTransactionAsync(
-                realm -> action.call(subscriber, realm), subscriber::onCompleted,
-                subscriber::onError));
+            final BiConsumer<ObservableEmitter<? super T>, Realm> consumer) {
+        return Observable.create(emitter -> mRealm.executeTransactionAsync(realm -> {
+            try {
+                consumer.accept(emitter, realm);
+            } catch (Exception e) {
+                emitter.onError(e);
+            }
+        }, emitter::onComplete, emitter::onError));
     }
 
     /**
      * USE THIS METHOD FOR GET
      */
-    public <T> Observable<T> realmGet(final Action2<Subscriber<? super T>, Realm> action) {
-        return Observable.create(subscriber -> action.call(subscriber, mRealm));
+    public <T> Observable<T> realmGet(
+            final BiConsumer<ObservableEmitter<? super T>, Realm> consumer) {
+        return Observable.create(subscriber -> consumer.accept(subscriber, mRealm));
     }
 
     public void closeRealmOnMainThread() {
