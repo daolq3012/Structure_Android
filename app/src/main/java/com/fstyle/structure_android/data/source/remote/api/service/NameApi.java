@@ -2,10 +2,10 @@ package com.fstyle.structure_android.data.source.remote.api.service;
 
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.model.UsersList;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import rx.Observable;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
