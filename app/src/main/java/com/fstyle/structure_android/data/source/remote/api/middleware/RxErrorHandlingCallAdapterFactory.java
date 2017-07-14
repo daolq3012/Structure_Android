@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.functions.Function;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -36,18 +38,18 @@ public final class RxErrorHandlingCallAdapterFactory extends CallAdapter.Factory
     }
 
     @Override
-    public CallAdapter<?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
+    public CallAdapter<?, ?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
         return new RxCallAdapterWrapper(retrofit, original.get(returnType, annotations, retrofit));
     }
 
     /**
      * RxCallAdapterWrapper
      */
-    private static class RxCallAdapterWrapper implements CallAdapter<Observable<?>> {
+    class RxCallAdapterWrapper<R> implements CallAdapter<R, Observable<?>> {
         private final Retrofit retrofit;
-        private final CallAdapter<?> wrapped;
+        private final CallAdapter<R, Observable<?>> wrapped;
 
-        RxCallAdapterWrapper(Retrofit retrofit, CallAdapter<?> wrapped) {
+        RxCallAdapterWrapper(Retrofit retrofit, CallAdapter<R, Observable<?>> wrapped) {
             this.retrofit = retrofit;
             this.wrapped = wrapped;
         }
@@ -57,12 +59,15 @@ public final class RxErrorHandlingCallAdapterFactory extends CallAdapter.Factory
             return wrapped.responseType();
         }
 
-        @SuppressWarnings("unchecked")
         @Override
-        public <R> Observable<?> adapt(Call<R> call) {
-            return ((Observable) wrapped.adapt(call)).onErrorResumeNext(throwable -> {
-                return Observable.error(convertToBaseException((Throwable) throwable));
-            });
+        public Observable<?> adapt(Call<R> call) {
+            return ((Observable) wrapped.adapt(call)).onErrorResumeNext(
+                    new Function<Throwable, ObservableSource>() {
+                        @Override
+                        public ObservableSource apply(Throwable throwable) throws Exception {
+                            return Observable.error(convertToBaseException(throwable));
+                        }
+                    });
         }
 
         private BaseException convertToBaseException(Throwable throwable) {
@@ -71,8 +76,7 @@ public final class RxErrorHandlingCallAdapterFactory extends CallAdapter.Factory
             }
 
             if (throwable instanceof IOException) {
-                return BaseException.toNetworkError(throwable);
-            }
+                return BaseException.toNetworkError(throwable);            }
 
             if (throwable instanceof HttpException) {
                 HttpException httpException = (HttpException) throwable;

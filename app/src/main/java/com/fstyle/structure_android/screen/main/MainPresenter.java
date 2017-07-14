@@ -1,6 +1,7 @@
 package com.fstyle.structure_android.screen.main;
 
 import android.util.Log;
+import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 import com.fstyle.structure_android.data.source.remote.api.error.RequestError;
@@ -9,6 +10,8 @@ import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Validator;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import java.util.List;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
@@ -89,7 +92,12 @@ class MainPresenter implements MainContract.Presenter {
         Disposable subscription = mUserRepository.searchUsers(keyWord, limit)
                 .subscribeOn(mSchedulerProvider.io())
                 .observeOn(mSchedulerProvider.ui())
-                .subscribe(users -> mMainViewModel.onSearchUsersSuccess(users), new RequestError() {
+                .subscribe(new Consumer<List<User>>() {
+                    @Override
+                    public void accept(List<User> users) throws Exception {
+                        mMainViewModel.onSearchUsersSuccess(users);
+                    }
+                }, new RequestError() {
                     @Override
                     public void onRequestError(BaseException error) {
                         mMainViewModel.onSearchError(error);

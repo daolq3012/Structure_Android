@@ -9,9 +9,11 @@ import android.util.Log;
 import android.util.SparseArray;
 import com.fstyle.structure_android.screen.BaseViewModel;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -155,23 +157,31 @@ public class Validator {
     }
 
     public Disposable initNGWordPattern() {
-        return Observable.create((ObservableOnSubscribe<Pattern>) emitter -> {
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(mContext.getAssets().open("ng-word")));
-            StringBuffer buffer = new StringBuffer();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (buffer.length() == 0) {
-                    buffer.append("(").append(line.toLowerCase(Locale.ENGLISH));
-                } else {
-                    buffer.append("|").append(line.toLowerCase(Locale.ENGLISH));
+        return Observable.create(new ObservableOnSubscribe<Pattern>() {
+            @Override
+            public void subscribe(ObservableEmitter<Pattern> emitter) throws Exception {
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(mContext.getAssets().open("ng-word")));
+                StringBuffer buffer = new StringBuffer();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (buffer.length() == 0) {
+                        buffer.append("(").append(line.toLowerCase(Locale.ENGLISH));
+                    } else {
+                        buffer.append("|").append(line.toLowerCase(Locale.ENGLISH));
+                    }
                 }
+                emitter.onNext(Pattern.compile(buffer.append(")").toString()));
             }
-            emitter.onNext(Pattern.compile(buffer.append(")").toString()));
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(pattern -> mNGWordPattern = pattern);
+                .subscribe(new Consumer<Pattern>() {
+                    @Override
+                    public void accept(Pattern pattern) throws Exception {
+                        mNGWordPattern = pattern;
+                    }
+                });
     }
 
     @ValidMethod(type = { ValidType.NG_WORD })

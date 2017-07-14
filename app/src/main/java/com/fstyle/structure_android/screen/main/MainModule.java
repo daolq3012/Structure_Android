@@ -3,7 +3,7 @@ package com.fstyle.structure_android.screen.main;
 import android.app.Activity;
 import android.content.Context;
 import com.fstyle.structure_android.data.source.UserRepository;
-import com.fstyle.structure_android.data.source.local.realm.UserLocalDataSource;
+import com.fstyle.structure_android.data.source.local.sqlite.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.utils.dagger.ActivityScope;
 import com.fstyle.structure_android.utils.navigator.Navigator;

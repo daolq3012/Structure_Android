@@ -4,7 +4,10 @@ import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.view.View;
+import com.fstyle.library.DialogAction;
+import com.fstyle.library.MaterialDialog;
 import com.fstyle.structure_android.BR;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
@@ -68,7 +71,13 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
     @Override
     public void onSearchError(BaseException e) {
         mDialogManager.dismissProgressDialog();
-        mDialogManager.dialogError(e.getMessage(), (dialog, which) -> onSearchButtonClicked(null));
+        mDialogManager.dialogError(e.getMessage(), (new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog materialDialog,
+                    @NonNull DialogAction dialogAction) {
+                onSearchButtonClicked(null);
+            }
+        }));
     }
 
     @Override
@@ -130,9 +139,9 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
     }
 
     public void onSearchButtonClicked(View view) {
-        if (!mPresenter.validateDataInput(mKeyWord, mLimit)) {
-            return;
-        }
+//        if (!mPresenter.validateDataInput(mKeyWord, mLimit)) {
+//            return;
+//        }
         mDialogManager.showIndeterminateProgressDialog();
         mPresenter.searchUsers(mKeyWord, StringUtils.convertStringToNumber(mLimit));
     }

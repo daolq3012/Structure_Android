@@ -3,6 +3,8 @@ package com.fstyle.structure_android.widget.dialog;
 import android.content.Context;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import com.fstyle.library.DialogAction;
 import com.fstyle.library.MaterialDialog;
 import com.fstyle.structure_android.R;
 
@@ -139,8 +141,20 @@ public class DialogManagerImpl implements DialogManager {
                 .autoDismiss(false)
                 .neutralText(R.string.clear)
                 .itemsCallbackMultiChoice(selectedIndices, callback)
-                .onNeutral((materialDialog, dialogAction) -> materialDialog.clearSelectedIndices())
-                .onPositive((materialDialog, dialogAction) -> materialDialog.dismiss())
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog materialDialog,
+                            @NonNull DialogAction dialogAction) {
+                        materialDialog.clearSelectedIndices();
+                    }
+                })
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog materialDialog,
+                            @NonNull DialogAction dialogAction) {
+                        materialDialog.dismiss();
+                    }
+                })
                 .show();
     }
 }

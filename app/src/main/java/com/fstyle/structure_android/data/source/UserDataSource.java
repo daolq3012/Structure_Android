@@ -1,6 +1,6 @@
 package com.fstyle.structure_android.data.source;
 
-import com.android.annotations.NonNull;
+import android.support.annotation.NonNull;
 import com.fstyle.structure_android.data.model.User;
 import io.reactivex.Observable;
 import java.util.List;

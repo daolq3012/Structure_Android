@@ -1,13 +1,15 @@
 apply plugin: 'com.android.application'
-apply plugin: 'realm-android'
+
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 apply from: '../autodimension.gradle'
-apply plugin: 'me.tatarka.retrolambda'
 
 /**
  * start config and check ci*/
 apply from: '../checkci.gradle'
 
-def APP_ID = "com.fstyle.structure_android";
+def APP_ID = "com.fstyle.structure_android"
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
@@ -21,11 +23,6 @@ android {
     versionName rootProject.ext.versionName
 
     vectorDrawables.useSupportLibrary = true
-  }
-
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
   }
 
   dataBinding {
@@ -94,6 +91,10 @@ android {
   }
 }
 
+repositories {
+  mavenCentral()
+}
+
 @SuppressWarnings("GroovyAssignabilityCheck")
 def appendVersionNameVersionCode(variant) {
   variant.outputs.each { output ->
@@ -111,10 +112,6 @@ def appendVersionNameVersionCode(variant) {
       }
     }
   }
-}
-
-retrolambda {
-  javaVersion JavaVersion.VERSION_1_7
 }
 
 dependencies {
@@ -144,4 +141,5 @@ dependencies {
   androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }

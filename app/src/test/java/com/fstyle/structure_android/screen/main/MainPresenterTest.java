@@ -163,8 +163,8 @@ public class MainPresenterTest {
         BaseException throwable = BaseException.toNetworkError(new Throwable(errorMsg));
 
         // When
-        when(mUserRepository.searchUsers(Mockito.anyString(), Mockito.anyInt())).thenReturn(
-                Observable.error(throwable));
+//        when(mUserRepository.searchUsers(Mockito.anyString(), Mockito.anyInt())).thenReturn(
+//                Observable.error(throwable));
 
         // Then
         mMainPresenter.searchUsers(USER_LOGIN_1, 2);
