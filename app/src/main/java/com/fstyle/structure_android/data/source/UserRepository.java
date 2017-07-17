@@ -3,7 +3,7 @@ package com.fstyle.structure_android.data.source;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.local.sqlite.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import java.util.List;
 
 /**
@@ -21,7 +21,7 @@ public class UserRepository {
         mRemoteDataSource = remoteDataSource;
     }
 
-    public Observable<List<User>> searchUsers(String keyword, int limit) {
+    public Single<List<User>> searchUsers(String keyword, int limit) {
         return mRemoteDataSource.searchUsers(keyword, limit);
     }
 }

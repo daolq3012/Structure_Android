@@ -3,6 +3,7 @@ package com.fstyle.structure_android.data.source;
 import android.support.annotation.NonNull;
 import com.fstyle.structure_android.data.model.User;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import java.util.List;
 
 /**
@@ -32,6 +33,6 @@ public interface UserDataSource {
      * RemoteData For User
      */
     interface RemoteDataSource {
-        Observable<List<User>> searchUsers(String keyWord, int limit);
+        Single<List<User>> searchUsers(String keyWord, int limit);
     }
 }

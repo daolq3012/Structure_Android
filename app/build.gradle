@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 apply from: '../autodimension.gradle'
 
@@ -106,9 +106,9 @@ def appendVersionNameVersionCode(variant) {
         variant.buildType.name ==
         android.buildTypes.staging.name) {
       if (output.zipAlign) {
-        def file = output.outputFile
-        output.outputFile = new File(file.parentFile,
-            "${variant.buildType.name}_${applicationId}_v${variant.versionName}-${variant.versionCode}.apk")
+//        def file = output.outputFile
+//        output.outputFile = new File(file.parentFile,
+//            "${variant.buildType.name}_${applicationId}_v${variant.versionName}-${variant.versionCode}.apk")
       }
     }
   }
@@ -117,7 +117,9 @@ def appendVersionNameVersionCode(variant) {
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
 
-  Map<String, String> dependencies = rootProject.ext.dependencies;
+  Map<String, String> dependencies = rootProject.ext.dependencies
+
+  kapt dependencies.dataBinding
 
   compile dependencies.supportDesign
   compile dependencies.constraintLayout
@@ -131,7 +133,7 @@ dependencies {
   compile dependencies.retrofitGson
   compile dependencies.loggingInterceptor
 
-  annotationProcessor dependencies.dagger2Compile
+  kapt dependencies.dagger2Compile
   compile dependencies.dagger2
   provided dependencies.annotation
 

@@ -2,6 +2,8 @@ ext {
   dependencies = [junit             : 'junit:junit:4.12',
                   mockito           : 'org.mockito:mockito-core:2.7.7',
 
+                  dataBinding       : 'com.android.databinding:compiler:3.0.0-alpha6',
+
                   constraintLayout  : 'com.android.support.constraint:constraint-layout:1.0.1',
                   supportDesign     : 'com.android.support:design:25.2.0',
                   dialog            : 'com.github.daolq3012:DialogManager:0.1',
