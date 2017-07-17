@@ -6,8 +6,8 @@ package com.fstyle.structure_android.utils.common
 
 object StringUtils {
 
-  fun isBlank(input: String): Boolean {
-    return input.isEmpty()
+  fun isBlank(input: String?): Boolean {
+    return input == null || input.isEmpty()
   }
 
   fun isNotBlank(input: String): Boolean {
