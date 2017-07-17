@@ -55,7 +55,7 @@ Source Code:
 
   
 ### 5. MVP-VM using Dagger 2
-This architech use [Retrolambda](https://github.com/evant/gradle-retrolambda)
+This Architechture apply Java 8 & RxJava 2.0.1
 
 Diagram:
 
@@ -64,6 +64,22 @@ Diagram:
 Source Code:
 
 **Branch:** [mvp-vm-dagger-architecture](https://github.com/daolq3012/Structure_Android/tree/mvvmp-dagger-architecture)
+
+### 6. MVP-VM-Kotlin
+This architecture apply:
+- Kotlin 1.1.3-2
+- RxJava 2.1.1
+- Dagger 2.11
+- Retrofit 2.3.0
+- DataBinding
+
+Diagram:
+
+- The same with MVP-VM structure
+
+Source Code:
+
+**Branch:** [mvp-vm-kotlin-architecture](https://github.com/daolq3012/Structure_Android/tree/kotlin-mvvmp-dagger-architecture)
 
 
 ### Code style
@@ -76,9 +92,9 @@ Source Code:
 - [X] Add MVVM Examples
 - [X] Add MVP-VM Examples
 - [X] Add MVP-VM-Dagger Examples
-- [ ] Update documentation for each
+- [X] Update documentation for each
+- [X] Add MVP-VM-Dagger Examples include Unit Test using **Kotlin**
 - [ ] Add test UI using [Cucumber](https://cucumber.io/) and [Espresso](https://google.github.io/android-testing-support-library/docs/espresso/setup/) (BDD technical)
-- [ ] Add MVP-VM-Dagger Examples include Unit Test using **Kotlin**
 
 ## 👬 Contribution
 
