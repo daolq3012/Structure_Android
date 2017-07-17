@@ -11,14 +11,4 @@ import android.support.v7.widget.RecyclerView
 </V> */
 
 abstract class BaseRecyclerViewAdapter<V : RecyclerView.ViewHolder> protected constructor(
-    protected val context: Context) : RecyclerView.Adapter<V>() {
-
-  /**
-   * OnRecyclerViewItemClickListener
-
-   * @param <T> Data from item click
-  </T> */
-  interface OnRecyclerViewItemClickListener<T> {
-    fun onItemRecyclerViewClick(item: T)
-  }
-}
+    protected val context: Context) : RecyclerView.Adapter<V>()
