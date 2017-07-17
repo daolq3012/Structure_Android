@@ -3,7 +3,7 @@ package com.fstyle.structure_android.data.source;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.local.sqlite.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class UserRepositoryTest {
         userReturns.add(user2);
         // Given
         Mockito.when(mRemoteDataSource.searchUsers(ArgumentMatchers.anyString(),
-                ArgumentMatchers.anyInt())).thenReturn(Observable.just(userReturns));
+                ArgumentMatchers.anyInt())).thenReturn(Single.just(userReturns));
 
         // When
         TestObserver<List<User>> subscriber = new TestObserver<>();

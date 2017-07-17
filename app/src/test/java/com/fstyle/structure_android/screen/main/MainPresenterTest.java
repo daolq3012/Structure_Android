@@ -5,7 +5,7 @@ import com.fstyle.structure_android.data.source.UserRepository;
 import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 import com.fstyle.structure_android.utils.rx.ImmediateSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Validator;
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
@@ -147,7 +147,7 @@ public class MainPresenterTest {
 
         // When
         when(mUserRepository.searchUsers(Mockito.anyString(), Mockito.anyInt())).thenReturn(
-                Observable.just(users));
+                Single.just(users));
 
         // Then
         mMainPresenter.searchUsers(USER_LOGIN_1, 2);
@@ -160,7 +160,7 @@ public class MainPresenterTest {
     public void whenInputValidDataAndNetworkErrorInvokesError() throws IllegalAccessException {
         // Give
         String errorMsg = "No internet";
-        BaseException throwable = BaseException.toNetworkError(new Throwable(errorMsg));
+        BaseException throwable = BaseException.Companion.toNetworkError(new Throwable(errorMsg));
 
         // When
 //        when(mUserRepository.searchUsers(Mockito.anyString(), Mockito.anyInt())).thenReturn(

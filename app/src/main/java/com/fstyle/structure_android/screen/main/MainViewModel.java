@@ -13,6 +13,7 @@ import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
+import com.fstyle.structure_android.utils.Constant;
 import com.fstyle.structure_android.utils.common.StringUtils;
 import com.fstyle.structure_android.utils.navigator.Navigator;
 import com.fstyle.structure_android.utils.validator.Rule;
@@ -21,8 +22,6 @@ import com.fstyle.structure_android.utils.validator.Validation;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.fstyle.structure_android.utils.Constant.ARGUMENT_LIST_USER;
 
 /**
  * Created by Sun on 3/20/2017.
@@ -71,7 +70,7 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
     @Override
     public void onSearchError(BaseException e) {
         mDialogManager.dismissProgressDialog();
-        mDialogManager.dialogError(e.getMessage(), (new MaterialDialog.SingleButtonCallback() {
+        mDialogManager.dialogError(e.getMessageError(), (new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog materialDialog,
                     @NonNull DialogAction dialogAction) {
@@ -84,7 +83,7 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
     public void onSearchUsersSuccess(List<User> users) {
         mDialogManager.dismissProgressDialog();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(ARGUMENT_LIST_USER, (ArrayList<? extends Parcelable>) users);
+        bundle.putParcelableArrayList(Constant.INSTANCE.getARGUMENT_LIST_USER(), (ArrayList<? extends Parcelable>) users);
         mNavigator.startActivity(SearchResultActivity.class, bundle);
     }
 
@@ -139,10 +138,10 @@ public class MainViewModel extends BaseObservable implements MainContract.ViewMo
     }
 
     public void onSearchButtonClicked(View view) {
-//        if (!mPresenter.validateDataInput(mKeyWord, mLimit)) {
-//            return;
-//        }
+        if (!mPresenter.validateDataInput(mKeyWord, mLimit)) {
+            return;
+        }
         mDialogManager.showIndeterminateProgressDialog();
-        mPresenter.searchUsers(mKeyWord, StringUtils.convertStringToNumber(mLimit));
+        mPresenter.searchUsers(mKeyWord, StringUtils.INSTANCE.convertStringToNumber(mLimit));
     }
 }

@@ -60,7 +60,7 @@ class MainPresenter implements MainContract.Presenter {
     @Override
     public void validateKeywordInput(String keyword) {
         String message = mValidator.validateValueNonEmpty(keyword);
-        if (StringUtils.isBlank(message)) {
+        if (StringUtils.INSTANCE.isBlank(message)) {
             message = mValidator.validateNGWord(keyword);
         }
         mMainViewModel.onInvalidKeyWord(message);
@@ -69,7 +69,7 @@ class MainPresenter implements MainContract.Presenter {
     @Override
     public void validateLimitNumberInput(String limit) {
         String message = mValidator.validateValueNonEmpty(limit);
-        if (StringUtils.isBlank(message)) {
+        if (StringUtils.INSTANCE.isBlank(message)) {
             message = mValidator.validateValueRangeFrom0to100(limit);
         }
         mMainViewModel.onInvalidLimitNumber(message);

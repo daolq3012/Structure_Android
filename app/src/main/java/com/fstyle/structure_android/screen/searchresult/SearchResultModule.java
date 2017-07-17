@@ -39,7 +39,8 @@ public class SearchResultModule {
     @Provides
     public SearchResultAdapter provideSearchResultAdapter() {
         ArrayList<User> users =
-                mActivity.getIntent().getParcelableArrayListExtra(Constant.ARGUMENT_LIST_USER);
+                mActivity.getIntent().getParcelableArrayListExtra(
+                        Constant.INSTANCE.getARGUMENT_LIST_USER());
         return new SearchResultAdapter(mActivity, users);
     }
 }
