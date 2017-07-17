@@ -162,21 +162,21 @@ class Validator(@param:ApplicationContext private val mContext: Context, clzz: C
   }
 
   @ValidMethod(type = intArrayOf(ValidType.NG_WORD))
-  fun validateNGWord(str: String): String? {
+  fun validateNGWord(str: String?): String? {
     if (mNGWordPattern == null) {
       throw ValidationException(
           "NGWordPattern is null!!! \n Call initNGWordPattern() before call this method!",
           NullPointerException())
     }
     val isValid = !TextUtils.isEmpty(str) && !mNGWordPattern!!.matcher(
-        str.toLowerCase(Locale.ENGLISH))
+        str?.toLowerCase(Locale.ENGLISH))
         .find()
     mMessage = if (isValid) "" else mContext.getString(mAllErrorMessage.get(ValidType.NG_WORD))
     return mMessage
   }
 
   @ValidMethod(type = intArrayOf(ValidType.VALUE_RANGE_0_100))
-  fun validateValueRangeFrom0to100(str: String): String? {
+  fun validateValueRangeFrom0to100(str: String?): String? {
     val isValid = convertStringToInteger(str) in 0..100
     mMessage = if (isValid)
       ""
@@ -186,7 +186,7 @@ class Validator(@param:ApplicationContext private val mContext: Context, clzz: C
   }
 
   @ValidMethod(type = intArrayOf(ValidType.NON_EMPTY))
-  fun validateValueNonEmpty(value: String): String? {
+  fun validateValueNonEmpty(value: String?): String? {
     val isValid = !TextUtils.isEmpty(value)
     mMessage = if (isValid) "" else mContext.getString(mAllErrorMessage.get(ValidType.NON_EMPTY))
     return mMessage
@@ -195,7 +195,7 @@ class Validator(@param:ApplicationContext private val mContext: Context, clzz: C
   /**
    * @return Integer.MIN_VALUE if convert error
    */
-  private fun convertStringToInteger(s: String): Int {
+  private fun convertStringToInteger(s: String?): Int {
     try {
       return Integer.parseInt(s)
     } catch (e: NumberFormatException) {
