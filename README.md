@@ -11,7 +11,7 @@ Split ViewModel to 2 components ViewModel & Presenter:
 ![alt text](https://github.com/daolq3012/Structure_Android/blob/master/images/mvvmp.png?raw=true)
 
 ### Templates
-Template MVP-VM-Kotlin Activity & MVP-VM Fragment: [MVP-VM-Dagger_templates.rar](https://github.com/daolq3012/Structure_Android/blob/mvvmp-dagger-architecture/templates/MVVMP_Dagger_templates.zip?raw=true)
+Template MVP-VM-Kotlin Activity & MVP-VM Fragment: [MVPVM_Kotlin_templates.rar](https://github.com/daolq3012/Structure_Android/blob/kotlin-mvvmp-dagger-architecture/templates/MVPVM_Kotlin_templates.zip?raw=true)
 
 Extract this file and copy into
 **..\Android Studio\plugins\android\lib\templates**
