@@ -15,7 +15,7 @@ import retrofit2.http.Query
 interface NameApi {
   @GET("/search/users")
   fun searchGithubUsers(@Query("per_page") limit: Int,
-      @Query("q") searchTerm: String): Single<SearchUserResponse>
+      @Query("q") searchTerm: String?): Single<SearchUserResponse>
 
   @GET("/users/{username}")
   fun getUser(@Path("username") username: String?): Single<User>

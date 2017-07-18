@@ -56,9 +56,8 @@ class UserDetailActivity : BaseActivity(), UserDetailContract.ViewModel {
     this.user.set(user)
   }
 
-  override fun onGetUserDetailError(baseException: BaseException) {
-    dialogManager.dialogError(baseException.getMessageError(), MaterialDialog.SingleButtonCallback(
-        { materialDialog, _ -> materialDialog.dismiss() }))
+  override fun onRequestServerError(baseException: BaseException) {
+    dialogManager.dialogError(baseException.getMessageError())
   }
 
   override fun onShowProgressBar() {

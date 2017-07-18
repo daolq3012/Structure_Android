@@ -67,16 +67,11 @@ class MainActivity : BaseActivity(), MainContract.ViewModel {
     super.onStop()
   }
 
-  override fun onSearchError(e: BaseException) {
-    mDialogManager.dismissProgressDialog()
-    mDialogManager.dialogError(e.getMessageError(),
-        MaterialDialog.SingleButtonCallback { _, _ ->
-          onSearchButtonClicked(null)
-        })
+  override fun onRequestServerError(e: BaseException) {
+    mDialogManager.dialogError(e.getMessageError())
   }
 
   override fun onSearchUsersSuccess(users: List<User>) {
-    mDialogManager.dismissProgressDialog()
     val bundle = Bundle()
     bundle.putParcelableArrayList(Constant.ARGUMENT_LIST_USER, users as ArrayList<out Parcelable>)
     mNavigator.startActivity(SearchResultActivity::class.java, bundle)
@@ -90,11 +85,18 @@ class MainActivity : BaseActivity(), MainContract.ViewModel {
     limitErrorMsg.set(errorMsg)
   }
 
-  fun onSearchButtonClicked(view: View?) {
-    if (!presenter.validateDataInput(keyWord.get(), limit.get())) {
-      return
-    }
+  override fun onShowProgressBar() {
     mDialogManager.showIndeterminateProgressDialog()
+  }
+
+  override fun onHideProgressBar() {
+    mDialogManager.dismissProgressDialog()
+  }
+
+  fun onSearchButtonClicked(view: View?) {
+//    if (!presenter.validateDataInput(keyWord.get(), limit.get())) {
+//      return
+//    }
     presenter.searchUsers(keyWord.get(), StringUtils.convertStringToNumber(limit.get()))
   }
 }

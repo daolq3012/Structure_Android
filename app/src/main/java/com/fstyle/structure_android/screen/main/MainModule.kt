@@ -31,8 +31,9 @@ class MainModule(private val mActivity: Activity) {
   @Provides
   fun providePresenter(userRepository: UserRepository,
       validator: Validator, schedulerProvider: BaseSchedulerProvider): MainContract.Presenter {
-    val presenter = MainPresenter(userRepository, validator, schedulerProvider)
+    val presenter = MainPresenter(userRepository, validator)
     presenter.setViewModel(mActivity as MainContract.ViewModel)
+    presenter.setSchedulerProvider(schedulerProvider)
     return presenter
   }
 

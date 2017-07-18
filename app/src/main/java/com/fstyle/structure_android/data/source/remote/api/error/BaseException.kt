@@ -13,14 +13,14 @@ import java.net.UnknownHostException
 class BaseException : RuntimeException {
 
   val errorType: String
-  private var response: Response<*>? = null
+  private lateinit var response: Response<*>
   private var errorResponse: ErrorResponse? = null
 
   private constructor(type: String, cause: Throwable) : super(cause.message, cause) {
     this.errorType = type
   }
 
-  private constructor(type: String, response: Response<*>?) {
+  private constructor(type: String, response: Response<*>) {
     this.errorType = type
     this.response = response
   }
@@ -37,10 +37,7 @@ class BaseException : RuntimeException {
       }
       Type.NETWORK -> return getNetworkErrorMessage(cause)
       Type.HTTP -> {
-        if (response != null) {
-          return response!!.code().getHttpErrorMessage()
-        }
-        return "Error"
+        return response.code().getHttpErrorMessage()
       }
       else -> return "Error"
     }

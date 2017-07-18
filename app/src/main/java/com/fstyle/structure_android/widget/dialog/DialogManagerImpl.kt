@@ -31,11 +31,9 @@ class DialogManagerImpl(private val mContext: Context) : DialogManager {
     mProgressDialog!!.dismiss()
   }
 
-  override fun dialogError(content: String,
-      positiveButtonListener: MaterialDialog.SingleButtonCallback) {
+  override fun dialogError(content: String) {
     MaterialDialog.Builder(mContext).content(content)
-        .positiveText(R.string.retry)
-        .onPositive(positiveButtonListener)
+        .positiveText(android.R.string.ok)
         .show()
   }
 

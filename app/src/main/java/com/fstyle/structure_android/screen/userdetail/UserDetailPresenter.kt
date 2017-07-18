@@ -33,6 +33,6 @@ class UserDetailPresenter(
         .observeOn(schedulerProvider?.ui())
         .doAfterTerminate { mViewModel?.onHideProgressBar() }
         .subscribe({ user -> mViewModel?.onGetUserDetailSuccess(user) },
-            { error -> mViewModel?.onGetUserDetailError(error as BaseException) })
+            { error -> mViewModel?.onRequestServerError(error as BaseException) })
   }
 }

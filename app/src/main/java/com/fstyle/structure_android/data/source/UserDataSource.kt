@@ -32,7 +32,7 @@ interface UserDataSource {
    * RemoteData For User
    */
   interface RemoteDataSource {
-    fun searchUsers(keyWord: String, limit: Int): Single<List<User>>
+    fun searchUsers(keyWord: String?, limit: Int): Single<List<User>>
     fun getUserDetailFromServer(userLogin: String?): Single<User>
   }
 }

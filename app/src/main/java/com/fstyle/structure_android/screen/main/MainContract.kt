@@ -16,13 +16,17 @@ interface MainContract {
    * ViewModel
    */
   interface ViewModel : BaseViewModel {
-    fun onSearchError(e: BaseException)
+    fun onRequestServerError(e: BaseException)
 
     fun onSearchUsersSuccess(users: List<User>)
 
     fun onInvalidKeyWord(errorMsg: String?)
 
     fun onInvalidLimitNumber(errorMsg: String?)
+
+    fun onShowProgressBar()
+
+    fun onHideProgressBar()
   }
 
   /**
