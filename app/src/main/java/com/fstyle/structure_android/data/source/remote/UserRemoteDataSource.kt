@@ -14,7 +14,11 @@ class UserRemoteDataSource @Inject
 constructor(nameApi: NameApi) : BaseRemoteDataSource(nameApi), UserDataSource.RemoteDataSource {
 
   override fun searchUsers(keyWord: String, limit: Int): Single<List<User>> {
-    return getNameApi().searchGithubUsers(limit, keyWord)
+    return nameApi.searchGithubUsers(limit, keyWord)
         .map { searchUserResponse -> searchUserResponse.users }
+  }
+
+  override fun getUserDetailFromServer(userLogin: String?): Single<User> {
+    return nameApi.getUser(userLogin)
   }
 }

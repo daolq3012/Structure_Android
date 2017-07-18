@@ -24,7 +24,7 @@
             android:id="@+id/tvUserLogin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.userLogin}"
+            android:text="@{viewModel.user.login}"
             android:textSize="@dimen/sp_23"
             app:layout_constraintHorizontal_bias="0.455"
             app:layout_constraintLeft_toLeftOf="parent"

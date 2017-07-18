@@ -1,7 +1,7 @@
 package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
-import com.fstyle.structure_android.data.source.UserRepository;
+import com.fstyle.structure_android.data.source.UserRepositoryImpl;
 import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 import com.fstyle.structure_android.utils.rx.ImmediateSchedulerProvider;
 import com.fstyle.structure_android.utils.validator.Validator;
@@ -35,7 +35,7 @@ public class MainPresenterTest {
     @Mock
     MainViewModel mMainViewModel;
     @Mock
-    UserRepository mUserRepository;
+    UserRepositoryImpl mUserRepository;
     @Mock
     Validator mValidator;
     @InjectMocks

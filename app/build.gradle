@@ -121,9 +121,9 @@ dependencies {
 
   kapt dependencies.dataBinding
 
-  compile dependencies.supportDesign
   compile dependencies.constraintLayout
   compile dependencies.dialog
+  compile dependencies.recyclerView
 
   compile dependencies.rxJava
   compile dependencies.rxAndroid
@@ -132,6 +132,8 @@ dependencies {
   compile dependencies.retrofit2Adapter
   compile dependencies.retrofitGson
   compile dependencies.loggingInterceptor
+
+  compile dependencies.glide
 
   kapt dependencies.dagger2Compile
   compile dependencies.dagger2

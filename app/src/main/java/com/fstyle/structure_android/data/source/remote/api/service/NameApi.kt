@@ -18,5 +18,5 @@ interface NameApi {
       @Query("q") searchTerm: String): Single<SearchUserResponse>
 
   @GET("/users/{username}")
-  fun getUser(@Path("username") username: String): Observable<User>
+  fun getUser(@Path("username") username: String?): Single<User>
 }
