@@ -3,6 +3,7 @@ package com.fstyle.structure_android.utils.validator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.databinding.ObservableField
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseArray
@@ -103,8 +104,15 @@ class Validator(@param:ApplicationContext private val mContext: Context, clzz: C
           .mapNotNull { mValidatedMethods.get(it) }
           .forEach {
             try {
-              val valid = isOptional && isValidOptional(factor) || TextUtils.isEmpty(
-                  it.invoke(this, factor) as String)
+              var valid = false
+              if (factor is ObservableField<*>) {
+                val input = factor.get()
+                valid = isOptional && isValidOptional(input) || TextUtils.isEmpty(
+                    it.invoke(this, input) as String)
+              } else {
+                valid = isOptional && isValidOptional(factor) || TextUtils.isEmpty(
+                    it.invoke(this, factor) as String)
+              }
               if (!valid) {
                 isValid = false
               }

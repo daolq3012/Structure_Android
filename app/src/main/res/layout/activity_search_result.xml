@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.fstyle.structure_android.screen.searchresult.SearchResultViewModel"
+            type="com.fstyle.structure_android.screen.searchresult.SearchResultActivity"
             />
         <import type="android.support.v7.widget.DividerItemDecoration"/>
 
@@ -18,7 +18,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.fstyle.structure_android.screen.main.MainActivity"
+        tools:context="com.fstyle.structure_android.screen.searchresult.SearchResultActivity"
         >
 
         <android.support.v7.widget.RecyclerView

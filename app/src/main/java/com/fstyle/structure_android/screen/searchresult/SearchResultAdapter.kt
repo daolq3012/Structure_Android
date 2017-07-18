@@ -18,13 +18,16 @@ import java.util.*
 class SearchResultAdapter constructor(context: Context,
     users: List<User>?) : BaseRecyclerViewAdapter<SearchResultAdapter.ItemViewHolder>(context) {
 
-  private val mUsers: MutableList<User>
-  private var mItemUserClickListener: ItemUserClickListener? = null
+  private val mUsers: MutableList<User> = ArrayList<User>()
+  private val mItemUserClickListener: ItemUserClickListener
 
   init {
-    mUsers = ArrayList<User>()
     if (users != null)
       mUsers.addAll(users)
+    if (context !is ItemUserClickListener) {
+      throw RuntimeException("Activity use this Adapter must implement ItemUserClickListener")
+    }
+    mItemUserClickListener = context
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -40,11 +43,6 @@ class SearchResultAdapter constructor(context: Context,
 
   override fun getItemCount(): Int {
     return mUsers.size
-  }
-
-  internal fun setItemClickListener(
-      itemClickListener: ItemUserClickListener) {
-    mItemUserClickListener = itemClickListener
   }
 
   /**

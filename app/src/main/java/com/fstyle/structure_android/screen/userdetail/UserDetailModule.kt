@@ -20,18 +20,11 @@ class UserDetailModule(private val mActivity: Activity) {
 
   @ActivityScope
   @Provides
-  fun provideViewModel(presenter: UserDetailContract.Presenter,
-      dialogManager: DialogManager): UserDetailContract.ViewModel {
-    val bundle = mActivity.intent.extras
-    return UserDetailViewModel(presenter, bundle, dialogManager)
-  }
-
-  @ActivityScope
-  @Provides
   fun providePresenter(userRepository: UserRepository,
       baseSchedulerProvider: BaseSchedulerProvider): UserDetailContract.Presenter {
     val presenter = UserDetailPresenter(userRepository)
     presenter.setSchedulerProvider(baseSchedulerProvider)
+    presenter.setViewModel(mActivity as UserDetailContract.ViewModel)
     return presenter
   }
 
@@ -43,7 +36,7 @@ class UserDetailModule(private val mActivity: Activity) {
 
   @ActivityScope
   @Provides
-  fun provideUserRepository(userRemoteDataSource: UserRemoteDataSource): UserRepositoryImpl {
+  fun provideUserRepository(userRemoteDataSource: UserRemoteDataSource): UserRepository {
     return UserRepositoryImpl(userRemoteDataSource)
   }
 }

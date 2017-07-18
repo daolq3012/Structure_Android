@@ -24,21 +24,16 @@ class MainModule(private val mActivity: Activity) {
   @ActivityScope
   @Provides
   fun provideValidator(context: Context): Validator {
-    return Validator(context, MainViewModel::class.java)
-  }
-
-  @ActivityScope
-  @Provides
-  fun provideViewModel(presenter: MainContract.Presenter,
-      dialogManager: DialogManager, navigator: Navigator): MainContract.ViewModel {
-    return MainViewModel(presenter, dialogManager, navigator)
+    return Validator(context, MainActivity::class.java)
   }
 
   @ActivityScope
   @Provides
   fun providePresenter(userRepository: UserRepository,
       validator: Validator, schedulerProvider: BaseSchedulerProvider): MainContract.Presenter {
-    return MainPresenter(userRepository, validator, schedulerProvider)
+    val presenter = MainPresenter(userRepository, validator, schedulerProvider)
+    presenter.setViewModel(mActivity as MainContract.ViewModel)
+    return presenter
   }
 
   @ActivityScope
