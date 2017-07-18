@@ -94,9 +94,9 @@ class MainActivity : BaseActivity(), MainContract.ViewModel {
   }
 
   fun onSearchButtonClicked(view: View?) {
-//    if (!presenter.validateDataInput(keyWord.get(), limit.get())) {
-//      return
-//    }
+    if (!presenter.validateDataInput(keyWord.get(), limit.get())) {
+      return
+    }
     presenter.searchUsers(keyWord.get(), StringUtils.convertStringToNumber(limit.get()))
   }
 }

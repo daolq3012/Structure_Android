@@ -69,9 +69,9 @@ internal class MainPresenter(private val mUserRepository: UserRepository,
 
   override fun searchUsers(keyWord: String?, limit: Int) {
     val subscription = mUserRepository.searchUsers(keyWord, limit)
-        .subscribeOn(mSchedulerProvider!!.io())
+        .subscribeOn(mSchedulerProvider.io())
         .doOnSubscribe { mMainViewModel.onShowProgressBar() }
-        .observeOn(mSchedulerProvider!!.ui())
+        .observeOn(mSchedulerProvider.ui())
         .doAfterTerminate { mMainViewModel.onHideProgressBar() }
         .subscribe({ users -> mMainViewModel.onSearchUsersSuccess(users) },
             { error -> mMainViewModel.onRequestServerError(error as BaseException) })

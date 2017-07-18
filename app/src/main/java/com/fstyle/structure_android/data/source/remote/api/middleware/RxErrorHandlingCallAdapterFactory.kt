@@ -26,17 +26,17 @@ class RxErrorHandlingCallAdapterFactory private constructor() : CallAdapter.Fact
 
   override fun get(returnType: Type, annotations: Array<Annotation>,
       retrofit: Retrofit): CallAdapter<*, *> {
-    return RxCallAdapterWrapper(returnType, original.get(returnType, annotations, retrofit)!!)
+    return RxCallAdapterWrapper(returnType, original.get(returnType, annotations, retrofit))
   }
 
   /**
    * RxCallAdapterWrapper
    */
   internal inner class RxCallAdapterWrapper(private val returnType: Type,
-      private val wrapped: CallAdapter<Any, Any>) : CallAdapter<Any, Any> {
+      private val wrapped: CallAdapter<Any, Any>?) : CallAdapter<Any, Any> {
 
-    override fun responseType(): Type {
-      return wrapped.responseType()
+    override fun responseType(): Type? {
+      return wrapped?.responseType()
     }
 
     override fun adapt(call: Call<Any>): Any? {
@@ -63,26 +63,26 @@ class RxErrorHandlingCallAdapterFactory private constructor() : CallAdapter.Fact
       }
 
       if (isFlowable) {
-        return (wrapped.adapt(call) as Flowable<*>).onErrorResumeNext { throwable: Throwable ->
+        return (wrapped?.adapt(call) as Flowable<*>).onErrorResumeNext { throwable: Throwable ->
           Flowable.error(convertToBaseException(throwable))
         }
       }
       if (isSingle) {
-        return (wrapped.adapt(call) as Single<*>).onErrorResumeNext { throwable ->
+        return (wrapped?.adapt(call) as Single<*>).onErrorResumeNext { throwable ->
           Single.error(convertToBaseException(throwable))
         }
       }
       if (isMaybe) {
-        return (wrapped.adapt(call) as Maybe<*>).onErrorResumeNext { throwable: Throwable ->
+        return (wrapped?.adapt(call) as Maybe<*>).onErrorResumeNext { throwable: Throwable ->
           Maybe.error(convertToBaseException(throwable))
         }
       }
       if (isCompletable) {
-        return (wrapped.adapt(call) as Completable).onErrorResumeNext { throwable ->
+        return (wrapped?.adapt(call) as Completable).onErrorResumeNext { throwable ->
           Completable.error(convertToBaseException(throwable))
         }
       }
-      return (wrapped.adapt(call) as Observable<*>).onErrorResumeNext { throwable: Throwable ->
+      return (wrapped?.adapt(call) as Observable<*>).onErrorResumeNext { throwable: Throwable ->
         Observable.error(convertToBaseException(throwable))
       }
     }
@@ -100,7 +100,7 @@ class RxErrorHandlingCallAdapterFactory private constructor() : CallAdapter.Fact
         val response = throwable.response()
         if (response.errorBody() != null) {
           try {
-            val errorResponse = Gson().fromJson(response.errorBody()!!.string(),
+            val errorResponse = Gson().fromJson(response.errorBody()?.string(),
                 ErrorResponse::class.java)
             if (errorResponse != null && !TextUtils.isEmpty(
                 errorResponse.message)) {

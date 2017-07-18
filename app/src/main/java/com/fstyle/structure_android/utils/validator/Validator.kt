@@ -90,7 +90,7 @@ class Validator(@param:ApplicationContext private val mContext: Context, clzz: C
     if (factor is String) {
       return TextUtils.isEmpty(factor as String?)
     }
-    return factor is Boolean && !(factor as Boolean?)!! || factor == null
+    return factor is Boolean && !factor || factor == null
   }
 
   /**
@@ -176,9 +176,8 @@ class Validator(@param:ApplicationContext private val mContext: Context, clzz: C
           "NGWordPattern is null!!! \n Call initNGWordPattern() before call this method!",
           NullPointerException())
     }
-    val isValid = !TextUtils.isEmpty(str) && !mNGWordPattern!!.matcher(
-        str?.toLowerCase(Locale.ENGLISH))
-        .find()
+    val isValid = !TextUtils.isEmpty(str) && !mNGWordPattern?.matcher(
+        str?.toLowerCase(Locale.ENGLISH))?.find()!!
     mMessage = if (isValid) "" else mContext.getString(mAllErrorMessage.get(ValidType.NG_WORD))
     return mMessage
   }
