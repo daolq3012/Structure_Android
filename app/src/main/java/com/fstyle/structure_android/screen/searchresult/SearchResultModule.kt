@@ -4,6 +4,7 @@ import android.app.Activity
 import com.fstyle.structure_android.data.model.User
 import com.fstyle.structure_android.utils.Constant
 import com.fstyle.structure_android.utils.dagger.ActivityScope
+import com.fstyle.structure_android.utils.navigator.Navigator
 import dagger.Module
 import dagger.Provides
 
@@ -17,8 +18,8 @@ class SearchResultModule(private val mActivity: Activity) {
   @ActivityScope
   @Provides
   fun provideViewModel(presenter: SearchResultContract.Presenter,
-      adapter: SearchResultAdapter): SearchResultContract.ViewModel {
-    return SearchResultViewModel(presenter, adapter)
+      adapter: SearchResultAdapter, navigator: Navigator): SearchResultContract.ViewModel {
+    return SearchResultViewModel(presenter, adapter,navigator)
   }
 
   @ActivityScope
@@ -33,5 +34,11 @@ class SearchResultModule(private val mActivity: Activity) {
     val users = mActivity.intent.getParcelableArrayListExtra<User>(
         Constant.ARGUMENT_LIST_USER)
     return SearchResultAdapter(mActivity, users)
+  }
+
+  @ActivityScope
+  @Provides
+  fun provideNavigator(): Navigator {
+    return Navigator(mActivity)
   }
 }

@@ -11,6 +11,7 @@
             name="viewModel"
             type="com.fstyle.structure_android.screen.searchresult.SearchResultViewModel"
             />
+        <import type="android.support.v7.widget.DividerItemDecoration"/>
 
     </data>
 
@@ -23,6 +24,7 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:addItemDecoration="@{DividerItemDecoration.VERTICAL}"
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

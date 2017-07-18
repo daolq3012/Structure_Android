@@ -1,7 +1,7 @@
 package com.fstyle.structure_android.data.source;
 
 import com.fstyle.structure_android.data.model.User;
-import com.fstyle.structure_android.data.source.local.sqlite.UserLocalDataSource;
+import com.fstyle.structure_android.data.source.local.UserLocalDataSource;
 import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
@@ -25,7 +25,7 @@ public class UserRepositoryTest {
     private static final String USER_LOGIN_2 = "def";
 
     @InjectMocks
-    private UserRepository mUserRepository;
+    private UserRepositoryImpl mUserRepository;
     @Mock
     UserLocalDataSource mLocalDataSource;
     @Mock
