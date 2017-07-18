@@ -21,21 +21,19 @@ class DialogManagerImpl(private val mContext: Context) : DialogManager {
           .canceledOnTouchOutside(false)
           .build()
     }
-    mProgressDialog!!.show()
+    mProgressDialog?.show()
   }
 
   override fun dismissProgressDialog() {
     if (mProgressDialog == null) {
       return
     }
-    mProgressDialog!!.dismiss()
+    mProgressDialog?.dismiss()
   }
 
-  override fun dialogError(content: String,
-      positiveButtonListener: MaterialDialog.SingleButtonCallback) {
+  override fun dialogError(content: String) {
     MaterialDialog.Builder(mContext).content(content)
-        .positiveText(R.string.retry)
-        .onPositive(positiveButtonListener)
+        .positiveText(android.R.string.ok)
         .show()
   }
 
@@ -123,8 +121,8 @@ class DialogManagerImpl(private val mContext: Context) : DialogManager {
         .autoDismiss(false)
         .neutralText(R.string.clear)
         .itemsCallbackMultiChoice(selectedIndices, callback)
-        .onNeutral { materialDialog, dialogAction -> materialDialog.clearSelectedIndices() }
-        .onPositive { materialDialog, dialogAction -> materialDialog.dismiss() }
+        .onNeutral { materialDialog, _ -> materialDialog.clearSelectedIndices() }
+        .onPositive { materialDialog, _ -> materialDialog.dismiss() }
         .show()
   }
 }

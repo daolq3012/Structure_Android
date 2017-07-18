@@ -14,8 +14,8 @@ interface UserDetailContract {
    * View.
    */
   interface ViewModel : BaseViewModel {
-    fun  onGetUserDetailSuccess(user: User?)
-    fun  onGetUserDetailError(baseException: BaseException)
+    fun onGetUserDetailSuccess(user: User?)
+    fun onRequestServerError(baseException: BaseException)
     fun onShowProgressBar()
     fun onHideProgressBar()
   }

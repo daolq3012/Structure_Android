@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.fstyle.structure_android.screen.userdetail.UserDetailViewModel"
+            type="com.fstyle.structure_android.screen.userdetail.UserDetailActivity"
             />
 
     </data>

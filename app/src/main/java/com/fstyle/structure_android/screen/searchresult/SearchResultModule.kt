@@ -17,15 +17,10 @@ class SearchResultModule(private val mActivity: Activity) {
 
   @ActivityScope
   @Provides
-  fun provideViewModel(presenter: SearchResultContract.Presenter,
-      adapter: SearchResultAdapter, navigator: Navigator): SearchResultContract.ViewModel {
-    return SearchResultViewModel(presenter, adapter,navigator)
-  }
-
-  @ActivityScope
-  @Provides
   fun providePresenter(): SearchResultContract.Presenter {
-    return SearchResultPresenter()
+    val presenter = SearchResultPresenter()
+    presenter.setViewModel(mActivity as SearchResultContract.ViewModel)
+    return presenter
   }
 
   @ActivityScope

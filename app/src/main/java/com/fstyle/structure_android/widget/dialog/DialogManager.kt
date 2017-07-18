@@ -18,7 +18,7 @@ interface DialogManager {
 
   fun dismissProgressDialog()
 
-  fun dialogError(content: String, positiveButtonListener: MaterialDialog.SingleButtonCallback)
+  fun dialogError(content: String)
 
   /**
    * <h1>BasicWithoutTitle Dialog</h1>

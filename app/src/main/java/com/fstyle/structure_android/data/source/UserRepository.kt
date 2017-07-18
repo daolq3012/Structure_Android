@@ -12,8 +12,8 @@ interface UserRepository : UserDataSource.RemoteDataSource
 
 class UserRepositoryImpl(val remoteDataSource: UserRemoteDataSource) : UserRepository {
 
-  override fun searchUsers(keyword: String, limit: Int): Single<List<User>> {
-    return remoteDataSource.searchUsers(keyword, limit)
+  override fun searchUsers(keyWord: String?, limit: Int): Single<List<User>> {
+    return remoteDataSource.searchUsers(keyWord, limit)
   }
 
   override fun getUserDetailFromServer(userLogin: String?): Single<User> {

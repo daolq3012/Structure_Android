@@ -13,7 +13,7 @@ import javax.inject.Inject
 class UserRemoteDataSource @Inject
 constructor(nameApi: NameApi) : BaseRemoteDataSource(nameApi), UserDataSource.RemoteDataSource {
 
-  override fun searchUsers(keyWord: String, limit: Int): Single<List<User>> {
+  override fun searchUsers(keyWord: String?, limit: Int): Single<List<User>> {
     return nameApi.searchGithubUsers(limit, keyWord)
         .map { searchUserResponse -> searchUserResponse.users }
   }

@@ -1,26 +1,23 @@
 package com.fstyle.structure_android.screen.main
 
 import android.util.Log
-import com.fstyle.structure_android.data.model.User
 import com.fstyle.structure_android.data.source.UserRepository
 import com.fstyle.structure_android.data.source.remote.api.error.BaseException
-import com.fstyle.structure_android.data.source.remote.api.error.RequestError
 import com.fstyle.structure_android.screen.BaseViewModel
 import com.fstyle.structure_android.utils.common.StringUtils
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider
 import com.fstyle.structure_android.utils.validator.Validator
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 
 /**
  * Created by le.quang.dao on 10/03/2017.
  */
 
 internal class MainPresenter(private val mUserRepository: UserRepository,
-    private val mValidator: Validator,
-    private var mSchedulerProvider: BaseSchedulerProvider?) : MainContract.Presenter {
+    private val mValidator: Validator) : MainContract.Presenter {
 
-  private var mMainViewModel: MainContract.ViewModel? = null
+  private lateinit var mSchedulerProvider: BaseSchedulerProvider
+  private lateinit var mMainViewModel: MainContract.ViewModel
   private val mCompositeSubscription: CompositeDisposable = CompositeDisposable()
 
   init {
@@ -47,7 +44,7 @@ internal class MainPresenter(private val mUserRepository: UserRepository,
     if (StringUtils.isBlank(message)) {
       message = mValidator.validateNGWord(keyword)
     }
-    mMainViewModel!!.onInvalidKeyWord(message)
+    mMainViewModel.onInvalidKeyWord(message)
   }
 
   override fun validateLimitNumberInput(limit: String?) {
@@ -55,14 +52,14 @@ internal class MainPresenter(private val mUserRepository: UserRepository,
     if (StringUtils.isBlank(message)) {
       message = mValidator.validateValueRangeFrom0to100(limit)
     }
-    mMainViewModel!!.onInvalidLimitNumber(message)
+    mMainViewModel.onInvalidLimitNumber(message)
   }
 
   override fun validateDataInput(keyword: String?, limit: String?): Boolean {
     validateKeywordInput(keyword)
     validateLimitNumberInput(limit)
     try {
-      return mValidator.validateAll<BaseViewModel>(mMainViewModel!!)
+      return mValidator.validateAll<BaseViewModel>(mMainViewModel)
     } catch (e: IllegalAccessException) {
       Log.e(TAG, "validateDataInput: ", e)
       return false
@@ -71,15 +68,13 @@ internal class MainPresenter(private val mUserRepository: UserRepository,
   }
 
   override fun searchUsers(keyWord: String?, limit: Int) {
-    val subscription = mUserRepository.searchUsers(keyWord!!, limit)
-        .subscribeOn(mSchedulerProvider!!.io())
-        .observeOn(mSchedulerProvider!!.ui())
-        .subscribe(Consumer<List<User>> { users -> mMainViewModel!!.onSearchUsersSuccess(users) },
-            object : RequestError() {
-              override fun onRequestError(error: BaseException) {
-                mMainViewModel!!.onSearchError(error)
-              }
-            })
+    val subscription = mUserRepository.searchUsers(keyWord, limit)
+        .subscribeOn(mSchedulerProvider.io())
+        .doOnSubscribe { mMainViewModel.onShowProgressBar() }
+        .observeOn(mSchedulerProvider.ui())
+        .doAfterTerminate { mMainViewModel.onHideProgressBar() }
+        .subscribe({ users -> mMainViewModel.onSearchUsersSuccess(users) },
+            { error -> mMainViewModel.onRequestServerError(error as BaseException) })
     mCompositeSubscription.add(subscription)
   }
 

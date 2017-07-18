@@ -20,17 +20,16 @@ import javax.inject.Inject
 class UserLocalDataSource @Inject
 constructor(context: Context) : UserDataSource.LocalDataSource {
 
-  private val mDbHelper: UserDbHelper = UserDbHelper(
-      context)
-  private var mDatabase: SQLiteDatabase? = null
+  private val mDbHelper: UserDbHelper = UserDbHelper(context)
+  private lateinit var mDatabase: SQLiteDatabase
 
   override fun openTransaction() {
     mDatabase = mDbHelper.writableDatabase
-    mDatabase!!.beginTransaction()
+    mDatabase.beginTransaction()
   }
 
   override fun closeTransaction() {
-    mDatabase!!.close()
+    mDatabase.close()
   }
 
   fun openReadTransaction() {
@@ -38,13 +37,13 @@ constructor(context: Context) : UserDataSource.LocalDataSource {
   }
 
   private fun readyForWriteDb() {
-    if (mDatabase == null || !mDatabase!!.isOpen) {
+    if (!mDatabase.isOpen) {
       throw RuntimeException("Need call openTransaction")
     }
   }
 
   private fun readyForReadDb() {
-    if (mDatabase == null || !mDatabase!!.isOpen) {
+    if (!mDatabase.isOpen) {
       throw RuntimeException("Need call openReadTransaction")
     }
   }
@@ -60,9 +59,8 @@ constructor(context: Context) : UserDataSource.LocalDataSource {
       values.put(
           UserDbHelper.UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL,
           user.subscriptionsUrl)
-      mDatabase!!.insert(
+      mDatabase.insert(
           UserDbHelper.UserEntry.TABLE_NAME, null, values)
-
       completableEmitter.onComplete()
     }
   }
@@ -78,7 +76,7 @@ constructor(context: Context) : UserDataSource.LocalDataSource {
       values.put(
           UserDbHelper.UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL,
           user.subscriptionsUrl)
-      mDatabase!!.update(
+      mDatabase.update(
           UserDbHelper.UserEntry.TABLE_NAME, values,
           UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN + "= ?",
           arrayOf(user.login))
@@ -92,7 +90,7 @@ constructor(context: Context) : UserDataSource.LocalDataSource {
       val selection = UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN + " LIKE ?"
       val selectionArgs = arrayOf(user.login)
 
-      mDatabase!!.delete(
+      mDatabase.delete(
           UserDbHelper.UserEntry.TABLE_NAME, selection, selectionArgs)
 
       completableEmitter.onComplete()
@@ -110,7 +108,7 @@ constructor(context: Context) : UserDataSource.LocalDataSource {
       values.put(
           UserDbHelper.UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL,
           user.subscriptionsUrl)
-      mDatabase!!.insertWithOnConflict(
+      mDatabase.insertWithOnConflict(
           UserDbHelper.UserEntry.TABLE_NAME, null, values,
           SQLiteDatabase.CONFLICT_REPLACE)
 
@@ -123,7 +121,7 @@ constructor(context: Context) : UserDataSource.LocalDataSource {
       readyForReadDb()
       return Flowable.create({ flowableEmitter ->
         val users = ArrayList<User>()
-        val cursor = mDatabase!!.rawQuery(
+        val cursor = mDatabase.rawQuery(
             SELECT_ALL_USER_QUERY, null)
         if (cursor.moveToFirst()) {
           do {
@@ -156,7 +154,7 @@ constructor(context: Context) : UserDataSource.LocalDataSource {
       val selection = UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN + " LIKE ?"
       val selectionArgs = arrayOf(userLogin)
 
-      val cursor = mDatabase!!.query(
+      val cursor = mDatabase.query(
           UserDbHelper.UserEntry.TABLE_NAME, projection, selection,
           selectionArgs, null, null, null)
       var user: User? = null

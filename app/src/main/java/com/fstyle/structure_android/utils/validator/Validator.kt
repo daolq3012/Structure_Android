@@ -3,6 +3,7 @@ package com.fstyle.structure_android.utils.validator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.databinding.ObservableField
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseArray
@@ -89,7 +90,7 @@ class Validator(@param:ApplicationContext private val mContext: Context, clzz: C
     if (factor is String) {
       return TextUtils.isEmpty(factor as String?)
     }
-    return factor is Boolean && !(factor as Boolean?)!! || factor == null
+    return factor is Boolean && !factor || factor == null
   }
 
   /**
@@ -103,8 +104,15 @@ class Validator(@param:ApplicationContext private val mContext: Context, clzz: C
           .mapNotNull { mValidatedMethods.get(it) }
           .forEach {
             try {
-              val valid = isOptional && isValidOptional(factor) || TextUtils.isEmpty(
-                  it.invoke(this, factor) as String)
+              var valid = false
+              if (factor is ObservableField<*>) {
+                val input = factor.get()
+                valid = isOptional && isValidOptional(input) || TextUtils.isEmpty(
+                    it.invoke(this, input) as String)
+              } else {
+                valid = isOptional && isValidOptional(factor) || TextUtils.isEmpty(
+                    it.invoke(this, factor) as String)
+              }
               if (!valid) {
                 isValid = false
               }
@@ -168,9 +176,8 @@ class Validator(@param:ApplicationContext private val mContext: Context, clzz: C
           "NGWordPattern is null!!! \n Call initNGWordPattern() before call this method!",
           NullPointerException())
     }
-    val isValid = !TextUtils.isEmpty(str) && !mNGWordPattern!!.matcher(
-        str?.toLowerCase(Locale.ENGLISH))
-        .find()
+    val isValid = !TextUtils.isEmpty(str) && !mNGWordPattern?.matcher(
+        str?.toLowerCase(Locale.ENGLISH))?.find()!!
     mMessage = if (isValid) "" else mContext.getString(mAllErrorMessage.get(ValidType.NG_WORD))
     return mMessage
   }
