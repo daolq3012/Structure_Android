@@ -15,6 +15,7 @@
     </data>
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/user_detail_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.fstyle.structure_android.screen.userdetail.UserDetailActivity"

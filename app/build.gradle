@@ -67,7 +67,7 @@ android {
 
   buildTypes {
     debug {
-//      versionNameSuffix = "debug"
+      //      versionNameSuffix = "debug"
       debuggable true
       buildConfigField "String", "TEST_TAGS", "\"${getTestTags()}\""
     }
@@ -129,11 +129,14 @@ dependencies {
 
   androidTestCompile 'info.cukes:cucumber-android:1.2.5'
   androidTestCompile 'info.cukes:cucumber-picocontainer:1.2.5'
-  androidTestCompile 'info.cukes:cucumber-jvm-deps:1.0.3'
+  androidTestCompile 'info.cukes:cucumber-jvm-deps:1.0.5'
   // Screenshots
   androidTestCompile 'com.squareup.spoon:spoon-client:1.7.1'
-  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+  androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2') {
     exclude group: 'com.android.support', module: 'support-annotations'
-  })
+    exclude group: 'com.android.support', module: 'appcompat-v7'
+    exclude group: 'com.android.support', module: 'support-v4'
+    exclude module: 'recyclerview-v7'
+  }
   compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }

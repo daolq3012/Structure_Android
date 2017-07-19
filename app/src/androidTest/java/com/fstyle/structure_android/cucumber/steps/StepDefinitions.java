@@ -35,7 +35,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by Sun on 5/7/2017.
  */
-@CucumberOptions(features = "features")
+@CucumberOptions(features = "features/main.feature")
 @RunWith(AndroidJUnit4.class)
 public class StepDefinitions {
 
@@ -105,23 +105,5 @@ public class StepDefinitions {
     public void iGotoResultScreen() throws Throwable {
         mCurrentPage = mCurrentPage.is(MainPage.class).seeSearchResultScreen();
         mCurrentPage.is(SearchResultPage.class);
-    }
-
-    @Given("^I have a SearchResult Activity$")
-    public void iHaveASearchResultActivity() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @And("^I click any item$")
-    public void iClickAnyItem() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @Then("^I see detail Screen$")
-    public void iSeeDetailScreen() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
     }
 }
