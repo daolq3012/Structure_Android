@@ -13,4 +13,7 @@ object Constant {
   val ARGUMENT_USER_LOGIN = "ARGUMENT_USER_LOGIN"
 
   val BREAK_LINE = "\n"
+
+  const val NONE = "none"
+  const val EMPTY = "empty"
 }

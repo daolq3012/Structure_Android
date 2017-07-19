@@ -5,7 +5,6 @@ import android.databinding.ObservableField
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
-import com.fstyle.library.MaterialDialog
 import com.fstyle.structure_android.MainApplication
 import com.fstyle.structure_android.R
 import com.fstyle.structure_android.data.model.User
@@ -86,10 +85,12 @@ class MainActivity : BaseActivity(), MainContract.ViewModel {
   }
 
   override fun onShowProgressBar() {
+    sIdlingNotificationListener?.increment()
     mDialogManager.showIndeterminateProgressDialog()
   }
 
   override fun onHideProgressBar() {
+    sIdlingNotificationListener?.decrement()
     mDialogManager.dismissProgressDialog()
   }
 

@@ -23,6 +23,9 @@ android {
     versionName rootProject.ext.versionName
 
     vectorDrawables.useSupportLibrary = true
+
+    testApplicationId "${APP_ID + ".cucumber.steps"}"
+    testInstrumentationRunner "${APP_ID + ".cucumber.runner.CucumberTestRunner"}"
   }
 
   dataBinding {
@@ -35,6 +38,12 @@ android {
 
   testOptions {
     unitTests.returnDefaultValues = true
+  }
+
+  sourceSets {
+    androidTest {
+      assets.srcDirs = ['src/androidTest/assets']
+    }
   }
 
   signingConfigs {
@@ -58,35 +67,25 @@ android {
 
   buildTypes {
     debug {
-      versionNameSuffix = "debug"
-
-      applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
-      }
+//      versionNameSuffix = "debug"
+      debuggable true
+      buildConfigField "String", "TEST_TAGS", "\"${getTestTags()}\""
     }
     mock {
       versionNameSuffix = "mock"
       applicationIdSuffix = ".mock"
       signingConfig signingConfigs.debug
-
-      applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
-      }
     }
     staging {
       versionNameSuffix = "stg"
       applicationIdSuffix = ".stg"
       signingConfig signingConfigs.debug
-
-      applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
-      }
     }
     release {
       shrinkResources true
       minifyEnabled true
       signingConfig signingConfigs.release
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-      applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
-      }
     }
   }
 }
@@ -95,23 +94,9 @@ repositories {
   mavenCentral()
 }
 
-@SuppressWarnings("GroovyAssignabilityCheck")
-def appendVersionNameVersionCode(variant) {
-  variant.outputs.each { output ->
-    def applicationId = variant.mergedFlavor.applicationId + (variant.buildType.applicationIdSuffix ==
-        null ? "" : variant.buildType.applicationIdSuffix)
-    if (variant.buildType.name == android.buildTypes.debug.name ||
-        variant.buildType.name ==
-        android.buildTypes.release.name ||
-        variant.buildType.name ==
-        android.buildTypes.staging.name) {
-      if (output.zipAlign) {
-//        def file = output.outputFile
-//        output.outputFile = new File(file.parentFile,
-//            "${variant.buildType.name}_${applicationId}_v${variant.versionName}-${variant.versionCode}.apk")
-      }
-    }
-  }
+// Read Cucumber tags from command line like: ./gradlew connectedAndroidTest -Dtags="@login-scenarios,@kitkat"
+def getTestTags() {
+  return project.hasProperty("tags") ? project.getProperties().get("tags") : ""
 }
 
 dependencies {
@@ -142,6 +127,11 @@ dependencies {
   testCompile dependencies.junit
   testCompile dependencies.mockito
 
+  androidTestCompile 'info.cukes:cucumber-android:1.2.5'
+  androidTestCompile 'info.cukes:cucumber-picocontainer:1.2.5'
+  androidTestCompile 'info.cukes:cucumber-jvm-deps:1.0.3'
+  // Screenshots
+  androidTestCompile 'com.squareup.spoon:spoon-client:1.7.1'
   androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
