@@ -8,6 +8,7 @@ package com.fstyle.structure_android.cucumber.steps;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Debug;
 import android.support.test.espresso.Espresso;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -19,6 +20,7 @@ import com.fstyle.structure_android.screen.main.MainActivity;
 import com.fstyle.structure_android.util.ActivityFinisher;
 import com.fstyle.structure_android.util.CountingIdlingResourceListenerImpl;
 import cucumber.api.CucumberOptions;
+import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -46,8 +48,7 @@ public class StepDefinitions {
             new ActivityTestRule<>(MainActivity.class, false, false);
 
     private void registerIdlingResources() {
-        mCountingIdlingResourceListener =
-                new CountingIdlingResourceListenerImpl("ButtonAnimationStarter");
+        mCountingIdlingResourceListener = new CountingIdlingResourceListenerImpl("RequestAPI");
         ((BaseActivity) mActivity).setIdlingNotificationListener(mCountingIdlingResourceListener);
         Espresso.registerIdlingResources(
                 mCountingIdlingResourceListener.getCountingIdlingResource());
@@ -73,6 +74,13 @@ public class StepDefinitions {
         ActivityFinisher.finishOpenActivities(); // Required for testing App with multiple
     }
 
+    @Given("^I wait for manual attachment of the debugger$")
+    public void wait_for_manual_attachment_of_debugger() throws InterruptedException {
+        while (!Debug.isDebuggerConnected()) {
+            Thread.sleep(1000);
+        }
+    }
+
     @Given("^I have a MainActivity$")
     public void I_have_a_MainActivity() {
         mCurrentPage = new MainPage();
@@ -93,9 +101,27 @@ public class StepDefinitions {
         mCurrentPage.is(MainPage.class).seeError(errorMessage);
     }
 
-    @Then("^I goto result Screen$")
+    @Then("^I see result Screen$")
     public void iGotoResultScreen() throws Throwable {
         mCurrentPage = mCurrentPage.is(MainPage.class).seeSearchResultScreen();
         mCurrentPage.is(SearchResultPage.class);
+    }
+
+    @Given("^I have a SearchResult Activity$")
+    public void iHaveASearchResultActivity() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @And("^I click any item$")
+    public void iClickAnyItem() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^I see detail Screen$")
+    public void iSeeDetailScreen() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
     }
 }

@@ -1,6 +1,7 @@
 Feature: MainScreen
   Perform search on keyword and limit number are inputted
 
+  @ScenarioId("FUNCTIONAL.AUTH.SCN.001") @UserStory("MyApp-135") @search-scenarios
   Scenario Outline: Input keyword and limit number in wrong format
     Given I have a MainActivity
     When I input keyword "<keyword>" and limit "<limit>"
@@ -16,12 +17,8 @@ Feature: MainScreen
       | shit    | 13    | keyword_none  |
       | abc     | 123   | none_limit    |
 
-  Scenario Outline: Input keyword and limit number in correct format
+  Scenario: Input keyword and limit number in correct format
     Given I have a MainActivity
-    When I input keyword "<keyword>" and limit "<limit>"
+    When I input keyword "test" and limit "<12>"
     And I click button search
-    Then I goto result Screen
-
-    Examples:
-      | keyword | limit |
-      | test    | 12    |
+    Then I see result Screen
