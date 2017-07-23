@@ -35,7 +35,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by Sun on 5/7/2017.
  */
-@CucumberOptions(features = "features/main.feature")
+@CucumberOptions(features = "features/search.feature")
 @RunWith(AndroidJUnit4.class)
 public class StepDefinitions {
 

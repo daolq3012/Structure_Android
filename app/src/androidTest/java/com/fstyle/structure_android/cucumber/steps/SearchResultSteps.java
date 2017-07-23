@@ -27,8 +27,8 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by Sun on 7/19/2017.
  */
-@CucumberOptions(features = "features/result.feature")
-@RunWith(AndroidJUnit4.class)
+//@CucumberOptions(features = "features/result.feature")
+//@RunWith(AndroidJUnit4.class)
 public class SearchResultSteps {
 
     private BasePage mCurrentPage;

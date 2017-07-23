@@ -8,10 +8,10 @@ import org.junit.runners.Suite;
  * Runs all instrumentation tests from one place
  */
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses ({
-        StepDefinitions.class,
-        SearchResultSteps.class,
-})
+//@RunWith(Suite.class)
+//@Suite.SuiteClasses ({
+//        StepDefinitions.class,
+//        SearchResultSteps.class,
+//})
 public class AllTestsSuite {
 }
