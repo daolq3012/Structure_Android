@@ -21,6 +21,7 @@ public class SearchResultAdapter
         extends BaseRecyclerViewAdapter<SearchResultAdapter.ItemViewHolder> {
 
     private List<User> mUsers;
+    private ItemClickListener mItemClickListener;
 
     protected SearchResultAdapter(@NonNull Context context, @NonNull List<User> users) {
         super(context);
@@ -32,7 +33,7 @@ public class SearchResultAdapter
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View layoutItem = LayoutInflater.from(getContext())
                 .inflate(R.layout.layout_item_search_result, parent, false);
-        return new ItemViewHolder(layoutItem);
+        return new ItemViewHolder(layoutItem, mItemClickListener);
     }
 
     @Override
@@ -45,6 +46,10 @@ public class SearchResultAdapter
         return mUsers.size();
     }
 
+    public void setItemClickListener(ItemClickListener mItemClickListener) {
+        this.mItemClickListener = mItemClickListener;
+    }
+
     /**
      * ItemViewHolder
      */
@@ -52,13 +57,33 @@ public class SearchResultAdapter
 
         private TextView mTextViewUserLogin;
 
-        ItemViewHolder(View itemView) {
+        private User mUser;
+
+        ItemViewHolder(View itemView, final ItemClickListener mItemClickListener) {
             super(itemView);
-            mTextViewUserLogin = (TextView) itemView.findViewById(R.id.tvUserLogin);
+            mTextViewUserLogin = itemView.findViewById(R.id.tvUserLogin);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mUser.getId() == null) {
+                        return;
+                    }
+                    mItemClickListener.onItemClicked(mUser.getId());
+                }
+            });
         }
 
         public void setData(User user) {
+            mUser = user;
             mTextViewUserLogin.setText(user.getLogin());
         }
+    }
+
+    /**
+     * ItemClickListener
+     */
+    public interface ItemClickListener {
+        void onItemClicked(int userId);
     }
 }

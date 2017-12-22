@@ -10,3 +10,9 @@ Follow android-mvp-architecture: [googlesamples](https://github.com/googlesample
 
 ### Templates
 Template MVP Activity & MVP Fragment: [MVP Template](https://github.com/daolq3012/Structure_Android/blob/mvp-architecture/templates/MVP_templates.zip?raw=true)
+
+Extract this file and copy into
+**..\Android Studio\plugins\android\lib\templates**
+to create MVP Activity or Fragment easier like photo below:
+
+![template](https://raw.githubusercontent.com/daolq3012/Structure_Android/mvvmp-architecture/templates/Templates.png)
