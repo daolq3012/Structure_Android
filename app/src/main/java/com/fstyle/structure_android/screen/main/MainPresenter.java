@@ -6,7 +6,6 @@ import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 import com.fstyle.structure_android.data.source.remote.api.error.RequestError;
 import com.fstyle.structure_android.utils.common.StringUtils;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
-import com.fstyle.structure_android.utils.validator.Validator;
 import java.util.List;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -17,18 +16,14 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 class MainPresenter implements MainContract.Presenter {
-    private static final String TAG = MainPresenter.class.getName();
 
     private MainContract.View mMainView;
     private UserRepository mUserRepository;
     private CompositeSubscription mCompositeSubscription;
     private BaseSchedulerProvider mSchedulerProvider;
-    private Validator mValidator;
 
-    MainPresenter(UserRepository userRepository, Validator validator) {
+    MainPresenter(UserRepository userRepository) {
         mUserRepository = userRepository;
-        mValidator = validator;
-        mValidator.initNGWordPattern();
         mCompositeSubscription = new CompositeSubscription();
     }
 
@@ -53,39 +48,17 @@ class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public boolean validateKeywordInput(String keyword) {
-        String message = mValidator.validateValueNonEmpty(keyword);
-        if (StringUtils.isBlank(message)) {
-            message = mValidator.validateNGWord(keyword);
-        }
-        mMainView.onInvalidKeyWord(message);
-        return StringUtils.isBlank(message);
-    }
-
-    @Override
-    public boolean validateLimitNumberInput(String limit) {
-        String message = mValidator.validateValueNonEmpty(limit);
-        if (StringUtils.isBlank(message)) {
-            message = mValidator.validateValueRangeFrom0to100(limit);
-        }
-        mMainView.onInvalidLimitNumber(message);
-        return StringUtils.isBlank(message);
-    }
-
-    @Override
-    public boolean validateDataInput(String keyword, String limit) {
-        validateKeywordInput(keyword);
-        validateLimitNumberInput(limit);
-        try {
-            return mValidator.validateAll();
-        } catch (IllegalAccessException e) {
-            return false;
+    public void validateDataInput() {
+        boolean isValid = validateKeywordInput(mMainView.getKeyword()) &&
+                validateLimitNumberInput(mMainView.getLimitNumber());
+        if (isValid) {
+            mMainView.onDataValid();
         }
     }
 
     @Override
-    public void searchUsers(int limit, String keyWord) {
-        Subscription subscription = mUserRepository.searchUsers(limit, keyWord)
+    public void searchUsers() {
+        Subscription subscription = mUserRepository.searchUsers(mMainView.getLimitNumber(), mMainView.getKeyword())
                 .subscribeOn(mSchedulerProvider.io())
                 .observeOn(mSchedulerProvider.ui())
                 .subscribe(new Action1<List<User>>() {
@@ -100,5 +73,19 @@ class MainPresenter implements MainContract.Presenter {
                     }
                 });
         mCompositeSubscription.add(subscription);
+    }
+
+    private boolean validateKeywordInput(String keyword) {
+        if (StringUtils.isBlank(keyword)) {
+            mMainView.onInvalidKeyWord("Keyword must not empty!");
+        }
+        return StringUtils.isBlank(keyword);
+    }
+
+    private boolean validateLimitNumberInput(String limit) {
+        if (StringUtils.isBlank(limit)) {
+            mMainView.onInvalidLimitNumber("Limit number must not empty!");
+        }
+        return StringUtils.isBlank(limit);
     }
 }

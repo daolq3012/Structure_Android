@@ -5,6 +5,7 @@ import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
 import com.fstyle.structure_android.screen.BasePresenter;
 import com.fstyle.structure_android.screen.BaseView;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
+
 import java.util.List;
 
 /**
@@ -17,6 +18,12 @@ public interface MainContract {
      * View
      */
     interface View extends BaseView {
+
+        String getKeyword();
+
+        String getLimitNumber();
+
+        // Response from Presenter
         void onSearchError(BaseException throwable);
 
         void onSearchUsersSuccess(List<User> users);
@@ -24,6 +31,8 @@ public interface MainContract {
         void onInvalidKeyWord(String errorMsg);
 
         void onInvalidLimitNumber(String errorMsg);
+
+        void onDataValid();
     }
 
     /**
@@ -33,12 +42,8 @@ public interface MainContract {
 
         void setSchedulerProvider(BaseSchedulerProvider schedulerProvider);
 
-        boolean validateKeywordInput(String keyword);
+        void validateDataInput();
 
-        boolean validateLimitNumberInput(String limit);
-
-        boolean validateDataInput(String keyword, String limit);
-
-        void searchUsers(int limit, String keyWord);
+        void searchUsers();
     }
 }
