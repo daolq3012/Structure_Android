@@ -4,18 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import io.realm.RealmModel;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
  */
 
-public class User extends BaseModel implements Parcelable, RealmModel {
+public class User extends BaseModel implements Parcelable{
 
     @SerializedName("login")
     @Expose
-    @PrimaryKey
     private String login;
     @SerializedName("id")
     @Expose

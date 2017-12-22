@@ -1,4 +1,4 @@
-package com.fstyle.structure_android.data.source.remote.api.service;
+package com.fstyle.structure_android.data.source.remote_api.service;
 
 import android.app.Application;
 import android.support.annotation.NonNull;

@@ -6,7 +6,7 @@ import com.fstyle.structure_android.data.model.User;
 
 import java.util.List;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
@@ -16,7 +16,7 @@ public interface UserDataSource {
     /**
      * LocalData For User
      */
-    interface LocalDataSource extends BaseLocalDataSource {
+    interface LocalDataSource {
 
         Observable<Void> insertUser(@NonNull User user);
 

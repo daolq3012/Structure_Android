@@ -1,4 +1,4 @@
-package com.fstyle.structure_android.data.source.remote.api.error;
+package com.fstyle.structure_android.data.source.remote_api.error;
 
 import android.support.annotation.StringDef;
 

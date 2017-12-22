@@ -1,11 +1,12 @@
 package com.fstyle.structure_android.utils.rx;
 
 import android.support.annotation.NonNull;
-import rx.Scheduler;
+
+import io.reactivex.Scheduler;
 
 /**
  * Created by le.quang.dao on 29/03/2017.
- * Allow providing different types of {@link Scheduler}s.
+ * Allow providing different types of {@link Scheduler}.
  */
 
 public interface BaseSchedulerProvider {

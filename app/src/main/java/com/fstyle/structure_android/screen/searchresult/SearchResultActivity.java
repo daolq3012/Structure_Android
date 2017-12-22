@@ -28,7 +28,7 @@ public class SearchResultActivity extends BaseActivity implements SearchResultCo
         mPresenter = new SearchResultPresenter();
         mPresenter.setView(this);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.resultRecyclerView);
+        mRecyclerView = findViewById(R.id.resultRecyclerView);
 
         ArrayList<User> users = getIntent().getParcelableArrayListExtra(Constant.LIST_USER_ARGS);
         mSearchResultAdapter = new SearchResultAdapter(this, users);

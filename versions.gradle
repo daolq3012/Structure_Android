@@ -4,7 +4,6 @@
  **/
 def versions = [:]
 versions.support = "26.1.0"
-versions.dagger = "2.11"
 versions.junit = "4.12"
 versions.espresso = "3.0.1"
 versions.retrofit = "2.3.0"
@@ -16,22 +15,13 @@ versions.mockito_all = "1.10.19"
 versions.dexmaker = "2.2.0"
 versions.constraint_layout = "1.0.2"
 versions.glide = "3.8.0"
-versions.timber = "4.5.1"
 versions.android_gradle_plugin = "3.0.1"
 versions.rxjava2 = "2.1.7"
 versions.rx_android = "2.0.1"
 versions.atsl_runner = "1.0.1"
 versions.atsl_rules = "1.0.1"
 versions.hamcrest = "1.3"
-versions.google_service_plugin = "3.1.0"
-versions.fabric_plugin = "1.+"
-versions.crashlytics = "2.6.8"
-versions.eventbus = "3.0.0"
-versions.mpchart = "v3.0.2"
 versions.constraint_layout = "1.0.2"
-versions.fab_button = "1.6.4"
-versions.toast_custom = "1.2.5"
-versions.firebase = "9.4.0"
 versions.cucumber = "1.2.0"
 versions.material_dialog = "1.0"
 ext.versions = versions
@@ -40,8 +30,8 @@ def build_versions = [:]
 build_versions.min_sdk = 16
 build_versions.target_sdk = 26
 build_versions.build_tools = "26.0.2"
-build_versions.versionCode = 5
-build_versions.versionName = '1.1'
+build_versions.versionCode = 1
+build_versions.versionName = '1.0'
 build_versions.versionCodeRelease = 1
 build_versions.versionNameRelease = '1.1'
 ext.build_versions = build_versions
@@ -50,7 +40,6 @@ ext.build_versions = build_versions
 def addRepos(RepositoryHandler handler) {
     handler.jcenter()
     handler.google()
-    handler.maven { url 'https://maven.fabric.io/public' }
     handler.maven { url 'https://jitpack.io' }
 }
 ext.addRepos = this.&addRepos

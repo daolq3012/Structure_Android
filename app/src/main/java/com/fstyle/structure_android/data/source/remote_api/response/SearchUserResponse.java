@@ -1,5 +1,6 @@
-package com.fstyle.structure_android.data.model;
+package com.fstyle.structure_android.data.source.remote_api.response;
 
+import com.fstyle.structure_android.data.model.User;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
@@ -9,9 +10,9 @@ import java.util.List;
  * Created by le.quang.dao on 10/03/2017.
  */
 
-public class UsersList {
+public class SearchUserResponse {
 
-    public UsersList(List<User> items) {
+    public SearchUserResponse(List<User> items) {
         this.items = items;
     }
 
@@ -27,15 +28,7 @@ public class UsersList {
         return totalCount;
     }
 
-    public void setTotalCount(Integer totalCount) {
-        this.totalCount = totalCount;
-    }
-
     public List<User> getItems() {
         return items;
-    }
-
-    public void setItems(List<User> items) {
-        this.items = items;
     }
 }

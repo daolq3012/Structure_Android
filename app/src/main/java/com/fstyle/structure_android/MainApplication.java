@@ -1,7 +1,7 @@
 package com.fstyle.structure_android;
 
 import android.app.Application;
-import com.fstyle.structure_android.data.source.remote.api.service.NameServiceClient;
+import com.fstyle.structure_android.data.source.remote_api.service.NameServiceClient;
 /**
  * Created by le.quang.dao on 10/03/2017.
  */

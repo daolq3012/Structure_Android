@@ -1,7 +1,7 @@
-package com.fstyle.structure_android.data.source.remote.api.error;
+package com.fstyle.structure_android.data.source.remote_api.error;
 
 import android.support.annotation.Nullable;
-import com.fstyle.structure_android.data.source.remote.api.response.ErrorResponse;
+import com.fstyle.structure_android.data.source.remote_api.response.ErrorResponse;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;

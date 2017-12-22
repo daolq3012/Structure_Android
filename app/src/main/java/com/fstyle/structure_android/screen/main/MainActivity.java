@@ -6,21 +6,21 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.EditText;
+
 import com.fstyle.library.DialogAction;
 import com.fstyle.library.MaterialDialog;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
-import com.fstyle.structure_android.data.source.UserRepository;
-import com.fstyle.structure_android.data.source.UserRepositoryImpl;
-import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
-import com.fstyle.structure_android.data.source.remote.api.error.BaseException;
-import com.fstyle.structure_android.data.source.remote.api.service.NameServiceClient;
+import com.fstyle.structure_android.data.repository.UserRepository;
+import com.fstyle.structure_android.data.source.remote_api.error.BaseException;
+import com.fstyle.structure_android.data.source.remote_api.service.NameServiceClient;
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
 import com.fstyle.structure_android.utils.navigator.Navigator;
 import com.fstyle.structure_android.utils.rx.SchedulerProvider;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import com.fstyle.structure_android.widget.dialog.DialogManagerImpl;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,17 +45,17 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        UserRepository userRepository = new UserRepositoryImpl(null,
-                new UserRemoteDataSource(NameServiceClient.getInstance()));
+        UserRepository userRepository = new UserRepository(null,
+                NameServiceClient.getInstance());
         mPresenter = new MainPresenter(userRepository);
         mPresenter.setView(this);
         mPresenter.setSchedulerProvider(SchedulerProvider.getInstance());
 
-        mTextInputLayoutKeyword = (TextInputLayout) findViewById(R.id.txtInputLayoutKeyword);
-        mEditTextKeyword = (EditText) findViewById(R.id.edtKeyword);
+        mTextInputLayoutKeyword = findViewById(R.id.txtInputLayoutKeyword);
+        mEditTextKeyword = findViewById(R.id.edtKeyword);
         mTextInputLayoutNumberLimit =
-                (TextInputLayout) findViewById(R.id.txtInputLayoutNumberLimit);
-        mEditNumberLimit = (EditText) findViewById(R.id.edtNumberLimit);
+                findViewById(R.id.txtInputLayoutNumberLimit);
+        mEditNumberLimit = findViewById(R.id.edtNumberLimit);
 
         mDialogManager = new DialogManagerImpl(this);
     }

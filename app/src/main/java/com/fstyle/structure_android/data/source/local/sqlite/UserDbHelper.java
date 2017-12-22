@@ -58,10 +58,10 @@ public class UserDbHelper extends SQLiteOpenHelper {
     /**
      * Inner class that defines the table user contents
      */
-    static final class UserEntry implements BaseColumns {
-        static final String TABLE_NAME = "user";
-        static final String COLUMN_NAME_USER_LOGIN = "user_login";
-        static final String COLUMN_NAME_AVATAR_URL = "avatar_url";
-        static final String COLUMN_NAME_SUBSCRIPTIONS_URL = "subscriptions_url";
+    public static final class UserEntry implements BaseColumns {
+        public static final String TABLE_NAME = "user";
+        public static final String COLUMN_NAME_USER_LOGIN = "user_login";
+        public static final String COLUMN_NAME_AVATAR_URL = "avatar_url";
+        public static final String COLUMN_NAME_SUBSCRIPTIONS_URL = "subscriptions_url";
     }
 }

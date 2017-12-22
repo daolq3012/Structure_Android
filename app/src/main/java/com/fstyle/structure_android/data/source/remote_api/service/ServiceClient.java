@@ -1,9 +1,9 @@
-package com.fstyle.structure_android.data.source.remote.api.service;
+package com.fstyle.structure_android.data.source.remote_api.service;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
 import com.fstyle.structure_android.BuildConfig;
-import com.fstyle.structure_android.data.source.remote.api.middleware.RxErrorHandlingCallAdapterFactory;
+import com.fstyle.structure_android.data.source.remote_api.middleware.RxErrorHandlingCallAdapterFactory;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,7 +13,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -53,7 +53,7 @@ public class ServiceClient {
         }
 
         Retrofit retrofit = builder.client(httpClientBuilder.build())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         return retrofit.create(serviceClass);
     }

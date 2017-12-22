@@ -1,13 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-apply from: 'dependencies.gradle'
-
 buildscript {
-  repositories {
-    jcenter()
-  }
+  apply from: './versions.gradle'
+  addRepos(repositories)
   dependencies {
-    classpath 'com.android.tools.build:gradle:2.3.3'
-    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    classpath "com.android.tools.build:gradle:$versions.android_gradle_plugin"
 
     // NOTE: Do not place your application dependencies here; they belong
     // in the individual module build.gradle files
@@ -15,27 +11,9 @@ buildscript {
 }
 
 allprojects {
-  repositories {
-    jcenter()
-    maven { url 'https://jitpack.io' }
-  }
+  addRepos(repositories)
 }
 
 task clean(type: Delete) {
   delete rootProject.buildDir
-}
-
-// Define versions in a single place
-ext {
-  // Sdk and tools
-  compileSdkVersion = 25
-  buildToolsVersion = '25.0.1'
-  minSdkVersion = 16
-  targetSdkVersion = 25
-
-  // Version code & name
-  versionCode = 1
-  versionName = '1.0.0'
-  versionCodeRelease = 1
-  versionNameRelease = '1.0.0'
 }
