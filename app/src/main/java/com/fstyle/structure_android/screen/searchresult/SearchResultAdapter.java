@@ -1,14 +1,14 @@
 package com.fstyle.structure_android.screen.searchresult;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
+import com.fstyle.structure_android.databinding.LayoutItemSearchResultBinding;
 import com.fstyle.structure_android.screen.BaseRecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,25 +20,25 @@ import java.util.List;
 public class SearchResultAdapter
         extends BaseRecyclerViewAdapter<SearchResultAdapter.ItemViewHolder> {
 
-    private List<User> mUsers;
+    private List<User> mUsers = new ArrayList<>();
     private ItemClickListener mItemClickListener;
 
-    protected SearchResultAdapter(@NonNull Context context, @NonNull List<User> users) {
+    protected SearchResultAdapter(@NonNull Context context, List<User> users) {
         super(context);
-        mUsers = new ArrayList<>();
         mUsers.addAll(users);
     }
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layoutItem = LayoutInflater.from(getContext())
-                .inflate(R.layout.layout_item_search_result, parent, false);
-        return new ItemViewHolder(layoutItem, mItemClickListener);
+        LayoutItemSearchResultBinding binding =
+                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                        R.layout.layout_item_search_result, parent, false);
+        return new ItemViewHolder(binding, mItemClickListener);
     }
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        holder.setData(mUsers.get(position));
+        holder.bind(mUsers.get(position));
     }
 
     @Override
@@ -46,8 +46,8 @@ public class SearchResultAdapter
         return mUsers.size();
     }
 
-    public void setItemClickListener(ItemClickListener mItemClickListener) {
-        this.mItemClickListener = mItemClickListener;
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
     }
 
     /**
@@ -55,28 +55,19 @@ public class SearchResultAdapter
      */
     static class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mTextViewUserLogin;
+        private LayoutItemSearchResultBinding mBinding;
+        private ItemSearchResultViewModel mItemSearchResultViewModel;
 
-        private User mUser;
-
-        ItemViewHolder(View itemView, final ItemClickListener mItemClickListener) {
-            super(itemView);
-            mTextViewUserLogin = itemView.findViewById(R.id.tvUserLogin);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mUser.getId() == null) {
-                        return;
-                    }
-                    mItemClickListener.onItemClicked(mUser.getId());
-                }
-            });
+        ItemViewHolder(LayoutItemSearchResultBinding binding, ItemClickListener listener) {
+            super(binding.getRoot());
+            mBinding = binding;
+            mItemSearchResultViewModel = new ItemSearchResultViewModel(listener);
+            mBinding.setViewModel(mItemSearchResultViewModel);
         }
 
-        public void setData(User user) {
-            mUser = user;
-            mTextViewUserLogin.setText(user.getLogin());
+        void bind(User user) {
+            mItemSearchResultViewModel.setUser(user);
+            mBinding.executePendingBindings();
         }
     }
 
@@ -84,6 +75,6 @@ public class SearchResultAdapter
      * ItemClickListener
      */
     public interface ItemClickListener {
-        void onItemClicked(int userId);
+        void onItemClicked(Integer userId);
     }
 }

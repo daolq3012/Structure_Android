@@ -11,10 +11,18 @@ public final class StringUtils {
     }
 
     public static boolean isBlank(String input) {
-        return input.isEmpty();
+        return input == null || input.isEmpty();
     }
 
     public static boolean isNotBlank(String input) {
         return !isBlank(input);
+    }
+
+    public static int convertStringToNumber(String input) {
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            return Integer.MIN_VALUE;
+        }
     }
 }

@@ -1,86 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusableInTouchMode="false"
-    tools:context="com.fstyle.structure_android.screen.main.MainActivity"
     >
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/txtInputLayoutKeyword"
-        android:layout_width="@dimen/dp_368"
-        android:layout_height="wrap_content"
-        app:errorTextAppearance="@style/ErrorText"
-        app:hintTextAppearance="@style/LabelText"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.196"
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.fstyle.structure_android.screen.main.MainViewModel"
+            />
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.fstyle.structure_android.screen.main.MainActivity"
         >
 
-        <EditText
-            android:id="@+id/edtKeyword"
-            android:layout_width="match_parent"
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="@dimen/dp_368"
             android:layout_height="wrap_content"
-            android:text="@string/a"
-            android:hint="@string/keyword"
-            />
-    </android.support.design.widget.TextInputLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/search_user_github"
-        android:textSize="@dimen/sp_23"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.455"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.032"
-        tools:text="@string/app_name"
-        />
+            app:errorText="@{viewModel.keywordErrorStringObservableField}"
+            app:errorTextAppearance="@style/ErrorText"
+            app:hintTextAppearance="@style/LabelText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.196"
+            >
 
-    <Button
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:onClick="onSearchButtonClicked"
-        android:text="@string/search"
-        android:textAllCaps="false"
-        android:textSize="@dimen/dp_16"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.578"
-        tools:text="Submit"
-        style="@style/Widget.AppCompat.Button.Colored"
-        />
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/txtInputLayoutNumberLimit"
-        android:layout_width="@dimen/dp_368"
-        android:layout_height="wrap_content"
-        app:errorTextAppearance="@style/ErrorText"
-        app:hintTextAppearance="@style/LabelText"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.35"
-        >
-
-        <EditText
-            android:id="@+id/edtNumberLimit"
-            android:layout_width="match_parent"
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/keyword"
+                android:text="@={viewModel.keyWordStringObservableField}"
+                />
+        </android.support.design.widget.TextInputLayout>
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_120"
-            android:hint="@string/limit_number"
-            android:inputType="number"
+            android:text="@string/search_user_github"
+            android:textSize="@dimen/sp_23"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.455"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.032"
+            tools:text="@string/app_name"
             />
-    </android.support.design.widget.TextInputLayout>
 
-</android.support.constraint.ConstraintLayout>
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:onClick="@{viewModel::onSearchButtonClicked}"
+            android:text="@string/search"
+            android:textAllCaps="false"
+            android:textSize="@dimen/dp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.578"
+            tools:text="Submit"
+            style="@style/Widget.AppCompat.Button.Colored"
+            />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="@dimen/dp_368"
+            android:layout_height="wrap_content"
+            app:errorText="@{viewModel.limitErrorStringObservableField}"
+            app:errorTextAppearance="@style/ErrorText"
+            app:hintTextAppearance="@style/LabelText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.35"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/limit_number"
+                android:inputType="number"
+                android:text="@={viewModel.limitStringObservableField}"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
