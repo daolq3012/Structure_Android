@@ -162,6 +162,7 @@ public final class RxErrorHandlingCallAdapterFactory extends CallAdapter.Factory
                         }
                     } catch (IOException e) {
                         Log.e(TAG, e.getMessage());
+                        return BaseException.toUnexpectedError(throwable);
                     }
                 } else {
                     return BaseException.toHttpError(response);

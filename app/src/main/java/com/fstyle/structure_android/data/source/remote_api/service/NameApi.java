@@ -3,7 +3,7 @@ package com.fstyle.structure_android.data.source.remote_api.service;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.remote_api.response.SearchUserResponse;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -14,9 +14,9 @@ import retrofit2.http.Query;
 
 public interface NameApi {
     @GET("/search/users")
-    Observable<SearchUserResponse> searchGithubUsers(@Query("per_page") String limit,
+    Single<SearchUserResponse> searchGithubUsers(@Query("per_page") String limit,
                                                      @Query("q") String searchTerm);
 
     @GET("/users/{username}")
-    Observable<User> getUser(@Path("username") String username);
+    Single<User> getUser(@Path("username") String username);
 }
