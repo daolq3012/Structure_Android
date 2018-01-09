@@ -20,7 +20,6 @@ import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,16 +94,13 @@ public class MainViewModel extends BaseViewModel {
                 .subscribe(new Consumer<List<User>>() {
                     @Override
                     public void accept(List<User> users) throws Exception {
+                        mDialogManager.dismissProgressDialog();
                         gotoSearchResultActivity(users);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         showDialogError((BaseException) throwable);
-                    }
-                }, new Action() {
-                    @Override
-                    public void run() throws Exception {
                         mDialogManager.dismissProgressDialog();
                     }
                 });

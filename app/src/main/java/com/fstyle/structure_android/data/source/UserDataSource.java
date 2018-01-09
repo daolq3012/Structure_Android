@@ -6,7 +6,6 @@ import com.fstyle.structure_android.data.model.User;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
 import java.util.List;
 
 /**
@@ -21,7 +20,6 @@ public interface UserDataSource {
      * LocalData For User
      */
     interface LocalDataSource extends UserDataSource {
-
         Completable insertListUser(List<User> users);
 
         Completable insertUser(@NonNull User user);
