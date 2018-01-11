@@ -1,9 +1,9 @@
-package com.fstyle.structure_android.data.source.remote_api.service;
+package com.fstyle.structure_android.data.source.remote.config.service;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
 import com.fstyle.structure_android.BuildConfig;
-import com.fstyle.structure_android.data.source.remote_api.middleware.RxErrorHandlingCallAdapterFactory;
+import com.fstyle.structure_android.data.source.remote.config.middleware.RxErrorHandlingCallAdapterFactory;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

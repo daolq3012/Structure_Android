@@ -1,34 +1,17 @@
 package com.fstyle.structure_android.data.repository;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import com.fstyle.structure_android.data.model.User;
-import com.fstyle.structure_android.data.source.remote_api.response.SearchUserResponse;
+import com.fstyle.structure_android.data.source.local.UserLocalDataSource;
+import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
 import com.fstyle.structure_android.data.source.UserDataSource;
-import com.fstyle.structure_android.data.source.local.sqlite.UserDbHelper;
-import com.fstyle.structure_android.data.source.remote_api.service.NameApi;
-
 import io.reactivex.Completable;
-import io.reactivex.CompletableEmitter;
-import io.reactivex.CompletableOnSubscribe;
-import io.reactivex.CompletableSource;
 import io.reactivex.Maybe;
-import io.reactivex.MaybeEmitter;
-import io.reactivex.MaybeOnSubscribe;
-import io.reactivex.Single;
-import io.reactivex.SingleSource;
-import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
-import io.reactivex.functions.Function;
-import java.util.concurrent.Callable;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by le.quang.dao on 10/03/2017.
@@ -37,196 +20,101 @@ import java.util.concurrent.Callable;
 public class UserRepository
         implements UserDataSource.RemoteDataSource, UserDataSource.LocalDataSource {
 
-    private static final String SELECT_ALL_USER_QUERY =
-            String.format("SELECT * FROM %s", UserDbHelper.UserEntry.TABLE_NAME);
+    private static UserRepository instance;
 
-    private NameApi mNameApi;
-    private SQLiteDatabase mDatabase;
+    @NonNull
+    private UserLocalDataSource mUserLocalDataSource;
 
-    public UserRepository(SQLiteDatabase database, NameApi api) {
-        mDatabase = database;
-        mNameApi = api;
+    @NonNull
+    private UserRemoteDataSource mUserRemoteDataSource;
+
+    /**
+     * This variable has package local visibility so it can be accessed from tests.
+     */
+    @VisibleForTesting
+    @Nullable
+    private List<User> mCachedUsers;
+
+    /**
+     * Marks the cache as invalid, to force an update the next time data is requested. This variable
+     * has package local visibility so it can be accessed from tests.
+     */
+    @VisibleForTesting
+    boolean mCacheIsDirty = false;
+
+    public UserRepository(@NonNull UserLocalDataSource userLocalDataSource,
+            @NonNull UserRemoteDataSource userRemoteDataSource) {
+        mUserLocalDataSource = checkNotNull(userLocalDataSource);
+        mUserRemoteDataSource = checkNotNull(userRemoteDataSource);
     }
 
-    @Override
-    public Single<List<User>> searchUsers(String keyWord, String limit) {
-        return mNameApi.searchGithubUsers(keyWord, limit)
-                .flatMap(new Function<SearchUserResponse, SingleSource<? extends List<User>>>() {
-                    @Override
-                    public SingleSource<? extends List<User>> apply(
-                            SearchUserResponse searchUserResponse) throws Exception {
-                        return Single.just(searchUserResponse.getItems());
-                    }
-                });
-    }
-
-    @Override
-    public Completable insertUser(@NonNull final User user) {
-        mDatabase.beginTransaction();
-        return Completable.create(new CompletableOnSubscribe() {
-            @Override
-            public void subscribe(CompletableEmitter emitter) throws Exception {
-                try {
-                    ContentValues values = new ContentValues();
-                    values.put(UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN, user.getLogin());
-                    values.put(UserDbHelper.UserEntry.COLUMN_NAME_AVATAR_URL, user.getAvatarUrl());
-                    values.put(UserDbHelper.UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL,
-                            user.getSubscriptionsUrl());
-                    mDatabase.insert(UserDbHelper.UserEntry.TABLE_NAME, null, values);
-                    mDatabase.close();
-                    emitter.onComplete();
-                } catch (RuntimeException e) {
-                    emitter.onError(e);
-                }
-            }
-        });
-    }
-
-    @Override
-    public Completable updateUser(@NonNull final User user) {
-        mDatabase.beginTransaction();
-        return Completable.create(new CompletableOnSubscribe() {
-            @Override
-            public void subscribe(CompletableEmitter emitter) throws Exception {
-                try {
-                    ContentValues values = new ContentValues();
-                    values.put(UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN, user.getLogin());
-                    values.put(UserDbHelper.UserEntry.COLUMN_NAME_AVATAR_URL, user.getAvatarUrl());
-                    values.put(UserDbHelper.UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL,
-                            user.getSubscriptionsUrl());
-                    mDatabase.update(UserDbHelper.UserEntry.TABLE_NAME, values,
-                            UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN + "= ?",
-                            new String[] { user.getLogin() });
-                    mDatabase.close();
-                    emitter.onComplete();
-                } catch (RuntimeException e) {
-                    emitter.onError(e);
-                }
-            }
-        });
-    }
-
-    @Override
-    public Completable deleteUser(@NonNull final User user) {
-        Observable.create(new ObservableOnSubscribe<Void>() {
-            @Override
-            public void subscribe(ObservableEmitter<Void> e) throws Exception {
-
-            }
-        });
-        mDatabase.beginTransaction();
-        return Completable.create(new CompletableOnSubscribe() {
-            @Override
-            public void subscribe(CompletableEmitter emitter) throws Exception {
-                try {
-                    final String selection =
-                            UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN + " LIKE ?";
-                    final String[] selectionArgs = { user.getLogin() };
-                    mDatabase.delete(UserDbHelper.UserEntry.TABLE_NAME, selection, selectionArgs);
-                    mDatabase.close();
-                    emitter.onComplete();
-                } catch (RuntimeException e) {
-                    emitter.onError(e);
-                }
-            }
-        });
-    }
-
-    @Override
-    public Completable insertOrUpdateUser(@NonNull final User user) {
-        if (!mDatabase.isOpen()) {
-            mDatabase.beginTransaction();
+    /**
+     * Returns the single instance of this class, creating it if necessary.
+     *
+     * @param remoteDataSource the backend data source
+     * @param localDataSource the device storage data source
+     * @return the {@link UserRepository} instance
+     */
+    public static synchronized UserRepository getInstance(
+            @NonNull UserLocalDataSource localDataSource,
+            @NonNull UserRemoteDataSource remoteDataSource) {
+        if (instance == null) {
+            instance = new UserRepository(checkNotNull(localDataSource),
+                    checkNotNull(remoteDataSource));
         }
-        return Completable.create(new CompletableOnSubscribe() {
-            @Override
-            public void subscribe(CompletableEmitter emitter) throws Exception {
-                try {
-                    ContentValues values = new ContentValues();
-                    values.put(UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN, user.getLogin());
-                    values.put(UserDbHelper.UserEntry.COLUMN_NAME_AVATAR_URL, user.getAvatarUrl());
-                    values.put(UserDbHelper.UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL,
-                            user.getSubscriptionsUrl());
-                    mDatabase.insertWithOnConflict(UserDbHelper.UserEntry.TABLE_NAME, null, values,
-                            SQLiteDatabase.CONFLICT_REPLACE);
-                    mDatabase.close();
-                    emitter.onComplete();
-                } catch (RuntimeException e) {
-                    emitter.onError(e);
-                }
-            }
-        });
+        return instance;
     }
 
+    /**
+     * Used to force {@link #getInstance(UserLocalDataSource, UserRemoteDataSource)} to create a new
+     * instance
+     * next time it's called.
+     */
+    public static void destroyInstance() {
+        instance = null;
+    }
+
+    @Override
+    public Completable insertListUser(List<User> users) {
+        return mUserLocalDataSource.insertListUser(checkNotNull(users));
+    }
+
+    @Override
+    public Completable insertUser(@NonNull User user) {
+        return mUserLocalDataSource.insertUser(checkNotNull(user));
+    }
+
+    @Override
+    public Completable updateUser(@NonNull User user) {
+        return mUserLocalDataSource.updateUser(checkNotNull(user));
+    }
+
+    @Override
+    public Completable deleteUser(@NonNull User user) {
+        return mUserLocalDataSource.deleteUser(checkNotNull(user));
+    }
+
+    @Override
+    public Completable insertOrUpdateUser(@NonNull User user) {
+        return mUserLocalDataSource.insertOrUpdateUser(checkNotNull(user));
+    }
+
+    /**
+     * Gets users from cache, local data source (SQLite) or remote data source, whichever is
+     * available first.
+     */
     @Override
     public Maybe<List<User>> getAllUser() {
-        if (!mDatabase.isOpen()) {
-            mDatabase.beginTransaction();
-        }
-        return Maybe.create(new MaybeOnSubscribe<List<User>>() {
-            @Override
-            public void subscribe(MaybeEmitter<List<User>> emitter) throws Exception {
-                List<User> users = new ArrayList<>();
-                Cursor cursor = mDatabase.rawQuery(SELECT_ALL_USER_QUERY, null);
-                if (cursor.moveToFirst()) {
-                    do {
-                        User user = new User();
-                        user.setLogin(cursor.getString(cursor.getColumnIndex(
-                                UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN)));
-                        user.setAvatarUrl(cursor.getString(cursor.getColumnIndex(
-                                UserDbHelper.UserEntry.COLUMN_NAME_AVATAR_URL)));
-                        user.setSubscriptionsUrl(cursor.getString(cursor.getColumnIndex(
-                                UserDbHelper.UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL)));
-                        users.add(user);
-                    } while (cursor.moveToNext());
-                }
-                if (!cursor.isClosed()) {
-                    cursor.close();
-                }
-
-                mDatabase.close();
-                emitter.onSuccess(users);
-                emitter.onComplete();
-            }
-        });
+        return mUserRemoteDataSource.getAllUser();
     }
 
     @Override
-    public Maybe<User> getUserByUserLogin(final String userLogin) {
-        return Maybe.create(new MaybeOnSubscribe<User>() {
-            @Override
-            public void subscribe(MaybeEmitter<User> emitter) throws Exception {
-                if (!mDatabase.isOpen()) {
-                    mDatabase.beginTransaction();
-                }
-                final String[] projection = {
-                        UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN,
-                        UserDbHelper.UserEntry.COLUMN_NAME_AVATAR_URL,
-                        UserDbHelper.UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL
-                };
-                final String selection = UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN + " LIKE ?";
-                String[] selectionArgs = { userLogin };
+    public Maybe<User> findUserByUserLogin(String userLogin) {
+        return mUserLocalDataSource.findUserByUserLogin(userLogin);
+    }
 
-                Cursor cursor =
-                        mDatabase.query(UserDbHelper.UserEntry.TABLE_NAME, projection, selection,
-                                selectionArgs, null, null, null);
-                User user = null;
-                if (cursor != null && cursor.getCount() > 0) {
-                    user = new User();
-                    cursor.moveToFirst();
-                    user.setLogin(cursor.getString(
-                            cursor.getColumnIndex(UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN)));
-                    user.setAvatarUrl(cursor.getString(
-                            cursor.getColumnIndex(UserDbHelper.UserEntry.COLUMN_NAME_AVATAR_URL)));
-                    user.setSubscriptionsUrl(cursor.getString(cursor.getColumnIndex(
-                            UserDbHelper.UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL)));
-                }
-                if (cursor != null && !cursor.isClosed()) {
-                    cursor.close();
-                }
-                mDatabase.close();
-                emitter.onSuccess(user);
-                emitter.onComplete();
-            }
-        });
+    @Override
+    public Completable deleteAllUsers() {
+        return mUserLocalDataSource.deleteAllUsers();
     }
 }

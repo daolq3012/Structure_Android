@@ -14,10 +14,15 @@ import java.util.List;
  */
 
 public interface UserDataSource {
+
+    Maybe<List<User>> getAllUser();
+
     /**
      * LocalData For User
      */
-    interface LocalDataSource {
+    interface LocalDataSource extends UserDataSource {
+
+        Completable insertListUser(List<User> users);
 
         Completable insertUser(@NonNull User user);
 
@@ -27,15 +32,14 @@ public interface UserDataSource {
 
         Completable insertOrUpdateUser(@NonNull User user);
 
-        Maybe<List<User>> getAllUser();
+        Maybe<User> findUserByUserLogin(String userLogin);
 
-        Maybe<User> getUserByUserLogin(String userLogin);
+        Completable deleteAllUsers();
     }
 
     /**
      * RemoteData For User
      */
-    interface RemoteDataSource {
-        Single<List<User>> searchUsers(String keyWord, String limit);
+    interface RemoteDataSource extends UserDataSource {
     }
 }

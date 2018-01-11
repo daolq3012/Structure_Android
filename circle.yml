@@ -1,6 +1,6 @@
 machine:
   ruby:
-      version: 2.0.0-p648
+      version: 2.3.1
   java:
       version: oraclejdk8
   timezone: Asia/Saigon
@@ -10,6 +10,8 @@ machine:
       GRADLE_OPTS: '-Dorg.gradle.parallel=false -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx1560m -XX:+HeapDumpOnOutOfMemoryError"'
       TERM: dumb
       REVIEWDOG_VERSION: 0.9.3
+      ROOM_ID: 87198521
+      TEAM: "[To:2696852][To:2696964]"
 dependencies:
   pre:
     - git fetch origin # sometimes circleci fail to fetch branches correctly, so fetch them expressly
@@ -17,12 +19,24 @@ dependencies:
     - mkdir -p $ANDROID_HOME/licenses
     - echo -e "8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
     - echo -e "84831b9409646a918e30573bab4c9c91346d8abd" > $ANDROID_HOME/licenses/android-sdk-preview-license
-    - $ANDROID_HOME/tools/bin/sdkmanager "platform-tools" "extras;android;m2repository" "extras;google;m2repository"
-    - $ANDROID_HOME/tools/bin/sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1"
-    - $ANDROID_HOME/tools/bin/sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.1"
+    - echo y | android update sdk --no-ui --all --filter "tool,extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository"
+    - echo y | $ANDROID_HOME/tools/bin/sdkmanager "build-tools;27.0.0" "platforms;android-27"
+    - echo y | $ANDROID_HOME/tools/bin/sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
     - curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog && chmod +x ./reviewdog
+  cache_directories:
+    # Android SDK
+    - /usr/local/android-sdk-linux/tools
+    - /usr/local/android-sdk-linux/platform-tools
+    - /usr/local/android-sdk-linux/build-tools
+    - /usr/local/android-sdk-linux/licenses
+    - /usr/local/android-sdk-linux/extras/google/m2repository
+
+    # Gradle caches
+    - /home/ubuntu/.gradle/caches/
+    - /home/ubuntu/.gradle/wrapper/
   override:
     - ./gradlew app:dependencies
 test:
   override:
-      - sh scripts/saddler.sh
+      - sh scripts/saddler.sh:
+          timeout: 1800

@@ -1,4 +1,4 @@
-package com.fstyle.structure_android.data.source.remote_api.service;
+package com.fstyle.structure_android.data.source.remote.config.service;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

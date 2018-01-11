@@ -4,23 +4,23 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
-
 import com.fstyle.library.DialogAction;
 import com.fstyle.library.MaterialDialog;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.repository.UserRepository;
-import com.fstyle.structure_android.data.source.remote_api.error.BaseException;
-import com.fstyle.structure_android.data.source.remote_api.service.NameServiceClient;
+import com.fstyle.structure_android.data.source.local.UserLocalDataSource;
+import com.fstyle.structure_android.data.source.remote.UserRemoteDataSource;
+import com.fstyle.structure_android.data.source.remote.config.error.BaseException;
 import com.fstyle.structure_android.screen.BaseActivity;
 import com.fstyle.structure_android.screen.searchresult.SearchResultActivity;
 import com.fstyle.structure_android.utils.navigator.Navigator;
 import com.fstyle.structure_android.utils.rx.SchedulerProvider;
 import com.fstyle.structure_android.widget.dialog.DialogManager;
 import com.fstyle.structure_android.widget.dialog.DialogManagerImpl;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,17 +45,20 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        UserRepository userRepository = new UserRepository(null,
-                NameServiceClient.getInstance());
+        UserRepository userRepository =
+                UserRepository.getInstance(UserLocalDataSource.getInstance(),
+                        UserRemoteDataSource.getInstance());
         mPresenter = new MainPresenter(userRepository);
         mPresenter.setView(this);
         mPresenter.setSchedulerProvider(SchedulerProvider.getInstance());
 
         mTextInputLayoutKeyword = findViewById(R.id.txtInputLayoutKeyword);
         mEditTextKeyword = findViewById(R.id.edtKeyword);
-        mTextInputLayoutNumberLimit =
-                findViewById(R.id.txtInputLayoutNumberLimit);
+        mTextInputLayoutNumberLimit = findViewById(R.id.txtInputLayoutNumberLimit);
         mEditNumberLimit = findViewById(R.id.edtNumberLimit);
+
+        mEditTextKeyword.setInputType(InputType.TYPE_NULL);
+        mEditNumberLimit.setInputType(InputType.TYPE_NULL);
 
         mDialogManager = new DialogManagerImpl(this);
     }
@@ -98,18 +101,16 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         mPresenter.searchUsers();
     }
 
-
     @Override
     public void onSearchError(BaseException e) {
         mDialogManager.dismissProgressDialog();
-        mDialogManager.dialogError(e.getMessage(),
-                new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog materialDialog,
-                                        @NonNull DialogAction dialogAction) {
-                        onSearchButtonClicked(null);
-                    }
-                });
+        mDialogManager.dialogError(e.getMessage(), new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog materialDialog,
+                    @NonNull DialogAction dialogAction) {
+                onSearchButtonClicked(null);
+            }
+        });
     }
 
     @Override

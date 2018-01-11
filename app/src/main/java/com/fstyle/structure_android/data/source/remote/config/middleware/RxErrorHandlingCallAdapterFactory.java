@@ -1,9 +1,9 @@
-package com.fstyle.structure_android.data.source.remote_api.middleware;
+package com.fstyle.structure_android.data.source.remote.config.middleware;
 
 import android.text.TextUtils;
 import android.util.Log;
-import com.fstyle.structure_android.data.source.remote_api.error.BaseException;
-import com.fstyle.structure_android.data.source.remote_api.response.ErrorResponse;
+import com.fstyle.structure_android.data.source.remote.config.error.BaseException;
+import com.fstyle.structure_android.data.source.remote.config.response.ErrorResponse;
 import com.google.gson.Gson;
 import io.reactivex.Completable;
 import io.reactivex.CompletableSource;

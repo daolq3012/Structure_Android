@@ -2,7 +2,7 @@ package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.repository.UserRepository;
-import com.fstyle.structure_android.data.source.remote_api.error.BaseException;
+import com.fstyle.structure_android.data.source.remote.config.error.BaseException;
 import com.fstyle.structure_android.utils.common.StringUtils;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 import java.util.List;
@@ -48,8 +48,8 @@ class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void validateDataInput() {
-        boolean isValid = validateKeywordInput(mMainView.getKeyword()) &
-                validateLimitNumberInput(mMainView.getLimitNumber());
+        boolean isValid = validateKeywordInput(mMainView.getKeyword()) & validateLimitNumberInput(
+                mMainView.getLimitNumber());
         if (isValid) {
             mMainView.onDataValid();
         }
@@ -57,20 +57,21 @@ class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void searchUsers() {
-        Disposable subscription = mUserRepository.searchUsers(mMainView.getLimitNumber(), mMainView.getKeyword())
-                .subscribeOn(mSchedulerProvider.io())
-                .observeOn(mSchedulerProvider.ui())
-                .subscribe(new Consumer<List<User>>() {
-                    @Override
-                    public void accept(List<User> users) {
-                        mMainView.onSearchUsersSuccess(users);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        mMainView.onSearchError((BaseException) throwable);
-                    }
-                });
+        Disposable subscription =
+                mUserRepository.getAllUser()
+                        .subscribeOn(mSchedulerProvider.io())
+                        .observeOn(mSchedulerProvider.ui())
+                        .subscribe(new Consumer<List<User>>() {
+                            @Override
+                            public void accept(List<User> users) {
+                                mMainView.onSearchUsersSuccess(users);
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                mMainView.onSearchError((BaseException) throwable);
+                            }
+                        });
         mCompositeDisposable.add(subscription);
     }
 

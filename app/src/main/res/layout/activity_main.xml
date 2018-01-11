@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="false"
     tools:context="com.fstyle.structure_android.screen.main.MainActivity"
     >
 
@@ -25,6 +26,7 @@
             android:id="@+id/edtKeyword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/a"
             android:hint="@string/keyword"
             />
     </android.support.design.widget.TextInputLayout>
@@ -75,6 +77,7 @@
             android:id="@+id/edtNumberLimit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/text_120"
             android:hint="@string/limit_number"
             android:inputType="number"
             />

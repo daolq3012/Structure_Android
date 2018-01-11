@@ -1,7 +1,8 @@
-package com.fstyle.structure_android.data.source.local.sharedprf;
+package com.fstyle.structure_android.data.source.local.config.sharedprf;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import com.google.common.base.Preconditions;
 
 /**
  * Created by le.quang.dao on 14/03/2017.
@@ -14,7 +15,8 @@ public class SharedPrefsImpl implements SharedPrefsApi {
     private SharedPreferences mSharedPreferences;
 
     public SharedPrefsImpl(Context context) {
-        this.mSharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        this.mSharedPreferences = Preconditions.checkNotNull(context)
+                .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
     @SuppressWarnings("unchecked")

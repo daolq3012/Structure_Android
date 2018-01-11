@@ -1,9 +1,11 @@
-package com.fstyle.structure_android.data.source.local.sqlite;
+package com.fstyle.structure_android.data.source.local.config.sqlite;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by le.quang.dao on 13/03/2017.
@@ -35,8 +37,24 @@ public class UserDbHelper extends SQLiteOpenHelper {
             + TEXT_TYPE
             + " )";
 
+    private static UserDbHelper instance;
+
     public UserDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static synchronized void initializeInstance(@NonNull Context context) {
+        if (instance == null) {
+            instance = new UserDbHelper(checkNotNull(context));
+        }
+    }
+
+    public static UserDbHelper getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException(UserDbHelper.class.getSimpleName()
+                    + " is not initialized, call initialize(..) method first.");
+        }
+        return instance;
     }
 
     @Override
