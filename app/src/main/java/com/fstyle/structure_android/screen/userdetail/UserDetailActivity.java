@@ -1,35 +1,40 @@
 package com.fstyle.structure_android.screen.userdetail;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 
 import com.fstyle.structure_android.R;
+import com.fstyle.structure_android.data.model.User;
+import com.fstyle.structure_android.databinding.ActivityUserDetailBinding;
 import com.fstyle.structure_android.screen.BaseActivity;
+import com.fstyle.structure_android.utils.Constant;
 
 /**
  * UserDetail Screen.
  */
-public class UserDetailActivity extends BaseActivity implements UserDetailContract.View {
+public class UserDetailActivity extends BaseActivity {
 
-    UserDetailContract.Presenter mPresenter;
+    private UserDetailViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_detail);
 
-        mPresenter = new UserDetailPresenter();
-        mPresenter.setView(this);
+        int userId = getIntent().getIntExtra(Constant.ARGUMENT_USER_ID,-1);
+        mViewModel = new UserDetailViewModel(userId);
+        ActivityUserDetailBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_user_detail);
+        binding.setViewModel(mViewModel);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mPresenter.onStart();
+        mViewModel.onStart();
     }
 
     @Override
     protected void onStop() {
-        mPresenter.onStop();
+        mViewModel.onStop();
         super.onStop();
     }
 }

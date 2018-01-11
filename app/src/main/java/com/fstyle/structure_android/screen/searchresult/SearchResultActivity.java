@@ -1,57 +1,45 @@
 package com.fstyle.structure_android.screen.searchresult;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
+import com.fstyle.structure_android.databinding.ActivitySearchResultBinding;
 import com.fstyle.structure_android.screen.BaseActivity;
-import com.fstyle.structure_android.screen.userdetail.UserDetailActivity;
 import com.fstyle.structure_android.utils.Constant;
 import com.fstyle.structure_android.utils.navigator.Navigator;
-
 import java.util.ArrayList;
 
 /**
  * SearchResult Screen.
  */
-public class SearchResultActivity extends BaseActivity implements SearchResultContract.View, SearchResultAdapter.ItemClickListener {
+public class SearchResultActivity extends BaseActivity {
 
-    private SearchResultContract.Presenter mPresenter;
+    private SearchResultViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_result);
 
-        mPresenter = new SearchResultPresenter();
-        mPresenter.setView(this);
+        ArrayList<User> users =
+                getIntent().getParcelableArrayListExtra(Constant.ARGUMENT_LIST_USER);
+        SearchResultAdapter searchResultAdapter = new SearchResultAdapter(this, users);
+        mViewModel = new SearchResultViewModel(searchResultAdapter, new Navigator(this));
 
-        RecyclerView recyclerView = findViewById(R.id.resultRecyclerView);
-
-        ArrayList<User> users = getIntent().getParcelableArrayListExtra(Constant.LIST_USER_ARGS);
-        SearchResultAdapter searchResultAdapter = new SearchResultAdapter(getApplicationContext(), users);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(searchResultAdapter);
+        ActivitySearchResultBinding binding =
+                DataBindingUtil.setContentView(this, R.layout.activity_search_result);
+        binding.setViewModel(mViewModel);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mPresenter.onStart();
+        mViewModel.onStart();
     }
 
     @Override
     protected void onStop() {
-        mPresenter.onStop();
+        mViewModel.onStop();
         super.onStop();
-    }
-
-    @Override
-    public void onItemClicked(int userId) {
-        Navigator navigator = new Navigator(this);
-        navigator.startActivity(UserDetailActivity.class);
     }
 }
