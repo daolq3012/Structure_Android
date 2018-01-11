@@ -1,4 +1,4 @@
-package com.fstyle.structure_android.data.source.remote_api.response;
+package com.fstyle.structure_android.data.source.remote.config.response;
 
 import com.fstyle.structure_android.data.model.User;
 import com.google.gson.annotations.Expose;

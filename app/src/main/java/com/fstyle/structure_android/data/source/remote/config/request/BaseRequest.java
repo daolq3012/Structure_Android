@@ -1,4 +1,4 @@
-package com.fstyle.structure_android.data.source.remote_api.request;
+package com.fstyle.structure_android.data.source.remote.config.request;
 
 import com.fstyle.structure_android.data.model.BaseModel;
 

@@ -1,4 +1,4 @@
-package com.fstyle.structure_android.data.source.remote_api.service;
+package com.fstyle.structure_android.data.source.remote.config.service;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
@@ -18,8 +18,8 @@ public class NameServiceClient extends ServiceClient {
 
     public static NameApi getInstance() {
         if (mNameApiInstance == null) {
-            throw new RuntimeException("Need call method NameServiceClient#initialize() first");
-        }
+            throw new IllegalStateException(NameServiceClient.class.getSimpleName()
+                    + " is not initialized, call initialize(..) method first.");        }
         return mNameApiInstance;
     }
 }

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import com.fstyle.library.DialogAction;
 import com.fstyle.library.MaterialDialog;
 import com.fstyle.structure_android.R;
+import com.google.common.base.Preconditions;
 
 /**
  * Created by le.quang.dao on 14/03/2017.
@@ -18,7 +19,7 @@ public class DialogManagerImpl implements DialogManager {
     private MaterialDialog mProgressDialog;
 
     public DialogManagerImpl(Context context) {
-        mContext = context;
+        mContext = Preconditions.checkNotNull(context);
     }
 
     @Override

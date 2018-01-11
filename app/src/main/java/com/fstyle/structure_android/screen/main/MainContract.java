@@ -1,7 +1,7 @@
 package com.fstyle.structure_android.screen.main;
 
 import com.fstyle.structure_android.data.model.User;
-import com.fstyle.structure_android.data.source.remote_api.error.BaseException;
+import com.fstyle.structure_android.data.source.remote.config.error.BaseException;
 import com.fstyle.structure_android.screen.BasePresenter;
 import com.fstyle.structure_android.utils.rx.BaseSchedulerProvider;
 

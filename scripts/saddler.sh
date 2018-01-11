@@ -31,7 +31,7 @@ cp -v "app/build/reports/checkstyle/checkstyle.xml" "$LINT_RESULT_DIR/"
 cp -v "app/build/reports/findbugs/findbugs.xml" "$LINT_RESULT_DIR/"
 cp -v "app/build/reports/pmd/pmd.xml" "$LINT_RESULT_DIR/"
 cp -v "app/build/reports/pmd/cpd.xml" "$LINT_RESULT_DIR/"
-cp -v "app/build/outputs/lint-results-debug.xml" "$LINT_RESULT_DIR/"
+cp -v "app/build/reports/lint-results.xml" "$LINT_RESULT_DIR/"
 
 if [ -z "${CI_PULL_REQUEST}" ]; then
     # when not pull request
@@ -74,7 +74,7 @@ cat app/build/reports/pmd/cpd.xml \
 echo "********************"
 echo "* android lint     *"
 echo "********************"
-cat app/build/outputs/lint-results-debug.xml \
+cat app/build/reports/lint-results.xml \
     | android_lint_translate_checkstyle_format translate \
     | checkstyle_filter-git diff origin/master \
     | saddler report --require saddler/reporter/github --reporter $REPORTER

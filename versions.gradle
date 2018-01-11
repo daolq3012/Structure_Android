@@ -3,7 +3,7 @@
  * maven repositories.
  **/
 def versions = [:]
-versions.support = "26.1.0"
+versions.support = "27.0.2"
 versions.junit = "4.12"
 versions.espresso = "3.0.1"
 versions.retrofit = "2.3.0"
@@ -24,12 +24,13 @@ versions.hamcrest = "1.3"
 versions.constraint_layout = "1.0.2"
 versions.cucumber = "1.2.0"
 versions.material_dialog = "1.0"
+versions.guava = "18.0"
 ext.versions = versions
 
 def build_versions = [:]
 build_versions.min_sdk = 16
-build_versions.target_sdk = 26
-build_versions.build_tools = "26.0.2"
+build_versions.target_sdk = 27
+build_versions.build_tools = "27.0.0"
 build_versions.versionCode = 1
 build_versions.versionName = '1.0'
 build_versions.versionCodeRelease = 1

@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Patterns;
 import com.fstyle.structure_android.R;
+import com.google.common.base.Preconditions;
 
 /**
  * Created by le.quang.dao on 14/03/2017.
@@ -25,12 +26,12 @@ public class Navigator {
     private Fragment mFragment;
 
     public Navigator(@NonNull Activity activity) {
-        mActivity = activity;
+        mActivity = Preconditions.checkNotNull(activity);
     }
 
     public Navigator(@NonNull Fragment fragment) {
-        mFragment = fragment;
-        mActivity = fragment.getActivity();
+        mFragment = Preconditions.checkNotNull(fragment);
+        mActivity = Preconditions.checkNotNull(fragment.getActivity());
     }
 
     private void startActivity(@NonNull Intent intent) {
