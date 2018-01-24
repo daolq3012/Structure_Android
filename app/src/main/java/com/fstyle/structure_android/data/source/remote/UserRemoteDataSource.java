@@ -1,14 +1,12 @@
 package com.fstyle.structure_android.data.source.remote;
 
+import android.content.Context;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.data.source.UserDataSource;
-import com.fstyle.structure_android.data.source.remote.config.response.SearchUserResponse;
 import com.fstyle.structure_android.data.source.remote.config.service.NameApi;
-import com.fstyle.structure_android.data.source.remote.config.service.NameServiceClient;
-import io.reactivex.Maybe;
+import com.fstyle.structure_android.data.source.remote.config.service.AppServiceClient;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
-import io.reactivex.SingleSource;
-import io.reactivex.functions.Function;
 import java.util.List;
 
 /**
@@ -25,15 +23,15 @@ public class UserRemoteDataSource implements UserDataSource.RemoteDataSource {
         mNameApi = nameApi;
     }
 
-    public static synchronized UserRemoteDataSource getInstance() {
+    public static synchronized UserRemoteDataSource getInstance(Context context) {
         if (instance == null) {
-            instance = new UserRemoteDataSource(NameServiceClient.getInstance());
+            instance = new UserRemoteDataSource(AppServiceClient.getNameApiInstance(context));
         }
         return instance;
     }
 
     /**
-     * Used to force {@link #getInstance()} to create a new instance
+     * Used to force {@link #getInstance(Context)} to create a new instance
      * next time it's called.
      */
     public static void destroyInstance() {
@@ -41,15 +39,10 @@ public class UserRemoteDataSource implements UserDataSource.RemoteDataSource {
     }
 
     @Override
-    public Maybe<List<User>> getAllUser() {
+    public Flowable<List<User>> getUsers() {
         // TODO hard code change value to test in here!
-        return mNameApi.searchGithubUsers("abc", "12")
-                .flatMap(new Function<SearchUserResponse, SingleSource<? extends List<User>>>() {
-                    @Override
-                    public SingleSource<? extends List<User>> apply(
-                            SearchUserResponse searchUserResponse) throws Exception {
-                        return Single.just(searchUserResponse.getItems());
-                    }
-                }).toMaybe();
+        return mNameApi.searchGithubUsers("abc", "120")
+                .flatMap(searchUserResponse -> Single.just(searchUserResponse.getItems()))
+                .toFlowable();
     }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="false"
+    tools:context="com.fstyle.structure_android.screen.edituser.EditUserActivity"
+    >
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/txtInputLayoutKeyword"
+        android:layout_width="@dimen/dp_368"
+        android:layout_height="wrap_content"
+        app:errorTextAppearance="@style/ErrorText"
+        app:hintTextAppearance="@style/LabelText"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        >
+
+        <EditText
+            android:id="@+id/edtUserLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/user_login"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/imgAvatar"
+        android:layout_width="@dimen/dp_170"
+        android:layout_height="@dimen/dp_170"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:src="@mipmap/ic_launcher_round"
+        app:layout_constraintBottom_toTopOf="@+id/txtInputLayoutKeyword"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+</android.support.constraint.ConstraintLayout>

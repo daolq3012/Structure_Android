@@ -74,6 +74,11 @@ android {
     }
   }
 
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
   dexOptions {
     if (System.getenv()["CIRCLECI"] as boolean) {
       javaMaxHeapSize "2048M"

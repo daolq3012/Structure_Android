@@ -1,12 +1,9 @@
 package com.fstyle.structure_android.data.source;
 
 import android.support.annotation.NonNull;
-
 import com.fstyle.structure_android.data.model.User;
-
 import io.reactivex.Completable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
+import io.reactivex.Flowable;
 import java.util.List;
 
 /**
@@ -15,14 +12,12 @@ import java.util.List;
 
 public interface UserDataSource {
 
-    Maybe<List<User>> getAllUser();
+    Flowable<List<User>> getUsers();
 
     /**
      * LocalData For User
      */
     interface LocalDataSource extends UserDataSource {
-
-        Completable insertListUser(List<User> users);
 
         Completable insertUser(@NonNull User user);
 
@@ -32,7 +27,7 @@ public interface UserDataSource {
 
         Completable insertOrUpdateUser(@NonNull User user);
 
-        Maybe<User> findUserByUserLogin(String userLogin);
+        Flowable<User> getUser(String userLogin);
 
         Completable deleteAllUsers();
     }

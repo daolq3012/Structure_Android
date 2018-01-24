@@ -1,9 +1,10 @@
 package com.fstyle.structure_android.data.source.remote.config.service;
 
-import android.app.Application;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import com.fstyle.structure_android.BuildConfig;
-import com.fstyle.structure_android.data.source.remote.config.middleware.RxErrorHandlingCallAdapterFactory;
+import com.fstyle.structure_android.data.source.remote.config.middleware
+        .RxErrorHandlingCallAdapterFactory;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,20 +24,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceClient {
     private static final int CONNECTION_TIMEOUT = 60;
 
-    static <T> T createService(Application application, String endPoint, Class<T> serviceClass) {
-        return createService(application, endPoint, serviceClass, getGsonConfig(), null);
+    static <T> T createService(Context context, String endPoint, Class<T> serviceClass) {
+        return createService(context, endPoint, serviceClass, getGsonConfig(), null);
     }
 
-    static <T> T createService(Application application, String endPoint, Class<T> serviceClass,
-            Gson gson) {
-        return createService(application, endPoint, serviceClass, gson, null);
+    static <T> T createService(Context context, String endPoint, Class<T> serviceClass, Gson gson) {
+        return createService(context, endPoint, serviceClass, gson, null);
     }
 
-    static <T> T createService(Application application, String endPoint, Class<T> serviceClass,
+    static <T> T createService(Context context, String endPoint, Class<T> serviceClass,
             @NonNull Gson gson, Interceptor interceptor) {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         int cacheSize = 10 * 1024 * 1024; // 10 MiB
-        httpClientBuilder.cache(new Cache(application.getCacheDir(), cacheSize));
+        httpClientBuilder.cache(
+                new Cache(context.getApplicationContext().getCacheDir(), cacheSize));
         if (interceptor != null) {
             httpClientBuilder.addInterceptor(interceptor);
         }
