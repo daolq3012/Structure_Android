@@ -1,4 +1,4 @@
-package com.fstyle.structure_android.screen.searchresult;
+package com.fstyle.structure_android.screen.userlist;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.fstyle.structure_android.R;
 import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.screen.BaseRecyclerViewAdapter;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,16 +18,14 @@ import java.util.List;
  * Created by le.quang.dao on 14/03/2017.
  */
 
-public class SearchResultAdapter
-        extends BaseRecyclerViewAdapter<SearchResultAdapter.ItemViewHolder> {
+public class UserListAdapter extends BaseRecyclerViewAdapter<UserListAdapter.ItemViewHolder> {
 
-    private List<User> mUsers;
+    private List<User> mUsers = new ArrayList<>();
     private ItemClickListener mItemClickListener;
 
-    protected SearchResultAdapter(@NonNull Context context, @NonNull List<User> users) {
+    UserListAdapter(@NonNull Context context) {
         super(context);
-        mUsers = new ArrayList<>();
-        mUsers.addAll(users);
+        mItemClickListener = (ItemClickListener) Preconditions.checkNotNull(context);
     }
 
     @Override
@@ -46,8 +45,10 @@ public class SearchResultAdapter
         return mUsers.size();
     }
 
-    public void setItemClickListener(ItemClickListener mItemClickListener) {
-        this.mItemClickListener = mItemClickListener;
+    void replaceData(@NonNull List<User> users) {
+        mUsers.clear();
+        mUsers.addAll(users);
+        notifyDataSetChanged();
     }
 
     /**
@@ -63,14 +64,11 @@ public class SearchResultAdapter
             super(itemView);
             mTextViewUserLogin = itemView.findViewById(R.id.tvUserLogin);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mUser.getId() == null) {
-                        return;
-                    }
-                    mItemClickListener.onItemClicked(mUser.getId());
+            itemView.setOnClickListener(view -> {
+                if (mUser.getAvatarUrl() == null) {
+                    return;
                 }
+                mItemClickListener.onItemClicked(mUser.getAvatarUrl());
             });
         }
 
@@ -84,6 +82,6 @@ public class SearchResultAdapter
      * ItemClickListener
      */
     public interface ItemClickListener {
-        void onItemClicked(int userId);
+        void onItemClicked(String userLogin);
     }
 }

@@ -1,5 +1,6 @@
 package com.fstyle.structure_android.screen.userdetail;
 
+import com.fstyle.structure_android.data.model.User;
 import com.fstyle.structure_android.screen.BasePresenter;
 
 /**
@@ -10,6 +11,11 @@ interface UserDetailContract {
      * View.
      */
     interface View {
+        String getAvatarUrl();
+
+        void showUser(User user);
+
+        void showGetUserError(Throwable throwable);
     }
 
     /**

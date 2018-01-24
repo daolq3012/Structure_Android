@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Structure</string>
+    <string name="app_name">Android Structure</string>
 
     <!-- Dialog -->
     <string name="agree">Agree</string>
@@ -17,7 +17,7 @@
 
     <!-- Main Screen -->
     <string name="search_user_github">Search User Github</string>
-    <string name="keyword">Keyword</string>
+    <string name="user_login">User Login</string>
     <string name="search">Search</string>
     <string name="type_number">type number</string>
     <string name="limit_number">Limit number</string>
@@ -26,4 +26,7 @@
     <string name="error_unusable_characters">There are unusable characters</string>
     <string name="a">a</string>
     <string name="text_120">120</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
 </resources>

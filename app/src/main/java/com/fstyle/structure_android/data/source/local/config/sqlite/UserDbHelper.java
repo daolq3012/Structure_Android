@@ -24,13 +24,10 @@ public class UserDbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_USER_ENTRIES = "CREATE TABLE "
             + UserEntry.TABLE_NAME
             + " ("
-            + UserEntry._ID
+            + UserEntry.COLUMN_NAME_AVATAR_URL
             + TEXT_TYPE
             + " PRIMARY KEY,"
             + UserEntry.COLUMN_NAME_USER_LOGIN
-            + TEXT_TYPE
-            + COMMA_SEP
-            + UserEntry.COLUMN_NAME_AVATAR_URL
             + TEXT_TYPE
             + COMMA_SEP
             + UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL
@@ -43,16 +40,9 @@ public class UserDbHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public static synchronized void initializeInstance(@NonNull Context context) {
+    public static UserDbHelper getInstance(@NonNull Context context) {
         if (instance == null) {
             instance = new UserDbHelper(checkNotNull(context));
-        }
-    }
-
-    public static UserDbHelper getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException(UserDbHelper.class.getSimpleName()
-                    + " is not initialized, call initialize(..) method first.");
         }
         return instance;
     }
