@@ -29,4 +29,6 @@
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="save">Save</string>
+    <string name="input_content_need_search">Input content need search!</string>
+    <string name="empty_data">Empty!!</string>
 </resources>

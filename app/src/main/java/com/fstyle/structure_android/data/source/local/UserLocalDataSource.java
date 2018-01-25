@@ -186,6 +186,42 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
     }
 
     @Override
+    public Flowable<List<User>> searchUsers(String userName) {
+        return Flowable.create(emitter -> {
+            SQLiteDatabase database = mHelper.getReadableDatabase();
+            final String[] columns = {
+                    UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN,
+                    UserDbHelper.UserEntry.COLUMN_NAME_AVATAR_URL,
+                    UserDbHelper.UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL
+            };
+            final String selection = UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN + " LIKE ?";
+            String[] selectionArgs = { "%" + userName + "%" };
+
+            Cursor cursor = database.query(UserDbHelper.UserEntry.TABLE_NAME, columns, selection,
+                    selectionArgs, null, null, null);
+            List<User> users = new ArrayList<>();
+            if (cursor.moveToFirst()) {
+                do {
+                    User user = new User();
+                    user.setLogin(cursor.getString(
+                            cursor.getColumnIndex(UserDbHelper.UserEntry.COLUMN_NAME_USER_LOGIN)));
+                    user.setAvatarUrl(cursor.getString(
+                            cursor.getColumnIndex(UserDbHelper.UserEntry.COLUMN_NAME_AVATAR_URL)));
+                    user.setSubscriptionsUrl(cursor.getString(cursor.getColumnIndex(
+                            UserDbHelper.UserEntry.COLUMN_NAME_SUBSCRIPTIONS_URL)));
+                    users.add(user);
+                } while (cursor.moveToNext());
+            }
+            if (!cursor.isClosed()) {
+                cursor.close();
+            }
+            database.close();
+            emitter.onNext(users);
+            emitter.onComplete();
+        }, BackpressureStrategy.BUFFER);
+    }
+
+    @Override
     public Completable deleteAllUsers() {
         return Completable.create(emitter -> {
             try {
