@@ -50,6 +50,17 @@ final class UserListPresenter implements UserListContract.Presenter {
         loadUsers(forceUpdate, true);
     }
 
+    @Override
+    public void searchUsers(String userName) {
+        Disposable disposable = mUserRepository.searchUsers(userName)
+                .subscribeOn(mSchedulerProvider.io())
+                .observeOn(mSchedulerProvider.ui())
+                .doOnSubscribe(subscription -> mView.showLoadingIndicator())
+                .doAfterTerminate(() -> mView.hideLoadingIndicator())
+                .subscribe(this::processUsers, throwable -> mView.showLoadingUsersError(throwable));
+        mCompositeDisposable.add(disposable);
+    }
+
     private void loadUsers(boolean forceUpdate, boolean showLoading) {
         if (showLoading) {
             mView.showLoadingIndicator();

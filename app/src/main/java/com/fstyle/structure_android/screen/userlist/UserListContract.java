@@ -29,5 +29,7 @@ interface UserListContract {
      */
     interface Presenter extends BasePresenter<View> {
         void loadUsers(boolean forceUpdate);
+
+        void searchUsers(String newText);
     }
 }

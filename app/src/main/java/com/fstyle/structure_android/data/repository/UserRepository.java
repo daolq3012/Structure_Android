@@ -161,6 +161,7 @@ public class UserRepository
 
     public void refresh() {
         mCacheIsDirty = true;
+        mCachedUsers = null;
     }
 
     private Flowable<List<User>> getAndSaveRemoteUsers() {
@@ -184,5 +185,10 @@ public class UserRepository
                     }
                     mCachedUsers.add(user);
                 }).toList().toFlowable());
+    }
+
+    @Override
+    public Flowable<List<User>> searchUsers(String userName) {
+        return mUserLocalDataSource.searchUsers(userName);
     }
 }

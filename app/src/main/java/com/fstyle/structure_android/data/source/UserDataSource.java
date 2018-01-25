@@ -29,6 +29,8 @@ public interface UserDataSource {
 
         Flowable<User> getUser(String userLogin);
 
+        Flowable<List<User>> searchUsers(String userName);
+
         Completable deleteAllUsers();
     }
 
