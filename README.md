@@ -29,7 +29,13 @@ Source Code:
 **Branch:** [mvvm-architecture](https://github.com/daolq3012/Structure_Android/tree/mvvm-architecture)
 
 ### 3. MVP-Kotlin
-TBD
+Diagram:
+
+![alt text](https://github.com/daolq3012/Structure_Android/blob/master/images/mvp.png?raw=true)
+
+Source Code
+
+**Branch:** [mvp-kotlin-architecture](https://github.com/daolq3012/Structure_Android/tree/mvp-kotlin-architect)
 
 ### 4. Android-architecture-components
 TBD
@@ -41,10 +47,10 @@ TBD
 
 - [X] Add MVP Examples
 - [X] Add MVVM Examples
-- [ ] Add MVP-Kotlin Examples
+- [X] Add MVP-Kotlin Examples
 - [ ] Add Android-architecture-components Examples
 - [X] Update documentation for each
-- [ ] Add test UI using [Cucumber](https://cucumber.io/) and [Espresso](https://google.github.io/android-testing-support-library/docs/espresso/setup/) (BDD technical)
+- [ ] Add test UI using [selendroid](https://github.com/selendroid/selendroid) (BDD technical)
 - [ ] Add test UI using [Calabash](https://github.com/calabash/calabash-android) (BDD technical)
 
 ## 👬 Contribution
