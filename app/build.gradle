@@ -135,27 +135,27 @@ dependencies {
   testImplementation "org.mockito:mockito-all:$versions.mockito_all"
 
   // Resolve conflicts between main and local unit tests
-  androidTestCompile "com.android.support:support-annotations:$versions.support"
-  androidTestCompile "com.android.support:support-core-utils:$versions.support"
+  androidTestImplementation "com.android.support:support-annotations:$versions.support"
+  androidTestImplementation "com.android.support:support-core-utils:$versions.support"
 
   // Android Testing Support Library's runner and rules
-  androidTestCompile "com.android.support.test:runner:$versions.atsl_runner"
-  androidTestCompile "com.android.support.test:rules:$versions.atsl_runner"
+  androidTestImplementation "com.android.support.test:runner:$versions.atsl_runner"
+  androidTestImplementation "com.android.support.test:rules:$versions.atsl_runner"
 
   // Dependencies for Android unit tests
-  androidTestCompile "junit:junit:$versions.junit"
-  androidTestCompile "org.mockito:mockito-core:$versions.mockito", { exclude group: 'net.bytebuddy' }
-  androidTestCompile "com.linkedin.dexmaker:dexmaker-mockito:$versions.dexmaker"
+  androidTestImplementation "junit:junit:$versions.junit"
+  androidTestImplementation "org.mockito:mockito-core:$versions.mockito", { exclude group: 'net.bytebuddy' }
+  androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$versions.dexmaker"
 
   // Espresso UI Testing
-  androidTestCompile "com.android.support.test.espresso:espresso-core:$versions.espresso"
-  androidTestCompile "com.android.support.test.espresso:espresso-contrib:$versions.espresso"
-  androidTestCompile "com.android.support.test.espresso:espresso-intents:$versions.espresso"
-  androidTestCompile "info.cukes:cucumber-android:$versions.cucumber@jar"
-  androidTestCompile "info.cukes:cucumber-picocontainer:$versions.cucumber"
+  androidTestImplementation "com.android.support.test.espresso:espresso-core:$versions.espresso"
+  androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$versions.espresso"
+  androidTestImplementation "com.android.support.test.espresso:espresso-intents:$versions.espresso"
+  androidTestImplementation "info.cukes:cucumber-android:$versions.cucumber@jar"
+  androidTestImplementation "info.cukes:cucumber-picocontainer:$versions.cucumber"
 
   // Resolve conflicts between main and test APK:
-  androidTestCompile "com.android.support:support-annotations:$versions.support"
-  androidTestCompile "com.android.support:appcompat-v7:$versions.support"
-  androidTestCompile "com.android.support:design:$versions.support"
+  androidTestImplementation "com.android.support:support-annotations:$versions.support"
+  androidTestImplementation "com.android.support:appcompat-v7:$versions.support"
+  androidTestImplementation "com.android.support:design:$versions.support"
 }
