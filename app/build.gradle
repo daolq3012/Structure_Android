@@ -1,0 +1,147 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+def APP_ID = "com.ccc.nameproject"
+android {
+  compileSdkVersion build_versions.target_sdk
+  buildToolsVersion build_versions.build_tools
+
+  flavorDimensions "default"
+
+  defaultConfig {
+    applicationId "${APP_ID}"
+    minSdkVersion build_versions.min_sdk
+    targetSdkVersion build_versions.target_sdk
+    versionCode build_versions.versionCode
+    versionName build_versions.versionName
+
+    vectorDrawables.useSupportLibrary = true
+
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+
+  productFlavors {
+    dev {
+      applicationIdSuffix = ".dev"
+      manifestPlaceholders = [applicationName: "nameproject-DEV"]
+    }
+    stg {
+      applicationIdSuffix = ".stg"
+      manifestPlaceholders = [applicationName: "nameproject-STG"]
+    }
+    prd {
+      manifestPlaceholders = [applicationName: "@string/app_name"]
+    }
+  }
+
+  signingConfigs {
+    debug {}
+
+    release {
+      if (!System.getenv('CI')) {
+        def signFile = file("../local.properties")
+        def signingProps = new Properties()
+
+        signingProps.load(new FileInputStream(signFile))
+
+        storeFile file("../keystores/nameproject.keystore")
+        storePassword signingProps['storePassword']
+        keyAlias signingProps['keyAlias']
+        keyPassword signingProps['keyPassword']
+      }
+    }
+  }
+
+  signingConfigs {
+    debug {}
+
+    release {
+      if (!System.getenv('CI')) {
+        def signFile = file("../local.properties")
+        def signingProps = new Properties()
+
+        signingProps.load(new FileInputStream(signFile))
+
+        storeFile file("../keystores/nameproject.keystore")
+        storePassword signingProps['storePassword']
+        keyAlias signingProps['keyAlias']
+        keyPassword signingProps['keyPassword']
+      }
+    }
+  }
+
+  buildTypes {
+    debug {
+      ext.betaDistributionReleaseNotesFilePath = "release_notes.txt"
+      ext.betaDistributionGroupAliases = "QALB"
+      ext.betaDistributionNotifications = true
+
+      applicationVariants.all { variant -> appendVersionNameVersionCode(variant) }
+    }
+
+    release {
+      shrinkResources true
+      minifyEnabled true
+      signingConfig signingConfigs.release
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+      applicationVariants.all { variant -> appendVersionNameVersionCode(variant) }
+    }
+  }
+
+  applicationVariants.all { variant ->
+    def BASE_URL
+    if (variant.buildType.isDebuggable()) {
+      BASE_URL = "http://dev.endpoint.com"
+    } else {
+      BASE_URL = "https://endpoint.com"
+    }
+    variant.buildConfigField "String", "BASE_URL", "\"${BASE_URL}\""
+  }
+
+  dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:$versions.support"
+    implementation "com.android.support:design:$versions.support"
+    implementation "com.android.support.constraint:constraint-layout:$versions.constraint_layout"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+    implementation 'androidx.core:core-ktx:0.3'
+
+    implementation "io.reactivex.rxjava2:rxjava:$versions.rxjava2"
+    implementation "io.reactivex.rxjava2:rxandroid:$versions.rx_android"
+
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit2"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit2"
+    implementation "com.squareup.retrofit2:converter-gson:$versions.retrofit2"
+    implementation "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
+    implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
+
+    kapt "com.google.dagger:dagger-compiler:$versions.dagger2"
+    implementation "com.google.dagger:dagger:$versions.dagger2"
+    compileOnly 'javax.annotation:javax.annotation-api:1.2'
+
+    testImplementation "junit:junit:$versions.junit"
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+  }
+}
+
+@SuppressWarnings("GroovyAssignabilityCheck")
+def appendVersionNameVersionCode(variant) {
+  variant.outputs.all { output ->
+    def applicationId = variant.mergedFlavor.applicationId + (variant.buildType.applicationIdSuffix ==
+        null ? "" : variant.buildType.applicationIdSuffix)
+    if (output.zipAlign) {
+      def outputFile = output.outputFile
+      if (outputFile != null && outputFile.name.endsWith('.apk')) {
+        def time = new Date().format("dd-MM-yyyy", TimeZone.getTimeZone("UTC"))
+        def fileName = outputFile.name.replace("app",
+            "${applicationId}_v${variant.versionName}_${variant.versionCode}_${time}")
+        outputFileName = fileName
+      }
+    }
+  }
+}

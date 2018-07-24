@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-errorMessages
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <item>
+        <shape android:shape="rectangle">
+            <corners
+                android:bottomLeftRadius="@dimen/dp_1.5"
+                android:bottomRightRadius="@dimen/dp_1.5"
+                />
+            <solid android:color="@android:color/transparent"/>
+            <stroke
+                android:color="@color/colorRedLight"
+                android:width="@dimen/dp_1.5"/>
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/dp_1.5"
+        android:left="@dimen/dp_1.5"
+        android:right="@dimen/dp_1.5"
+        >
+        <shape android:shape="rectangle">
+            <corners
+                android:bottomLeftRadius="@dimen/dp_1.5"
+                android:bottomRightRadius="@dimen/dp_1.5"
+                />
+            <solid android:color="@android:color/white"/>
+        </shape>
+    </item>
+</layer-errorMessages>

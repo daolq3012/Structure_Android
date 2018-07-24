@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">nameproject</string>
+
+    <!-- Login Screen -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="sign_up">Sign up</string>
+    <string name="new_user">New user?</string>
+    <string name="facebook">Facebook</string>
+    <string name="gmail">Gmail</string>
+    <string name="phone_number">Phone number</string>
+    <string name="text_continue">Continue</string>
+    <string name="or_login_with">Or login with</string>
+
+    <!-- Validate -->
+    <string name="at_least_1_number_or_special_char">- Include at least 1 number or symbol (!@#%^).</string>
+    <string name="upper_and_lower_case">- Upper and lower case characters.</string>
+    <string name="empty_field">- This field is empty.</string>
+    <string name="less_than_8_char">- At least 8 characters.</string>
+    <string name="wrong_email_format">- Wrong email format.</string>
+    <string name="more_than_255_char">- More than 255 characters.</string>
+    <string name="contain_special_char">- Contain special characters.</string>
+    <string name="contain_invalid_word">- Contain invalid characters.</string>
+</resources>
