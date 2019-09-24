@@ -1,5 +1,6 @@
+import com.android.build.gradle.api.ApplicationVariant
+
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 apply from: '../autodimension.gradle'
 
 /**
@@ -75,37 +76,34 @@ android {
 
 @SuppressWarnings("GroovyAssignabilityCheck")
 def appendVersionNameVersionCode(variant) {
-  variant.outputs.each { output ->
-    def applicationId = variant.mergedFlavor.applicationId + (variant.buildType.applicationIdSuffix ==
-        null ? "" : variant.buildType.applicationIdSuffix)
-    if (variant.buildType.name == android.buildTypes.debug.name ||
-        variant.buildType.name ==
-        android.buildTypes.release.name ||
-        variant.buildType.name ==
-        android.buildTypes.staging.name) {
-      if (output.zipAlign) {
-        def file = output.outputFile
-        output.outputFile = new File(file.parentFile,
-            "${variant.buildType.name}_${applicationId}_v${variant.versionName}-${variant.versionCode}.apk")
-      }
+  variant.outputs.all { output ->
+    def applicationId = variant.mergedFlavor.applicationId + (variant.buildType.applicationIdSuffix == null ? "" :
+        variant.buildType.applicationIdSuffix)
+    String tmpOutputFileName = outputFileName
+    if (variant instanceof ApplicationVariant) {
+      def time = new Date().format("dd-MM-yyyy", TimeZone.getTimeZone("UTC"))
+      def fileName = "${applicationId}_v${variant.versionName}_${variant.versionCode}_${time}-${variant.flavorName}-${variant.buildType.name}.apk"
+      def defaultOutputDir = variant.packageApplicationProvider.get().outputDirectory
+      tmpOutputFileName = new File(defaultOutputDir.absolutePath, fileName).name
     }
+    outputFileName = tmpOutputFileName
   }
 }
 
 dependencies {
-  compile fileTree(dir: 'libs', include: ['*.jar'])
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
 
   Map<String, String> dependencies = rootProject.ext.dependencies;
 
-  compile dependencies.appCompatV7
-  compile dependencies.recyclerview
-  compile dependencies.constraintLayout
+  implementation dependencies.appCompatV7
+  implementation dependencies.recyclerview
+  implementation dependencies.constraintLayout
 
-  compile dependencies.rxJava
-  compile dependencies.rxAndroid
+  implementation dependencies.rxJava
+  implementation dependencies.rxAndroid
 
-  testCompile dependencies.junit
-  testCompile dependencies.mockito
+  testImplementation dependencies.junit
+  testImplementation dependencies.mockito
 
   androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
