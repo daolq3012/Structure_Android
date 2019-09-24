@@ -1,10 +1,10 @@
 import com.android.build.gradle.api.ApplicationVariant
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply from: '../autodimension.gradle'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'org.jlleitschuh.gradle.ktlint'
 apply plugin: 'io.fabric'
 
@@ -22,10 +22,6 @@ android {
     versionName rootProject.ext.versionName
 
     vectorDrawables.useSupportLibrary = true
-  }
-
-  dataBinding {
-    enabled = true
   }
 
   signingConfigs {
@@ -51,6 +47,7 @@ android {
     debug {
       versionNameSuffix = "dev"
       applicationIdSuffix = ".dev"
+      signingConfig signingConfigs.debug
 
       applicationVariants.all { variant -> appendVersionNameVersionCode(variant)
       }
@@ -78,8 +75,8 @@ android {
 @SuppressWarnings("GroovyAssignabilityCheck")
 def appendVersionNameVersionCode(variant) {
   variant.outputs.all { output ->
-    def applicationId = variant.mergedFlavor.applicationId + (variant.buildType.applicationIdSuffix == null ? "" :
-        variant.buildType.applicationIdSuffix)
+    def applicationId = variant.mergedFlavor.applicationId + (variant.buildType.applicationIdSuffix ==
+        null ? "" : variant.buildType.applicationIdSuffix)
     String tmpOutputFileName = outputFileName
     if (variant instanceof ApplicationVariant) {
       def time = new Date().format("dd-MM-yyyy", TimeZone.getTimeZone("UTC"))
