@@ -1,13 +1,13 @@
 import com.android.build.gradle.api.ApplicationVariant
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
 apply from: '../autodimension.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
-/**
- * start config and check ci*/
-apply from: '../checkci.gradle'
-
-def APP_ID = "com.fstyle.androidstructure";
+def APP_ID = "com.fstyle.androidstructure"
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
@@ -105,7 +105,27 @@ dependencies {
   testImplementation dependencies.junit
   testImplementation dependencies.mockito
 
-  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+  androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
+  implementation "androidx.core:core-ktx:+"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+ktlint {
+  version = "0.30.0"
+  android = true
+  reporters = [org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE]
+  ignoreFailures = true
+  filter {
+    exclude("**/generated/**")
+    include("**/java/**")
+  }
+}
+
+detekt {
+  version = "1.0.0-RC14"
+  input = files("src/main/java")
+  filters = ".*/resources/.*,.*/build/.*"
+  config = files("$rootDir/detekt.yml")
 }
