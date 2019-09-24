@@ -50,13 +50,6 @@ jobs:
             cp -v "app/build/reports/lint-results.xml" "$ARTIFACTS/"
       - store_artifacts:
           path: "/tmp/circle_artifacts"
-
-      - run:
-          name: Build apk
-          command: ./gradlew :app:assembleDebug
-      - store_artifacts:
-          path: app/build/outputs/apk/app-debug.apk
-          destination: app-debug.apk
       - store_test_results:
           path: app/build/test-results
       - persist_to_workspace:
@@ -70,8 +63,11 @@ jobs:
       - attach_workspace:
           at: ~/code
       - run:
-          name: Build apk & Deploy to Fabric
-          command: ./gradlew :app:assembleDebug crashlyticsUploadDistributionStgDebug -PdisablePredex
+          name: Build apk
+          command: ./gradlew :app:assembleDebug
+      - run:
+          name: Deploy to Fabric
+          command: ./gradlew crashlyticsUploadDistributionDebug -PdisablePredex
 workflows:
   version: 2
   build_and_deploy:
