@@ -1,12 +1,14 @@
+import com.android.build.gradle.api.ApplicationVariant
+
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'kotlin-android-extensions'
 apply from: '../autodimension.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
+apply plugin: 'io.fabric'
 
-/**
- * start config and check ci*/
-apply from: '../checkci.gradle'
-
-def APP_ID = "com.fstyle.androidstructure";
+def APP_ID = "com.fstyle.androidstructure"
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
@@ -75,39 +77,59 @@ android {
 
 @SuppressWarnings("GroovyAssignabilityCheck")
 def appendVersionNameVersionCode(variant) {
-  variant.outputs.each { output ->
-    def applicationId = variant.mergedFlavor.applicationId + (variant.buildType.applicationIdSuffix ==
-        null ? "" : variant.buildType.applicationIdSuffix)
-    if (variant.buildType.name == android.buildTypes.debug.name ||
-        variant.buildType.name ==
-        android.buildTypes.release.name ||
-        variant.buildType.name ==
-        android.buildTypes.staging.name) {
-      if (output.zipAlign) {
-        def file = output.outputFile
-        output.outputFile = new File(file.parentFile,
-            "${variant.buildType.name}_${applicationId}_v${variant.versionName}-${variant.versionCode}.apk")
-      }
+  variant.outputs.all { output ->
+    def applicationId = variant.mergedFlavor.applicationId + (variant.buildType.applicationIdSuffix == null ? "" :
+        variant.buildType.applicationIdSuffix)
+    String tmpOutputFileName = outputFileName
+    if (variant instanceof ApplicationVariant) {
+      def time = new Date().format("dd-MM-yyyy", TimeZone.getTimeZone("UTC"))
+      def fileName = "${applicationId}_v${variant.versionName}_${variant.versionCode}_${time}-${variant.flavorName}-${variant.buildType.name}.apk"
+      def defaultOutputDir = variant.packageApplicationProvider.get().outputDirectory
+      tmpOutputFileName = new File(defaultOutputDir.absolutePath, fileName).name
     }
+    outputFileName = tmpOutputFileName
   }
 }
 
 dependencies {
-  compile fileTree(dir: 'libs', include: ['*.jar'])
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
 
   Map<String, String> dependencies = rootProject.ext.dependencies;
 
-  compile dependencies.appCompatV7
-  compile dependencies.recyclerview
-  compile dependencies.constraintLayout
+  implementation dependencies.appCompatV7
+  implementation dependencies.recyclerview
+  implementation dependencies.constraintLayout
 
-  compile dependencies.rxJava
-  compile dependencies.rxAndroid
+  implementation dependencies.rxJava
+  implementation dependencies.rxAndroid
 
-  testCompile dependencies.junit
-  testCompile dependencies.mockito
+  implementation "androidx.core:core-ktx:+"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+  implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
+    transitive = true
+  }
 
-  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+  testImplementation dependencies.junit
+  testImplementation dependencies.mockito
+  androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
+}
+
+ktlint {
+  version = "0.30.0"
+  android = true
+  reporters = [org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE]
+  ignoreFailures = true
+  filter {
+    exclude("**/generated/**")
+    include("**/java/**")
+  }
+}
+
+detekt {
+  version = "1.0.0-RC14"
+  input = files("src/main/java")
+  filters = ".*/resources/.*,.*/build/.*"
+  config = files("$rootDir/detekt.yml")
 }
