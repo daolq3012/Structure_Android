@@ -5,7 +5,8 @@ apply plugin: 'kotlin-android-extensions'
 apply from: '../autodimension.gradle'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: "org.jlleitschuh.gradle.ktlint"
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
+apply plugin: 'io.fabric'
 
 def APP_ID = "com.fstyle.androidstructure"
 
@@ -102,14 +103,17 @@ dependencies {
   implementation dependencies.rxJava
   implementation dependencies.rxAndroid
 
+  implementation "androidx.core:core-ktx:+"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+  implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
+    transitive = true
+  }
+
   testImplementation dependencies.junit
   testImplementation dependencies.mockito
-
   androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
-  implementation "androidx.core:core-ktx:+"
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 ktlint {
