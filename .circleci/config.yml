@@ -1,0 +1,89 @@
+version: 2
+
+defaults: &defaults
+  working_directory: ~/code
+  docker:
+    - image: circleci/android:api-28-alpha
+  environment:
+    JVM_OPTS: -Xmx3200m
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+
+      - restore_cache:
+          key: gems-{{ checksum "Gemfile.lock" }}
+      - run: bundle install --path vendor/bundle
+      - save_cache:
+          paths:
+            - vendor/bundle
+          key: gems-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: Unit test
+          command: ./gradlew clean :app:testDebugUnitTestCoverage
+      - run:
+          name: Check lint
+          command: ./gradlew :app:check -x test
+      - run:
+          name: Run danger
+          command: bundle exec danger
+      - run:
+          name: Move artifacts
+          command: |
+            ARTIFACTS="/tmp/circle_artifacts"
+            mkdir -p "$ARTIFACTS"
+            cp -v "app/build/reports/checkstyle/checkstyle.xml" "$ARTIFACTS/"
+            cp -v "app/build/reports/findbugs/findbugs.xml" "$ARTIFACTS/"
+            cp -v "app/build/reports/pmd/pmd.xml" "$ARTIFACTS/"
+            cp -v "app/build/reports/pmd/cpd.xml" "$ARTIFACTS/"
+            cp -v "app/build/reports/lint-results.xml" "$ARTIFACTS/"
+      - store_artifacts:
+          path: "/tmp/circle_artifacts"
+
+      - run:
+          name: Build apk
+          command: ./gradlew :app:assembleDebug
+      - store_artifacts:
+          path: app/build/outputs/apk/app-debug.apk
+          destination: app-debug.apk
+      - store_test_results:
+          path: app/build/test-results
+      - persist_to_workspace:
+          root: ~/code
+          paths:
+            - .
+
+  deploy:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/code
+      - run:
+          name: Build apk
+          command: ./gradlew :app:assembleDebug crashlyticsUploadDistributionStgDebug -PdisablePredex
+      - store_artifacts:
+          path: app/build/outputs/apk/app-stg.apk
+          destination: app-stg.apk
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
