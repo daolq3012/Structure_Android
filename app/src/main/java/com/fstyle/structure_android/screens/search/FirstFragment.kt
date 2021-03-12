@@ -1,4 +1,4 @@
-package com.fstyle.structure_android
+package com.fstyle.structure_android.screens.search
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.fragment.findNavController
+import com.fstyle.structure_android.R
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
