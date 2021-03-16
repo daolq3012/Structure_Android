@@ -1,4 +1,4 @@
-package com.fstyle.structure_android.utils
+package com.fstyle.appname.utils
 
 import android.app.Activity
 import androidx.fragment.app.Fragment

@@ -1,8 +1,8 @@
-package com.fstyle.structure_android.screens.splash
+package com.fstyle.appname.screens.splash
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.fstyle.structure_android.R
+import com.fstyle.appname.R
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

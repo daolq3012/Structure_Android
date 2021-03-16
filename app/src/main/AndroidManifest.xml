@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fstyle.structure_android">
+    package="com.fstyle.appname">
 
     <application
-        android:name=".MainApplication"
+        android:name="com.fstyle.appname.MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Structure_Android">
         <activity
-            android:name="com.fstyle.structure_android.screens.main.MainActivity"
+            android:name="com.fstyle.appname.screens.main.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.Structure_Android.NoActionBar">
             <intent-filter>
@@ -21,8 +21,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.fstyle.structure_android.screens.splash.SplashActivity"/>
-        <activity android:name="com.fstyle.structure_android.screens.list_user.ListUserActivity" />
+        <activity android:name="com.fstyle.appname.screens.splash.SplashActivity"/>
+        <activity android:name="com.fstyle.appname.screens.list_user.ListUserActivity" />
     </application>
 
 </manifest>

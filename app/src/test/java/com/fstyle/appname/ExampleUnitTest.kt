@@ -1,4 +1,4 @@
-package com.fstyle.structure_android
+package com.fstyle.appname
 
 import org.junit.Test
 

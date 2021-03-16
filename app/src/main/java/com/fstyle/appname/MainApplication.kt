@@ -1,4 +1,4 @@
-package com.fstyle.structure_android
+package com.fstyle.appname
 
 import android.app.Application
 import android.content.Context

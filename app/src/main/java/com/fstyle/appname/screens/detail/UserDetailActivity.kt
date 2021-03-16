@@ -1,9 +1,9 @@
-package com.fstyle.structure_android.screens.detail
+package com.fstyle.appname.screens.detail
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
-import com.fstyle.structure_android.R
+import com.fstyle.appname.R
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.

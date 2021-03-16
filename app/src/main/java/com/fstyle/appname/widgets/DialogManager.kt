@@ -1,4 +1,4 @@
-package com.fstyle.structure_android.widgets
+package com.fstyle.appname.widgets
 
 import android.content.Context
 
