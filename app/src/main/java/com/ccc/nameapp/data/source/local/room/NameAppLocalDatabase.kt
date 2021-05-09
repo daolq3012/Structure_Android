@@ -10,6 +10,6 @@ import com.ccc.nameapp.data.source.local.room.entities.UserEntity
  */
 
 @Database(entities = [UserEntity::class], version = 5, exportSchema = false)
-abstract class JobChatLocalDatabase : RoomDatabase() {
+abstract class NameAppLocalDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 }

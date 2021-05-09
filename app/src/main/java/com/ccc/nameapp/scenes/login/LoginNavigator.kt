@@ -5,4 +5,5 @@ import javax.inject.Inject
 
 interface LoginNavigator
 
-class LoginNavigatorImpl @Inject constructor(activity: LoginActivity) : BaseNavigator(activity), LoginNavigator
+class LoginNavigatorImpl @Inject constructor(activity: LoginActivity) : BaseNavigator(activity),
+    LoginNavigator

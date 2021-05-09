@@ -1,6 +1,10 @@
 package com.ccc.nameapp.data.source.remote
 
-class Resource<T> constructor(val status: Status, var data: T? = null, val message: String? = null) {
+class Resource<T> constructor(
+    val status: Status,
+    var data: T? = null,
+    val message: String? = null
+) {
 
     companion object {
         fun <T> success(data: T?): Resource<T> {

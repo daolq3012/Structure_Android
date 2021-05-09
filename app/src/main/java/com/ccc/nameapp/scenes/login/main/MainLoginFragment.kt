@@ -23,8 +23,10 @@ class MainLoginFragment : DaggerFragment(), MainLoginView {
 
     @Inject
     internal lateinit var mPresenter: MainLoginPresenter
+
     @Inject
     internal lateinit var mNavigator: MainLoginNavigator
+
     @Inject
     internal lateinit var mValidator: Validator
 
@@ -90,7 +92,11 @@ class MainLoginFragment : DaggerFragment(), MainLoginView {
     }
 
     private fun onNextClick() {
-        if (mValidator.isValidEmail(mView.emailOrPhoneEditText.text.toString(), isCheckTempMails = true)) {
+        if (mValidator.isValidEmail(
+                mView.emailOrPhoneEditText.text.toString(),
+                isCheckTempMails = true
+            )
+        ) {
             mPresenter.login(
                 mView.emailOrPhoneEditText.text.toString().trim(),
                 mView.passwordEditText.text.toString().trim()

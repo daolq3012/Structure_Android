@@ -74,7 +74,8 @@ class InterceptorImpl : Interceptor {
 
     private fun isAccessTokenExpired(): Boolean {
         val expiredTime = mTokenRepository?.getToken()?.accessTokenExpiresAt ?: return false
-        val dateExpired = DateUtils.convertStringToDate(expiredTime, DateUtils.SERVER_DATE_PATTERN) ?: return false
+        val dateExpired = DateUtils.convertStringToDate(expiredTime, DateUtils.SERVER_DATE_PATTERN)
+            ?: return false
         return dateExpired.before(DateUtils.getCurrentDate())
     }
 }

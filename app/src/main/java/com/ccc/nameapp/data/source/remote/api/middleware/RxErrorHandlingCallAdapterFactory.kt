@@ -5,7 +5,11 @@ import android.util.Log
 import com.ccc.nameapp.data.source.remote.api.error.BaseException
 import com.ccc.nameapp.data.source.remote.api.error.ErrorResponse
 import com.google.gson.Gson
-import io.reactivex.*
+import io.reactivex.Flowable
+import io.reactivex.Single
+import io.reactivex.Maybe
+import io.reactivex.Completable
+import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.HttpException
@@ -29,6 +33,7 @@ class RxErrorHandlingCallAdapterFactory private constructor() : CallAdapter.Fact
         annotations: Array<Annotation>,
         retrofit: Retrofit
     ): CallAdapter<*, *> {
+        @Suppress("UNCHECKED_CAST")
         return RxCallAdapterWrapper(
             returnType,
             wrapped = original.get(returnType, annotations, retrofit) as CallAdapter<Any, Any>
@@ -54,7 +59,8 @@ class RxErrorHandlingCallAdapterFactory private constructor() : CallAdapter.Fact
             val isSingle = rawType == Single::class.java
             val isMaybe = rawType == Maybe::class.java
             val isCompletable = rawType == Completable::class.java
-            val isInvalidObject = rawType != Observable::class.java && !isFlowable && !isSingle && !isMaybe
+            val isInvalidObject =
+                rawType != Observable::class.java && !isFlowable && !isSingle && !isMaybe
             if (isInvalidObject) {
                 return null
             }
@@ -65,7 +71,7 @@ class RxErrorHandlingCallAdapterFactory private constructor() : CallAdapter.Fact
                     isMaybe -> "Maybe"
                     else -> "Observable"
                 }
-                val errorMessage = "$name return type must be parameterized as $name <Foo> or $name <? extends Foo>"
+                val errorMessage = "$name return type must be parameterized"
                 throw IllegalStateException(errorMessage)
             }
 

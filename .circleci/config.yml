@@ -3,7 +3,7 @@ version: 2
 defaults: &defaults
   working_directory: ~/code
   docker:
-    - image: circleci/android:api-28-alpha
+    - image: circleci/android:api-30
   environment:
     JAVA_OPTS: "-Xmx1024m"
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false'
