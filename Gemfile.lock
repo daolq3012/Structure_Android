@@ -21,7 +21,7 @@ GEM
       faraday (~> 0.9)
       faraday-http-cache (~> 2.0)
       git (~> 1.5)
-      kramdown (~> 2.0)
+      kramdown (~> 2.3.1)
       kramdown-parser-gfm (~> 1.0)
       no_proxy_fix
       octokit (~> 4.7)
