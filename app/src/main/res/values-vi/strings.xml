@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">JobChat_Android_New</string>
+
+    <!--  common  -->
+    <string name="dd_mm_yyyy">yyyy/MM/dd</string>
+    <string name="ok">Đồng ý</string>
+    <string name="cancel">Hủy</string>
+    <string name="decline">Từ chối</string>
+    <string name="close">Đóng</string>
+    <string name="free_work_management_software">Phần mềm quản lý công việc miễn phí!</string>
+    <string name="or">hoặc</string>
+    <string name="enter_email_or_phone_number">Nhập email hoặc số điện thoại</string>
+    <string name="email_or_phone_number">Email or phone number</string>
+    <string name="password">Password</string>
+    <string name="next">Tiếp</string>
+    <string name="processing">Đang xử lý</string>
+    <string name="email_invalid">Không đúng định dạng email</string>
+
+    <!-- Login -->
+    <string name="view_demo">xem DEMO</string>
+    <string name="login_with_gmail">Đăng nhập bằng Gmail</string>
+    <string name="login_with_facebook">Đăng nhập bằng Facebook</string>
+</resources>

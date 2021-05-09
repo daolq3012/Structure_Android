@@ -1,0 +1,44 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    apply from: './versions.gradle'
+    addRepos(repositories)
+    dependencies {
+        classpath "com.android.tools.build:gradle:$versions.android_gradle_plugin"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+        classpath 'com.google.gms:google-services:4.3.5'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
+        classpath 'com.google.firebase:perf-plugin:1.3.5'  // Performance Monitoring plugin
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+    repositories {
+        google()
+    }
+}
+
+plugins {
+    id("org.jlleitschuh.gradle.ktlint") version "8.2.0"
+}
+
+plugins {
+    id("io.gitlab.arturbosch.detekt") version "1.0.1"
+}
+
+allprojects {
+    addRepos(repositories)
+}
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xmaxerrs" << "500" // or whatever number you want
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+repositories {
+    google()
+}

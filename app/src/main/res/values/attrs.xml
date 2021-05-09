@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ToolbarView">
+        <attr format="reference" name="backImage"/>
+        <attr format="reference" name="menuImage"/>
+        <attr format="color" name="titleColor"/>
+        <attr format="dimension" name="titleSize"/>
+        <attr format="string" name="titleContent"/>
+        <attr format="color" name="lineColor"/>
+        <attr format="flags" name="titleStyle">
+            <flag name="normal" value="0"/>
+            <flag name="bold" value="1"/>
+            <flag name="italic" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CircleView">
+        <attr name="circleColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="CircleImageView">
+        <attr format="dimension" name="civ_border_width"/>
+        <attr format="color" name="civ_border_color"/>
+        <attr format="boolean" name="civ_border_overlay"/>
+        <attr format="color" name="civ_fill_color"/>
+        <attr format="color" name="civ_circle_background_color"/>
+    </declare-styleable>
+</resources>

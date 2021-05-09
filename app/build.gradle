@@ -1,0 +1,241 @@
+plugins {
+  id 'com.android.application'
+  id 'kotlin-android'
+  id 'kotlin-android-extensions'
+  id 'kotlin-kapt'
+  id 'com.google.firebase.crashlytics'
+  id 'com.google.firebase.firebase-perf'
+  id 'org.jlleitschuh.gradle.ktlint'
+}
+
+def APP_ID = "com.ccc.nameapp"
+android {
+  compileSdkVersion build_versions.target_sdk
+  buildToolsVersion build_versions.build_tools
+
+  flavorDimensions "default"
+  defaultConfig {
+    applicationId "${APP_ID}"
+    minSdkVersion build_versions.min_sdk
+    targetSdkVersion build_versions.target_sdk
+    versionCode build_versions.versionCode
+    versionName build_versions.versionName
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    vectorDrawables.useSupportLibrary = true
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  kotlinOptions {
+    jvmTarget = '1.8'
+  }
+
+  lintOptions {
+    checkReleaseBuilds false
+    // Or, if you prefer, you can continue to check for errors in release builds,
+    // but continue the build even when errors are found:
+    abortOnError false
+  }
+
+  androidExtensions {
+    experimental = true
+  }
+
+  dexOptions {
+    javaMaxHeapSize = "4g"
+  }
+
+  sourceSets {
+    main {
+      jniLibs.srcDirs = ['libs']
+    }
+  }
+
+  productFlavors {
+    dev {
+      applicationIdSuffix = ".dev"
+      manifestPlaceholders = [applicationName: "ProjectName-DEV"]
+    }
+    stg {
+      applicationIdSuffix = ".stg"
+      manifestPlaceholders = [applicationName: "ProjectName-STG"]
+    }
+    preProduct {
+      applicationIdSuffix = ".pre.prod"
+      manifestPlaceholders = [applicationName: "JC-ProjectName-PRD"]
+      versionCode build_versions.versionCodeRelease
+      versionName build_versions.versionNameRelease
+    }
+    prd {
+      manifestPlaceholders = [applicationName: "@string/app_name"]
+      versionCode build_versions.versionCodeRelease
+      versionName build_versions.versionNameRelease
+    }
+  }
+
+  signingConfigs {
+    debug {}
+
+    release {
+      if (!System.getenv('CI')) {
+        def signFile = file("../local.properties")
+        def signingProps = new Properties()
+
+        signingProps.load(new FileInputStream(signFile))
+
+        storeFile file("../keystores/3cTech.keystore")
+        storePassword signingProps['storePassword']
+        keyAlias signingProps['keyAlias']
+        keyPassword signingProps['keyPassword']
+      }
+    }
+  }
+
+  buildTypes {
+    debug {
+      ext.betaDistributionReleaseNotesFilePath = "release_notes.txt"
+      ext.betaDistributionGroupAliases = "QA3C"
+      ext.betaDistributionNotifications = true
+
+      applicationVariants.all { variant -> appendVersionNameVersionCode(variant) }
+    }
+
+    release {
+      shrinkResources true
+      minifyEnabled true
+      signingConfig signingConfigs.release
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+      if (!System.getenv('CI')) {
+        def signFile = file("../local.properties")
+        def signingProps = new Properties()
+
+        signingProps.load(new FileInputStream(signFile))
+
+        applicationVariants.all { variant -> appendVersionNameVersionCode(variant) }
+      }
+    }
+  }
+
+  applicationVariants.all { variant ->
+    def BASE_URL, CLIENT_ID, CLIENT_SECRET
+    if (variant.buildType.isDebuggable()) {
+      if (variant.flavorName.contains("stg")) {
+        BASE_URL = "https://host.name.vn"
+        CLIENT_ID = "Android"
+        CLIENT_SECRET = "AndroidSecret"
+      } else {
+        BASE_URL = "https://4438b6c1.ngrok.io/"
+        CLIENT_ID = "Android"
+        CLIENT_SECRET = "AndroidSecret"
+      }
+    } else if (!System.getenv('CI')) {
+      def signFile = file("../local.properties")
+      def signingProps = new Properties()
+
+      signingProps.load(new FileInputStream(signFile))
+      BASE_URL = signingProps['BASE_URL']
+    }
+
+    variant.buildConfigField "String", "BASE_URL", "\"${BASE_URL}\""
+    variant.buildConfigField "String", "CLIENT_ID", "\"${CLIENT_ID}\""
+    variant.buildConfigField "String", "CLIENT_SECRET", "\"${CLIENT_SECRET}\""
+  }
+}
+
+dependencies {
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  implementation "androidx.appcompat:appcompat:$versions.appcompat"
+  implementation "androidx.constraintlayout:constraintlayout:$versions.constrain_layout"
+  implementation "androidx.cardview:cardview:$versions.card_view"
+
+  //kotlin
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+  implementation "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
+  implementation "androidx.core:core-ktx:$versions.ktx"
+
+  //event bus
+  implementation "org.greenrobot:eventbus:$versions.event_bus"
+
+  //glide
+  implementation "com.github.bumptech.glide:glide:$versions.glide"
+  kapt "com.github.bumptech.glide:compiler:$versions.glide"
+
+  //rx
+  implementation "io.reactivex.rxjava2:rxjava:$versions.rxjava2"
+  implementation "io.reactivex.rxjava2:rxandroid:$versions.rx_android"
+
+  //retrofit
+  implementation "com.squareup.retrofit2:retrofit:$versions.retrofit2"
+  implementation "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit2"
+  implementation "com.squareup.retrofit2:converter-gson:$versions.retrofit2"
+  implementation "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
+  implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
+
+  //room
+  implementation "androidx.room:room-rxjava2:$versions.room_version"
+  implementation "androidx.room:room-runtime:$versions.room_version"
+  kapt "androidx.room:room-compiler:$versions.room_version"
+
+  //dagger
+  implementation "com.google.dagger:dagger:$versions.dagger2"
+  kapt "com.google.dagger:dagger-compiler:$versions.dagger2"
+  implementation "com.google.dagger:dagger-android:$versions.dagger2"
+  implementation "com.google.dagger:dagger-android-support:$versions.dagger2"
+  kapt "com.google.dagger:dagger-android-processor:$versions.dagger2"
+
+  // Import the BoM for the Firebase platform
+  implementation platform('com.google.firebase:firebase-bom:27.1.0')
+
+  // Declare the dependencies for the Crashlytics and Analytics libraries
+  // When using the BoM, you don't specify versions in Firebase library dependencies
+  implementation 'com.google.firebase:firebase-crashlytics-ktx'
+  implementation 'com.google.firebase:firebase-analytics-ktx'
+  implementation 'com.google.firebase:firebase-perf-ktx'
+
+  debugImplementation "com.squareup.leakcanary:leakcanary-android:$versions.leak_canary"
+  testImplementation "junit:junit:$versions.junit"
+  androidTestImplementation "androidx.test:runner:$versions.runner"
+  androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
+}
+
+repositories {
+  google()
+}
+
+ktlint {
+  version = "0.34.2"
+  android = true
+  reporters = [org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE]
+  ignoreFailures = true
+  filter {
+    exclude("**/generated/**")
+    include("**/java/**")
+  }
+}
+
+detekt {
+  version = "1.0.1"
+  input = files("src/main/java")
+  filters = ".*/resources/.*,.*/build/.*"
+  config = files("$rootDir/detekt.yml")
+}
+
+@SuppressWarnings("GroovyAssignabilityCheck")
+def appendVersionNameVersionCode(variant) {
+  variant.outputs.all { output ->
+    def applicationId = variant.applicationId + (variant.buildType.applicationIdSuffix == null ?
+        "" : variant.buildType.applicationIdSuffix)
+
+    def time = new Date().format("dd-MM-yyyy", TimeZone.getTimeZone("UTC"))
+    def fileName = "${applicationId}_v${variant.versionName}_${variant.versionCode}_${time}-${variant.flavorName}-${variant.buildType.name}.apk"
+
+    outputFileName = fileName
+  }
+}

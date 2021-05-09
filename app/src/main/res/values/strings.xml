@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">JobChat_Android_New</string>
+
+    <!--  common  -->
+    <string name="dd_mm_yyyy">yyyy/MM/dd</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="decline">Decline</string>
+    <string name="close">Close</string>
+    <string name="free_work_management_software">Free work management software!</string>
+    <string name="or">or</string>
+    <string name="enter_email_or_phone_number">Enter email or phone number</string>
+    <string name="email_or_phone_number">Email or phone number</string>
+    <string name="password">Password</string>
+    <string name="next">Next</string>
+    <string name="processing">Processing</string>
+    <string name="email_invalid">Email Invalid</string>
+
+    <!-- Login -->
+    <string name="view_demo">view DEMO</string>
+    <string name="login_with_gmail">Login with Gmail</string>
+    <string name="login_with_facebook">Login with Facebook</string>
+</resources>

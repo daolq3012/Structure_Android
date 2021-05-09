@@ -1,0 +1,20 @@
+<!--
+  PLEASE DON'T DELETE THIS TEMPLATE UNTIL YOU HAVE READ THE FIRST SECTION.
+-->
+
+### Summary:
+- [Bug] / [Feature]
+- Hệ thống hiển thị dữ liệu không trùng với Service Screen
+
+### Why need create this PR:
+- fix bugs/ tối ưu code
+- .....
+
+### Effect:
+- Service screen
+- Select category screen
+
+### Result
+
+### Link Issue:
+https://github.com/LobeSoftware/JobChat_Android_New/issues/1
