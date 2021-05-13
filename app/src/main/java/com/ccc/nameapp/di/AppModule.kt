@@ -3,7 +3,7 @@ package com.ccc.nameapp.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.ccc.nameapp.data.source.local.room.JobChatLocalDatabase
+import com.ccc.nameapp.data.source.local.room.NameAppLocalDatabase
 import com.ccc.nameapp.data.source.local.sharedprf.SharedPrefsApi
 import com.ccc.nameapp.data.source.local.sharedprf.SharedPrefsImpl
 import com.ccc.nameapp.data.source.remote.service.RestfulApi
@@ -21,8 +21,8 @@ class AppModule {
 
     @AppScoped
     @Provides
-    fun provideRoomDatabase(context: Context): JobChatLocalDatabase {
-        return Room.databaseBuilder(context, JobChatLocalDatabase::class.java, NAME_APP_DB).build()
+    fun provideRoomDatabase(context: Context): NameAppLocalDatabase {
+        return Room.databaseBuilder(context, NameAppLocalDatabase::class.java, NAME_APP_DB).build()
     }
 
     @AppScoped

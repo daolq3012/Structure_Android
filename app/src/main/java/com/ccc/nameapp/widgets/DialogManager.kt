@@ -10,7 +10,7 @@ import com.ccc.nameapp.R
 import com.ccc.nameapp.extension.convertToHtml
 import com.ccc.nameapp.utils.DateUtils
 import kotlinx.android.synthetic.main.layout_progress_bar.view.*
-import java.util.*
+import java.util.Calendar
 
 interface DialogManager {
     fun showProgressDialog(message: String)
@@ -143,13 +143,17 @@ class DialogManagerImpl(private var context: Context) : DialogManager {
     ): DialogManager {
         val calendar = Calendar.getInstance()
         if (dateString.isNotBlank()) {
-            calendar.time = DateUtils.convertStringToDate(dateString, dateFormat)
+            val time = DateUtils.convertStringToDate(dateString, dateFormat)
+            calendar.time = time ?: Calendar.getInstance().time
         }
         mDatePickerDialog = DatePickerDialog(
             context, onDateSetListener, calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)
         )
-        val timeStamp = DateUtils.convertDateStringToTimestamp(dateString, context.getString(R.string.dd_mm_yyyy))
+        val timeStamp = DateUtils.convertDateStringToTimestamp(
+            dateString,
+            context.getString(R.string.dd_mm_yyyy)
+        )
         if (timeStamp == null) {
             mDatePickerDialog?.datePicker?.minDate = System.currentTimeMillis() - TIME_UNIT
         } else {
@@ -165,7 +169,8 @@ class DialogManagerImpl(private var context: Context) : DialogManager {
     ): DialogManager {
         val calendar = Calendar.getInstance()
         if (dateString.isNotBlank()) {
-            calendar.time = DateUtils.convertStringToDate(dateString, dateFormat)
+            val time = DateUtils.convertStringToDate(dateString, dateFormat)
+            calendar.time = time ?: Calendar.getInstance().time
         }
         mDatePickerDialog = DatePickerDialog(
             context, onDateSetListener, calendar.get(Calendar.YEAR),

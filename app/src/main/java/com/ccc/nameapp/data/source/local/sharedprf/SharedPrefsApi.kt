@@ -21,6 +21,7 @@ class SharedPrefsImpl @Inject constructor(context: Context) : SharedPrefsApi {
         Context.MODE_PRIVATE
     )
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T> get(key: String, clazz: Class<T>): T {
         return when (clazz) {
             String::class.java -> mSharedPreferences.getString(key, "").let { it as T }

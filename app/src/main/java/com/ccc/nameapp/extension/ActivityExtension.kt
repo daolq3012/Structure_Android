@@ -106,8 +106,14 @@ fun Activity.isKeyboardOpened(): Boolean {
     return heightDifference > Constant.Keyboard.MIN_HEIGHT_VISIBLE
 }
 
-fun Activity.observerKeyboardShow(onKeyboardShow: (Boolean, ViewTreeObserver.OnGlobalLayoutListener) -> Unit) {
-    getRootView().viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+fun Activity.observerKeyboardShow(
+    onKeyboardShow: (
+        Boolean,
+        ViewTreeObserver.OnGlobalLayoutListener
+    ) -> Unit
+) {
+    getRootView().viewTreeObserver.addOnGlobalLayoutListener(object :
+        ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
             onKeyboardShow(isKeyboardOpened(), this)
         }

@@ -4,7 +4,10 @@ import android.text.format.DateFormat
 import java.sql.Timestamp
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
+import java.util.Calendar
 
 object DateUtils {
     const val DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
@@ -26,22 +29,29 @@ object DateUtils {
         }
     }
 
-    fun convertStringToDateString(dateString: String, inputFormat: String, outputFormat: String): String {
+    private fun convertStringToDateString(
+        dateString: String,
+        inputFormat: String,
+        outputFormat: String
+    ): String {
         val gmtTimeZone = TimeZone.getTimeZone("UTC")
         val inputDateTimeFormat = SimpleDateFormat(inputFormat, Locale.getDefault())
         inputDateTimeFormat.timeZone = gmtTimeZone
 
         val outputDateTimeFormat = SimpleDateFormat(outputFormat, Locale.getDefault())
         outputDateTimeFormat.timeZone = gmtTimeZone
-        return try {
-            outputDateTimeFormat.format(inputDateTimeFormat.parse(dateString))
-        } catch (e: IllegalArgumentException) {
-            ""
-        }
+
+        val dateTime = inputDateTimeFormat.parse(dateString)
+        return if (dateTime != null) {
+            outputDateTimeFormat.format(dateTime)
+        } else ""
     }
 
     fun convertStringToDate(dateString: String, inputFormat: String, outputFormat: String): Date? {
-        return convertStringToDate(convertStringToDateString(dateString, inputFormat, outputFormat), outputFormat)
+        return convertStringToDate(
+            convertStringToDateString(dateString, inputFormat, outputFormat),
+            outputFormat
+        )
     }
 
     fun convertDateToDateString(date: Date, outputFormat: String): String {
@@ -51,7 +61,10 @@ object DateUtils {
     // example: from January 1, 1970, 12:30:15 GMT -> "01-01-1970" -> January 1, 1970, 00:00:00 GMT
     // format: dd-MM-yyyy
     fun changeFormatDate(date: Date, format: String): Date? {
-        return convertStringToDate(convertDateToDateString(date, outputFormat = format), inputFormat = format)
+        return convertStringToDate(
+            convertDateToDateString(date, outputFormat = format),
+            inputFormat = format
+        )
     }
 
     fun getTimeStampWithoutMillis(dateString: String): Long? {

@@ -16,7 +16,8 @@ interface TokenRepository {
 }
 
 @AppScoped
-class TokenRepositoryImpl(private val sharedPrefsApi: SharedPrefsApi, val api: RestfulApi) : TokenRepository {
+class TokenRepositoryImpl(private val sharedPrefsApi: SharedPrefsApi, val api: RestfulApi) :
+    TokenRepository {
 
     override fun getToken(): Token? {
         return sharedPrefsApi.get(SharedPrefsKey.KEY_TOKEN, Token::class.java)

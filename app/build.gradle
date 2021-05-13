@@ -210,7 +210,7 @@ repositories {
 }
 
 ktlint {
-  version = "0.34.2"
+  version = "0.37.0"
   android = true
   reporters = [org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE]
   ignoreFailures = true

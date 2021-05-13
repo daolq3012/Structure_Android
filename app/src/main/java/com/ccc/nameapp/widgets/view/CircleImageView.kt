@@ -1,7 +1,17 @@
 package com.ccc.nameapp.widgets.view
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.RectF
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Bitmap
+import android.graphics.BitmapShader
+import android.graphics.ColorFilter
+import android.graphics.Shader
+import android.graphics.Rect
+import android.graphics.Outline
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -137,7 +147,8 @@ class CircleImageView : AppCompatImageView {
             R.styleable.CircleImageView_civ_border_width,
             DEFAULT_BORDER_WIDTH
         )
-        mBorderColor = a.getColor(R.styleable.CircleImageView_civ_border_color, DEFAULT_BORDER_COLOR)
+        mBorderColor =
+            a.getColor(R.styleable.CircleImageView_civ_border_color, DEFAULT_BORDER_COLOR)
         mBorderOverlay = a.getBoolean(
             R.styleable.CircleImageView_civ_border_overlay,
             DEFAULT_BORDER_OVERLAY

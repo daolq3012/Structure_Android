@@ -11,7 +11,8 @@ object DimensionUtils {
     }
 
     fun getDimensionWithScaledDensity(context: Context, @DimenRes dimenRes: Int): Float {
-        return context.resources.getDimension(dimenRes) / context.resources.displayMetrics.scaledDensity
+        return context.resources.getDimension(dimenRes) /
+                context.resources.displayMetrics.scaledDensity
     }
 
     @Suppress("DEPRECATION")

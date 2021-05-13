@@ -13,7 +13,9 @@ import dagger.android.support.AndroidSupportInjectionModule
 @AppScoped
 @Component(
     modules = [AppModule::class, NetworkModule::class, RepositoryModule::class,
-        ActivityBindingModule::class, FragmentBindingModule::class, AndroidSupportInjectionModule::class]
+        ActivityBindingModule::class, FragmentBindingModule::class,
+        AndroidSupportInjectionModule::class]
+
 )
 interface AppComponent : AndroidInjector<MainApplication> {
 

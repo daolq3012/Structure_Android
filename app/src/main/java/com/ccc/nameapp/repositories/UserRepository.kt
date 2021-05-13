@@ -10,7 +10,8 @@ interface UserRepository {
 }
 
 class UserRepositoryImpl @Inject constructor(
-    private val api: RestfulApi) : UserRepository {
+    private val api: RestfulApi
+) : UserRepository {
     override fun login(email: String, password: String): Single<Token> {
         return api.loginWithEmailAndPassword(email, password)
     }

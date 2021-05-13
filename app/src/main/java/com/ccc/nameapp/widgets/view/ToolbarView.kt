@@ -33,11 +33,13 @@ class ToolbarView : ConstraintLayout {
 
     @DrawableRes
     private var mBackImageResId: Int? = null
+
     @DrawableRes
     private var mMenuImageResId: Int? = null
     private var mLineColor: Int = ContextCompat.getColor(context, R.color.colorLittleBlack)
     private var mTitleColor: Int = ContextCompat.getColor(context, R.color.colorLittleBlack)
-    private var mTitleSize: Float = DimensionUtils.getDimensionWithScaledDensity(context, R.dimen.sp_18)
+    private var mTitleSize: Float =
+        DimensionUtils.getDimensionWithScaledDensity(context, R.dimen.sp_18)
     private var mTitleContent: String = ""
     private var mTitleStyle: Int = Typeface.BOLD
     private var mMenuHelper: MenuPopupHelper? = null
@@ -49,8 +51,10 @@ class ToolbarView : ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         val typeArray = context.obtainStyledAttributes(attrs, R.styleable.ToolbarView, 0, 0)
         try {
-            mBackImageResId = typeArray.getResourceId(R.styleable.ToolbarView_backImage, R.drawable.ic_back)
-            mMenuImageResId = typeArray.getResourceId(R.styleable.ToolbarView_menuImage, R.drawable.ic_menu)
+            mBackImageResId =
+                typeArray.getResourceId(R.styleable.ToolbarView_backImage, R.drawable.ic_back)
+            mMenuImageResId =
+                typeArray.getResourceId(R.styleable.ToolbarView_menuImage, R.drawable.ic_menu)
             mLineColor = typeArray.getColor(
                 R.styleable.ToolbarView_lineColor,
                 ContextCompat.getColor(context, R.color.colorLittleBlack)
@@ -172,8 +176,18 @@ class ToolbarView : ConstraintLayout {
         mMenuImageView.id = View.generateViewId()
         addView(mMenuImageView)
         constraintSet.clone(this)
-        constraintSet.connect(mMenuImageView.id, ConstraintSet.TOP, mBackImageView.id, ConstraintSet.TOP)
-        constraintSet.connect(mMenuImageView.id, ConstraintSet.BOTTOM, mBackImageView.id, ConstraintSet.BOTTOM)
+        constraintSet.connect(
+            mMenuImageView.id,
+            ConstraintSet.TOP,
+            mBackImageView.id,
+            ConstraintSet.TOP
+        )
+        constraintSet.connect(
+            mMenuImageView.id,
+            ConstraintSet.BOTTOM,
+            mBackImageView.id,
+            ConstraintSet.BOTTOM
+        )
         constraintSet.connect(
             mMenuImageView.id,
             ConstraintSet.RIGHT,
@@ -209,7 +223,12 @@ class ToolbarView : ConstraintLayout {
         mHorizontalLineView.id = View.generateViewId()
         addView(mHorizontalLineView)
         constraintSet.clone(this)
-        constraintSet.connect(mHorizontalLineView.id, ConstraintSet.BOTTOM, id, ConstraintSet.BOTTOM)
+        constraintSet.connect(
+            mHorizontalLineView.id,
+            ConstraintSet.BOTTOM,
+            id,
+            ConstraintSet.BOTTOM
+        )
         constraintSet.connect(mHorizontalLineView.id, ConstraintSet.LEFT, id, ConstraintSet.LEFT)
         constraintSet.connect(mHorizontalLineView.id, ConstraintSet.RIGHT, id, ConstraintSet.RIGHT)
         constraintSet.applyTo(this)

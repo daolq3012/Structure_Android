@@ -23,7 +23,7 @@ class BaseException : RuntimeException {
         this.errorResponse = response
     }
 
-    fun getMessageError(context: Context? = null): String {
+    fun getMessageError(): String {
         when (errorType) {
             Type.SERVER -> {
                 errorResponse?.message?.let { errorMessage ->
