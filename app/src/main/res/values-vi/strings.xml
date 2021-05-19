@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">JobChat_Android_New</string>
+    <string name="app_name">ProjectName</string>
 
     <!--  common  -->
     <string name="dd_mm_yyyy">yyyy/MM/dd</string>
-    <string name="ok">Đồng ý</string>
+    <string name="ok">Đồng ý</string>F
     <string name="cancel">Hủy</string>
     <string name="decline">Từ chối</string>
     <string name="close">Đóng</string>

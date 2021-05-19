@@ -29,8 +29,8 @@
         </activity>
 
         <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="afa5b4969ced7faced055aca28be45ea3adfaa5f" />
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
     </application>
 
 </manifest>

@@ -88,7 +88,10 @@ class MainLoginFragment : DaggerFragment(), MainLoginView {
     }
 
     private fun handleEvents() {
-        mView.nextView.setOnClickListener { onNextClick() }
+        mView.nextView.setOnClickListener {
+            throw RuntimeException("Test Crash") // Force a crash
+            onNextClick()
+        }
     }
 
     private fun onNextClick() {

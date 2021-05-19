@@ -3,6 +3,7 @@ plugins {
   id 'kotlin-android'
   id 'kotlin-android-extensions'
   id 'kotlin-kapt'
+  id 'com.google.gms.google-services'
   id 'com.google.firebase.crashlytics'
   id 'com.google.firebase.firebase-perf'
   id 'org.jlleitschuh.gradle.ktlint'
@@ -65,12 +66,6 @@ android {
       applicationIdSuffix = ".stg"
       manifestPlaceholders = [applicationName: "ProjectName-STG"]
     }
-    preProduct {
-      applicationIdSuffix = ".pre.prod"
-      manifestPlaceholders = [applicationName: "JC-ProjectName-PRD"]
-      versionCode build_versions.versionCodeRelease
-      versionName build_versions.versionNameRelease
-    }
     prd {
       manifestPlaceholders = [applicationName: "@string/app_name"]
       versionCode build_versions.versionCodeRelease
@@ -98,10 +93,6 @@ android {
 
   buildTypes {
     debug {
-      ext.betaDistributionReleaseNotesFilePath = "release_notes.txt"
-      ext.betaDistributionGroupAliases = "QA3C"
-      ext.betaDistributionNotifications = true
-
       applicationVariants.all { variant -> appendVersionNameVersionCode(variant) }
     }
 
@@ -123,16 +114,12 @@ android {
   }
 
   applicationVariants.all { variant ->
-    def BASE_URL, CLIENT_ID, CLIENT_SECRET
+    def BASE_URL
     if (variant.buildType.isDebuggable()) {
       if (variant.flavorName.contains("stg")) {
         BASE_URL = "https://host.name.vn"
-        CLIENT_ID = "Android"
-        CLIENT_SECRET = "AndroidSecret"
       } else {
         BASE_URL = "https://4438b6c1.ngrok.io/"
-        CLIENT_ID = "Android"
-        CLIENT_SECRET = "AndroidSecret"
       }
     } else if (!System.getenv('CI')) {
       def signFile = file("../local.properties")
@@ -143,8 +130,6 @@ android {
     }
 
     variant.buildConfigField "String", "BASE_URL", "\"${BASE_URL}\""
-    variant.buildConfigField "String", "CLIENT_ID", "\"${CLIENT_ID}\""
-    variant.buildConfigField "String", "CLIENT_SECRET", "\"${CLIENT_SECRET}\""
   }
 }
 
@@ -191,7 +176,7 @@ dependencies {
   kapt "com.google.dagger:dagger-android-processor:$versions.dagger2"
 
   // Import the BoM for the Firebase platform
-  implementation platform('com.google.firebase:firebase-bom:27.1.0')
+  implementation platform('com.google.firebase:firebase-bom:28.0.0')
 
   // Declare the dependencies for the Crashlytics and Analytics libraries
   // When using the BoM, you don't specify versions in Firebase library dependencies
@@ -203,10 +188,6 @@ dependencies {
   testImplementation "junit:junit:$versions.junit"
   androidTestImplementation "androidx.test:runner:$versions.runner"
   androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
-}
-
-repositories {
-  google()
 }
 
 ktlint {
