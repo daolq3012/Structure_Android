@@ -1,6 +1,5 @@
 package com.ccc.nameapp.data.source.remote.service
 
-import com.ccc.nameapp.BuildConfig
 import com.ccc.nameapp.data.model.Token
 import com.ccc.nameapp.data.source.remote.api.request.RefreshTokenRequest
 import io.reactivex.Single
@@ -17,8 +16,6 @@ interface RestfulApi {
     @FormUrlEncoded
     fun loginWithEmailAndPassword(
         @Field("username") username: String,
-        @Field("password") password: String,
-        @Field("client_id") clientId: String = BuildConfig.CLIENT_ID,
-        @Field("client_secret") clientSecret: String = BuildConfig.CLIENT_SECRET
+        @Field("password") password: String
     ): Single<Token>
 }
